@@ -5,11 +5,6 @@
 src/*.o
 src/*.so
 src/*.dll
-cran-comments.txt
-extraR/*.*
-knownbugs.txt
-secr.Rproj
 ^sourcecode.R$
 ^testing.R$
 ^secrpoly.Rproj$
-.gitignore

@@ -9,3 +9,7 @@ cran-comments.txt
 extraR/*.*
 knownbugs.txt
 secr.Rproj
+^sourcecode.R$
+^testing.R$
+^secrpoly.Rproj$
+.gitignore

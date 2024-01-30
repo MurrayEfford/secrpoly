@@ -1,7 +1,8 @@
 # secrpoly
 Area Search Spatially Explicit Capture-Recapture
 
-This is an experimental R package. 
+This is an experimental R package. Initially it comprises a subset of code 
+from 'secr' related to polygon, polygonX, transect, and transectX detector types. 
 
 It may be installed using
 ```

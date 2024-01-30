@@ -1,8 +1,7 @@
 ############################################################################################
-## package 'secr'
+## package 'secrpoly'
 ## esa.R
-## 2020-05-13 fixed bug that ignored individual covariates by providing only single-row CH0
-## 2022-01-22 fixed bug that ignored details$ignoreusage
+## 2024-01-29
 ############################################################################################
 
 esa <- function (object, sessnum = 1, beta = NULL, real = NULL, noccasions = NULL, ncores = NULL)
@@ -141,33 +140,31 @@ esa <- function (object, sessnum = 1, beta = NULL, real = NULL, noccasions = NUL
           grain <- if (ncores==1) 0 else 1
           gkhk <- makegk (dettype, object$detectfn, trps, mask, object$details, sessnum, NE, 
                           pi.density, miscparm, Xrealparval0, grain, ncores)
-          if (any(dettype==0)) {
-              ## CH0 <- nullCH (c(n,s), FALSE)
-              CH0 <- nullCH (c(n,s), object$design0$individual)
-          }
-          else {
-              ## CH0 <- nullCH (c(n,s,K), FALSE)
-              CH0 <- nullCH (c(n,s,K), object$design0$individual)
-          }
-          binomNcode <- recodebinomN(dettype, binomN, telemcode(trps))
+          CH0 <- nullCH (c(n,s,K), object$design0$individual)
+          binomNcode <- recodebinomN(dettype, binomN)
           pmixn <- getpmix (knownclass, PIA0, Xrealparval0)
-          MRdata <- list(markocc = markocc, firstocc=rep(-1,nrow(CH0)))
-          pID <- getpID(PIA0, Xrealparval0, MRdata)
-          pdot <- integralprw1 (
-              cc0 = nrow(Xrealparval0),
-              haztemp = gethazard(m, binomNcode, nrow(Xrealparval0), gkhk$hk, PIA0, usge),
-              gkhk = gkhk,
-              pi.density = pi.density,
-              PIA0 = PIA0,
-              CH0 = CH0,
-              binomNcode = binomNcode,
-              MRdata = MRdata,
+          haztemp <- gethazard(m, binomNcode, nrow(Xrealparval0), gkhk$hk, PIA0, usge)
+          
+          pdot <- integralprw1poly (
+              object$detectfn, 
+              Xrealparval0, 
+              haztemp, 
+              gkhk$hk, 
+              gkhk$H, 
+              pi.density, 
+              PIA0, 
+              CH0, 
+              binomNcode, 
               grp = rep(1,n),
-              usge = usge,
-              pmixn = pmixn,
-              pID = pID,
-              grain = grain,
-              ncores = ncores)
+              usge, 
+              mask, 
+              pmixn, 
+              object$details$maskusage, 
+              grain, 
+              ncores, 
+              object$details$minprob, 
+              debug = object$details$debug>3)
+          
           pdot * cellsize * m
         }
     }

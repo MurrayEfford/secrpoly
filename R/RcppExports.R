@@ -2,166 +2,54 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 edist2cpp <- function(A1, A2) {
-    .Call('_secr_edist2cpp', PACKAGE = 'secr', A1, A2)
+    .Call('_secrpoly_edist2cpp', PACKAGE = 'secrpoly', A1, A2)
 }
 
 xydist2cpp <- function(A1, A2) {
-    .Call('_secr_xydist2cpp', PACKAGE = 'secr', A1, A2)
+    .Call('_secrpoly_xydist2cpp', PACKAGE = 'secrpoly', A1, A2)
 }
 
 nearestcpp <- function(xy, traps, non_zero) {
-    .Call('_secr_nearestcpp', PACKAGE = 'secr', xy, traps, non_zero)
+    .Call('_secrpoly_nearestcpp', PACKAGE = 'secrpoly', xy, traps, non_zero)
 }
 
 insidecpp <- function(xy, n1, n2, poly) {
-    .Call('_secr_insidecpp', PACKAGE = 'secr', xy, n1, n2, poly)
-}
-
-naivedcpp <- function(sigma, wt, traps, animals, fn) {
-    .Call('_secr_naivedcpp', PACKAGE = 'secr', sigma, wt, traps, animals, fn)
-}
-
-naivecap3cpp <- function(detect, lambda0, sigma, Tsk, traps, mask, fn) {
-    .Call('_secr_naivecap3cpp', PACKAGE = 'secr', detect, lambda0, sigma, Tsk, traps, mask, fn)
+    .Call('_secrpoly_insidecpp', PACKAGE = 'secrpoly', xy, n1, n2, poly)
 }
 
 getdenomcpp <- function(fn, miscparm, mask, mm, sigma, z) {
-    .Call('_secr_getdenomcpp', PACKAGE = 'secr', fn, miscparm, mask, mm, sigma, z)
+    .Call('_secrpoly_getdenomcpp', PACKAGE = 'secrpoly', fn, miscparm, mask, mm, sigma, z)
 }
 
 gethcpp <- function(nc1, cc, nmix, nk, ss, mm, PIA, Tsk, hk) {
-    .Call('_secr_gethcpp', PACKAGE = 'secr', nc1, cc, nmix, nk, ss, mm, PIA, Tsk, hk)
-}
-
-makegkPointcpp <- function(detectfn, grain, ncores, gsbval, dist2, miscparm) {
-    .Call('_secr_makegkPointcpp', PACKAGE = 'secr', detectfn, grain, ncores, gsbval, dist2, miscparm)
-}
-
-cappedgkhkcpp <- function(cc, nk, area, D, gk, hk) {
-    .Call('_secr_cappedgkhkcpp', PACKAGE = 'secr', cc, nk, area, D, gk, hk)
+    .Call('_secrpoly_gethcpp', PACKAGE = 'secrpoly', nc1, cc, nmix, nk, ss, mm, PIA, Tsk, hk)
 }
 
 makegkPolygoncpp <- function(detectfn, dim, convex, grain, ncores, gsbval, cumk, traps, mask) {
-    .Call('_secr_makegkPolygoncpp', PACKAGE = 'secr', detectfn, dim, convex, grain, ncores, gsbval, cumk, traps, mask)
+    .Call('_secrpoly_makegkPolygoncpp', PACKAGE = 'secrpoly', detectfn, dim, convex, grain, ncores, gsbval, cumk, traps, mask)
 }
 
 makelookupcpp <- function(x) {
-    .Call('_secr_makelookupcpp', PACKAGE = 'secr', x)
-}
-
-nkpointcpp <- function(D, dist2, detect, Tsk, markocc, fn, gsb, miscparm, w2, binomN, grain, ncores) {
-    .Call('_secr_nkpointcpp', PACKAGE = 'secr', D, dist2, detect, Tsk, markocc, fn, gsb, miscparm, w2, binomN, grain, ncores)
-}
-
-pdotpointcpp <- function(xy, traps, dist2, detect, Tsk, markocc, fn, gsb, miscparm, w2, binomN, grain, ncores) {
-    .Call('_secr_pdotpointcpp', PACKAGE = 'secr', xy, traps, dist2, detect, Tsk, markocc, fn, gsb, miscparm, w2, binomN, grain, ncores)
+    .Call('_secrpoly_makelookupcpp', PACKAGE = 'secrpoly', x)
 }
 
 hdotpolycpp <- function(xy, traps, Tsk, markocc, cumk, detectfn, gsb, convex, dim, grain, ncores) {
-    .Call('_secr_hdotpolycpp', PACKAGE = 'secr', xy, traps, Tsk, markocc, cumk, detectfn, gsb, convex, dim, grain, ncores)
+    .Call('_secrpoly_hdotpolycpp', PACKAGE = 'secrpoly', xy, traps, Tsk, markocc, cumk, detectfn, gsb, convex, dim, grain, ncores)
 }
 
 ontransectcpp <- function(xy, transect, n1, n2, tol) {
-    .Call('_secr_ontransectcpp', PACKAGE = 'secr', xy, transect, n1, n2, tol)
+    .Call('_secrpoly_ontransectcpp', PACKAGE = 'secrpoly', xy, transect, n1, n2, tol)
 }
 
 alongtransectcpp <- function(xy, transect, n1, n2, tol) {
-    .Call('_secr_alongtransectcpp', PACKAGE = 'secr', xy, transect, n1, n2, tol)
-}
-
-fasthistoriescpp <- function(mm, nc, cc, grain, ncores, binomN, indiv, w, ki, gk, hk, density, PIA, Tsk, mbool) {
-    .Call('_secr_fasthistoriescpp', PACKAGE = 'secr', mm, nc, cc, grain, ncores, binomN, indiv, w, ki, gk, hk, density, PIA, Tsk, mbool)
+    .Call('_secrpoly_alongtransectcpp', PACKAGE = 'secrpoly', xy, transect, n1, n2, tol)
 }
 
 polygonhistoriescpp <- function(nc, detectfn, grain, ncores, minp, binomN, w, xy, start, group, hk, H, gsbval, pID, mask, density, PIA, Tsk, h, hindex, mbool, debug) {
-    .Call('_secr_polygonhistoriescpp', PACKAGE = 'secr', nc, detectfn, grain, ncores, minp, binomN, w, xy, start, group, hk, H, gsbval, pID, mask, density, PIA, Tsk, h, hindex, mbool, debug)
+    .Call('_secrpoly_polygonhistoriescpp', PACKAGE = 'secrpoly', nc, detectfn, grain, ncores, minp, binomN, w, xy, start, group, hk, H, gsbval, pID, mask, density, PIA, Tsk, h, hindex, mbool, debug)
 }
 
 polygonfxicpp <- function(nc, detectfn, grain, ncores, minp, binomN, w, xy, start, group, hk, H, gsbval, pID, mask, density, PIA, Tsk, h, hindex, mbool) {
-    .Call('_secr_polygonfxicpp', PACKAGE = 'secr', nc, detectfn, grain, ncores, minp, binomN, w, xy, start, group, hk, H, gsbval, pID, mask, density, PIA, Tsk, h, hindex, mbool)
-}
-
-signalhistoriescpp <- function(mm, nc, detectfn, grain, ncores, binomN, w, signal, group, gk, gsbval, dist2, density, PIA, miscparm, mbool) {
-    .Call('_secr_signalhistoriescpp', PACKAGE = 'secr', mm, nc, detectfn, grain, ncores, binomN, w, signal, group, gk, gsbval, dist2, density, PIA, miscparm, mbool)
-}
-
-gethr <- function(nc, fn, start, xy, mask, gsbval, telemscale) {
-    .Call('_secr_gethr', PACKAGE = 'secr', nc, fn, start, xy, mask, gsbval, telemscale)
-}
-
-simplehistoriescpp <- function(mm, nc, cc, grain, ncores, binomN, markocc, firstocc, pID, w, group, gk, hk, density, PIA, Tsk, h, hindex, mbool, telemhr, telemstart) {
-    .Call('_secr_simplehistoriescpp', PACKAGE = 'secr', mm, nc, cc, grain, ncores, binomN, markocc, firstocc, pID, w, group, gk, hk, density, PIA, Tsk, h, hindex, mbool, telemhr, telemstart)
-}
-
-simplehistoriesfxicpp <- function(x, mm, nc, cc, grain, ncores, binomN, w, group, gk, hk, density, PIA, Tsk, h, hindex) {
-    .Call('_secr_simplehistoriesfxicpp', PACKAGE = 'secr', x, mm, nc, cc, grain, ncores, binomN, w, group, gk, hk, density, PIA, Tsk, h, hindex)
-}
-
-Tsightinglikcpp <- function(T, markocc, binomN, Tsk, musk, debug) {
-    .Call('_secr_Tsightinglikcpp', PACKAGE = 'secr', T, markocc, binomN, Tsk, musk, debug)
-}
-
-sightingchatcpp <- function(mm, nc, cc0, grain, ncores, nsim, sightmodel, sumD, area, distrib, binomN, markocc, pID, group, gk0, hk0, density, PIA0, Tsk, pmix) {
-    .Call('_secr_sightingchatcpp', PACKAGE = 'secr', mm, nc, cc0, grain, ncores, nsim, sightmodel, sumD, area, distrib, binomN, markocc, pID, group, gk0, hk0, density, PIA0, Tsk, pmix)
-}
-
-expectedmucpp <- function(nc, cc, Tu, Tm, sightmodel, binomN, markocc, pID, group, gk, hk, pi_density, Nm, PIA, Tsk, h, hindex, a0) {
-    .Call('_secr_expectedmucpp', PACKAGE = 'secr', nc, cc, Tu, Tm, sightmodel, binomN, markocc, pID, group, gk, hk, pi_density, Nm, PIA, Tsk, h, hindex, a0)
-}
-
-simdetectpointcpp <- function(detect, N, cc0, cc, gk0, gk, hk0, hk, PIA0, PIA1, nmix, knownclass, pmix, Tsk, btype, Markov, binomN) {
-    .Call('_secr_simdetectpointcpp', PACKAGE = 'secr', detect, N, cc0, cc, gk0, gk, hk0, hk, PIA0, PIA1, nmix, knownclass, pmix, Tsk, btype, Markov, binomN)
-}
-
-simdetectpolycpp <- function(detect, fn, nmix, btype, Markov, kk, animals, traps, gsb0val, gsb1val, PIA0, PIA1, knownclass, pmix, Tsk, binomN, maxperpoly) {
-    .Call('_secr_simdetectpolycpp', PACKAGE = 'secr', detect, fn, nmix, btype, Markov, kk, animals, traps, gsb0val, gsb1val, PIA0, PIA1, knownclass, pmix, Tsk, binomN, maxperpoly)
-}
-
-simdetectsignalcpp <- function(detect, nmix, fn, cut, gsb0val, PIA0, pmix, knownclass, animals, traps, dist2, Tsk, miscparm) {
-    .Call('_secr_simdetectsignalcpp', PACKAGE = 'secr', detect, nmix, fn, cut, gsb0val, PIA0, pmix, knownclass, animals, traps, dist2, Tsk, miscparm)
-}
-
-trappingsingle <- function(g0, sigma, z, dist2, Tsk, fn, w2, binomN) {
-    .Call('_secr_trappingsingle', PACKAGE = 'secr', g0, sigma, z, dist2, Tsk, fn, w2, binomN)
-}
-
-trappingmulti <- function(g0, sigma, z, dist2, Tsk, fn, w2, binomN) {
-    .Call('_secr_trappingmulti', PACKAGE = 'secr', g0, sigma, z, dist2, Tsk, fn, w2, binomN)
-}
-
-trappingcapped <- function(g0, sigma, z, dist2, Tsk, fn, w2, binomN) {
-    .Call('_secr_trappingcapped', PACKAGE = 'secr', g0, sigma, z, dist2, Tsk, fn, w2, binomN)
-}
-
-trappingproximity <- function(g0, sigma, z, dist2, Tsk, fn, w2, binomN) {
-    .Call('_secr_trappingproximity', PACKAGE = 'secr', g0, sigma, z, dist2, Tsk, fn, w2, binomN)
-}
-
-trappingcount <- function(g0, sigma, z, dist2, Tsk, fn, w2, binomN) {
-    .Call('_secr_trappingcount', PACKAGE = 'secr', g0, sigma, z, dist2, Tsk, fn, w2, binomN)
-}
-
-trappingpolygon <- function(lambda, sigma, z, npoly, kk, animals, traps, Tsk, fn, w2, binomN, maxperpoly) {
-    .Call('_secr_trappingpolygon', PACKAGE = 'secr', lambda, sigma, z, npoly, kk, animals, traps, Tsk, fn, w2, binomN, maxperpoly)
-}
-
-trappingtransect <- function(lambda, sigma, z, ntransect, kk, animals, traps, Tsk, fn, w2, binomN, maxperpoly) {
-    .Call('_secr_trappingtransect', PACKAGE = 'secr', lambda, sigma, z, ntransect, kk, animals, traps, Tsk, fn, w2, binomN, maxperpoly)
-}
-
-trappingpolygonX <- function(g0, sigma, z, npoly, kk, animals, traps, Tsk, fn, w2, binomN) {
-    .Call('_secr_trappingpolygonX', PACKAGE = 'secr', g0, sigma, z, npoly, kk, animals, traps, Tsk, fn, w2, binomN)
-}
-
-trappingtransectX <- function(lambda, sigma, z, ntransect, kk, animals, traps, Tsk, fn, w2) {
-    .Call('_secr_trappingtransectX', PACKAGE = 'secr', lambda, sigma, z, ntransect, kk, animals, traps, Tsk, fn, w2)
-}
-
-trappingsignal <- function(beta0, beta1, sdS, cut, muN, sdN, sdM, animals, traps, dist2, Tsk, fn) {
-    .Call('_secr_trappingsignal', PACKAGE = 'secr', beta0, beta1, sdS, cut, muN, sdN, sdM, animals, traps, dist2, Tsk, fn)
-}
-
-trappingtelemetry <- function(lambda, sigma, z, animals, ss, fn, w2, binomN, exactn, maxperpoly) {
-    .Call('_secr_trappingtelemetry', PACKAGE = 'secr', lambda, sigma, z, animals, ss, fn, w2, binomN, exactn, maxperpoly)
+    .Call('_secrpoly_polygonfxicpp', PACKAGE = 'secrpoly', nc, detectfn, grain, ncores, minp, binomN, w, xy, start, group, hk, H, gsbval, pID, mask, density, PIA, Tsk, h, hindex, mbool)
 }
 

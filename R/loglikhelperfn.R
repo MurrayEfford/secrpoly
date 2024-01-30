@@ -1,4 +1,9 @@
-#----------------------------------------------------------------------
+###############################################################################
+## package 'secrpoly'
+## loglikhelperfn.R
+## 2024-01-29
+###############################################################################
+
 gethazard <- function (m, binomN, cc, hk, PIA, usge) {
     nmix <- dim(PIA)[5]
     if (any(binomN == -2)) {   ## multi-catch trap
@@ -204,85 +209,24 @@ getmaskpar <- function(OK, D, m, sessnum, unmash, nmash) {
     }
 }
 #--------------------------------------------------------------------------------
-getchat <- function (cc0, nc, n.distrib, group, usge, pmixn, pID,
-                     cellsize, gkhk, pi.density, sumD,  PIA0, binomN, MRdata, miscparm, 
-                     nsim, grain,ncores) {
-    kk <- nrow(usge)
-    ss <- ncol(usge)
-    mm <- nrow(pi.density)
-    ngroup <- length(levels(group))   ## uNUSED
-    ## note: should pass pi.mask as pi.density for known distribution all-sighting
-    temp <- sightingchatcpp (
-        as.integer(mm), 
-        as.integer(nc), 
-        as.integer(cc0), 
-        as.integer(grain), 
-        as.integer(ncores),
-        as.integer(nsim),        ## number of replicate simulations for chat 
-        as.integer(MRdata$sightmodel),  ## 5 allsighting known n0, 6 allsighting unknown n0
-        as.double(sumD),
-        as.double(cellsize),
-        as.integer(n.distrib),
-        as.integer(binomN),      ## detector -2 multi, -1 proximity 0 Poisson count 1 Binomial from usage, 2...etc. 
-        as.integer(MRdata$markocc), 
-        as.matrix(pID), 
-        as.integer(group),      ## UNUSED? group number for 0<=n<*nc   [full likelihood only] 
-        as.double(gkhk$gk), 
-        as.double(gkhk$hk), 
-        as.matrix(pi.density),        ## relative density - sums to 1.0
-        as.integer(PIA0), 
-        as.matrix(usge),         ## nk x s usage matrix 
-        as.numeric(pmixn[,1])
-    ) 
-    if (temp$resultcode==0) {
-        sumchat <- temp$chat
-    }
-    else {
-        warning ("chat calculation failed, resultcode = ", temp$resultcode)
-        sumchat <- (rep(0,3))
-    }
-    names(sumchat) <- c('Tu','Tm','Tn')
-    return (sumchat)
-}
-
 makegk <- function(dettype, detectfn, trps, mask, details, sessnum, noneuc, D, miscparm, realparval, grain, ncores) {
-    ## precompute gk, hk for point detectors
-    if (all(dettype %in% c(0,1,2,5,8,13))) {
-        distmat2 <- getuserdist(trps, mask, details$userdist, sessnum, noneuc, D, miscparm, detectfn == 20)
-        gkhk <- makegkPointcpp (
-            as.integer(detectfn), 
-            as.integer(grain),
-            as.integer(ncores),
-            as.matrix(realparval), 
-            as.matrix(distmat2), 
-            miscparm)
-        if (any(dettype==8)) {   ## capped adjustment Not checked 2019-09-08
-            gkhk <- cappedgkhkcpp (
-                as.integer(nrow(realparval)),
-                as.integer(nrow(trps)),
-                as.double(attr(mask, "area")),
-                as.double(D),
-                as.double(gkhk$gk), as.double(gkhk$hk))  
-        }
-    }
     ## precompute gk, hk for polygon and transect detectors
-    else if (all(dettype %in% c(3,4,6,7))) {
-        ## k-1 because we have zero-terminated these vectors
-        k <- getk(trps)
-        K <- if (length(k)>1) length(k)-1 else k
-        cumk <- cumsum(c(0,k))[1:length(k)]
-        dimension <- (dettype[1] %in% c(3,6)) + 1   ## 1 = 1D, 2 = 2D
-        convexpolygon <- is.null(details$convexpolygon) || details$convexpolygon
-        gkhk <- makegkPolygoncpp (
-            as.integer(detectfn), 
-            as.integer(dimension), 
-            as.logical(convexpolygon), 
-            as.integer(grain), 
-            as.integer(ncores), 
-            as.matrix(realparval), 
-            as.integer(cumk),
-            as.matrix(trps), 
-            as.matrix(mask))
-    }
+    ## k-1 because we have zero-terminated these vectors
+    k <- getk(trps)
+    K <- if (length(k)>1) length(k)-1 else k
+    cumk <- cumsum(c(0,k))[1:length(k)]
+    dimension <- (dettype[1] %in% c(3,6)) + 1   ## 1 = 1D, 2 = 2D
+    convexpolygon <- is.null(details$convexpolygon) || details$convexpolygon
+    gkhk <- makegkPolygoncpp (
+        as.integer(detectfn), 
+        as.integer(dimension), 
+        as.logical(convexpolygon), 
+        as.integer(grain), 
+        as.integer(ncores), 
+        as.matrix(realparval), 
+        as.integer(cumk),
+        as.matrix(trps), 
+        as.matrix(mask))
+    
     gkhk
 }

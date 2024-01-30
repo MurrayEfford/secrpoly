@@ -203,42 +203,12 @@ fx.total <- function (object, sessnum = 1, mask = NULL, ncores = NULL, ...)
 
 ###############################################################################
 
-allhistfxi <- function (m, realparval, haztemp, gkhk, pi.density, PIA, usge,
-                        CH, binomN, grp, pmixn, grain, ncores) {
+allhistpolygonfxi <- function (
+        detectfn, realparval, haztemp, hk, H, pi.density, PIA, 
+        CH, xy, binomNcode, grp, usge, mask, 
+        pmixn, maskusage, grain, ncores, minprob) {
     nc <- nrow(CH)
     nmix <- nrow(pmixn)
-    sump <- matrix(0, nrow = nc, ncol = m)
-    for (x in 1:nmix) {
-        hx <- if (any(binomN==-2)) matrix(haztemp$h[x,,], nrow = m) else -1 ## lookup sum_k (hazard)
-        hi <- if (any(binomN==-2)) haztemp$hindex else -1                   ## index to hx
-   
-        temp <- simplehistoriesfxicpp(
-          as.integer(x-1),
-          as.integer(m),
-          as.integer(nc),
-          as.integer(nrow(realparval)),
-          as.integer(grain),
-          as.integer(ncores),
-          as.integer(binomN),
-          as.integer(CH),   
-          as.integer(grp)-1L,
-          as.double (gkhk$gk),     ## precomputed probability 
-          as.double (gkhk$hk),     ## precomputed hazard
-          as.matrix (pi.density),
-          as.integer(PIA),
-          as.matrix(usge),
-          as.matrix (hx),                
-          as.matrix (hi))
-        sump <- sump + sweep(temp, MARGIN=1, STATS = pmixn[x,], FUN = "*")
-    }
-    sump
-}
-
-allhistpolygonfxi <- function (detectfn, realparval, haztemp, hk, H, pi.density, PIA, 
-  CH, xy, binomNcode, grp, usge, mask, pmixn, maskusage, 
-  grain, ncores, minprob) {
-  nc <- nrow(CH)
-  nmix <- nrow(pmixn)
     m <- length(pi.density)
     s <- ncol(usge)
     sump <- matrix(0, nrow = nc, ncol = m)
@@ -356,20 +326,13 @@ fxi.secr <- function (object, i = NULL, sessnum = 1, X = NULL, ncores = NULL) {
   piX[is.na(piX)] <- 0
   #----------------------------------------
   
-  ## TO BE FIXED
-   
-  # NE <- getD (object$designNE, beta, object$mask, object$parindx, object$link, object$fixed,
-  #             levels(data$grp[[1]]), sessionlevels, parameter = 'noneuc')
-  # NEX <- getD (object$designNE, beta, X, object$parindx, object$link, object$fixed,
-  #             levels(data$grp[[1]]), sessionlevels, parameter = 'noneuc')
-  # 
   NE <- NULL
   
   #---------------------------------------------------
   ## allow for scaling of detection
   Dtemp <- if (D.modelled) mean(D) else NA
   Xrealparval <- reparameterize (realparval, object$detectfn, object$details,
-                                 data$mask, data$traps, Dtemp, s)
+                                 data$mask, data$traps, Dtemp, data$s)
   PIA <- object$design$PIA[sessnum, ok, 1:data$s, 1:data$K, ,drop=FALSE]
   PIA0 <- object$design0$PIA[sessnum, ok, 1:data$s, 1:data$K, ,drop=FALSE]
   pmix <- getpmix (data$knownclass[ok], PIA, Xrealparval)  ## membership prob by animal
@@ -382,18 +345,9 @@ fxi.secr <- function (object, i = NULL, sessnum = 1, X = NULL, ncores = NULL) {
                   NE, D, miscparm, Xrealparval, grain, ncores)
   haztemp <- gethazard (data$m, data$binomNcode, nrow(realparval), gkhk$hk, PIA, data$usge)
   
-  ## 2020-01-26 conditional on point vs polygon detectors
-  if (data$dettype[1] %in% c(0,1,2,5,8,13)) {
-      
-      prmat <- allhistfxi (data$m, Xrealparval, haztemp, gkhk, pimask, PIA, data$usge,
-                           CH, data$binomNcode, grp, pmix, grain, ncores)
-  }
-  else {
-      # warning ("fxi.secr experimental for polygon detector types")
-      prmat <- allhistpolygonfxi (object$detectfn, Xrealparval, haztemp, gkhk$hk, gkhk$H, pimask, PIA, 
-          CH, xy, data$binomNcode, grp, data$usge, data$mask,
-          pmix, data$maskusage, grain, ncores, object$details$minprob)
-  }
+  prmat <- allhistpolygonfxi (object$detectfn, Xrealparval, haztemp, gkhk$hk, gkhk$H, pimask, PIA, 
+                              CH, xy, data$binomNcode, grp, data$usge, data$mask,
+                              pmix, data$maskusage, grain, ncores, object$details$minprob)
   
   pisum <- apply(prmat,1,sum)
   
@@ -404,19 +358,11 @@ fxi.secr <- function (object, i = NULL, sessnum = 1, X = NULL, ncores = NULL) {
     nX <- nrow(X)
     gkhkX <- makegk (data$dettype, object$detectfn, data$traps, X, object$details, 
         sessnum, NE, D, miscparm, Xrealparval, grain, ncores)
-    haztempX <- gethazard (nX, data$binomNcode, nrow(realparval), gkhkX$hk, PIA, data$usge)
-    
-    if (data$dettype[1] %in% c(0,1,2,5,8,13)) {
-        ## point detectors
-        prmatX <- allhistfxi (nX, Xrealparval, haztempX, gkhkX, piX, PIA, data$usge,
-                          CH, data$binomNcode, grp, pmix, object$details$grain, ncores)
-    }
-    else {
-        ## polygon-like detectors
-        prmatX <- allhistpolygonfxi (object$detectfn, Xrealparval, haztempX, gkhkX$hk, gkhkX$H, piX, PIA, 
-                             CH, xy, data$binomNcode, grp, data$usge, X,
-                             pmix, data$maskusage, object$details$grain, object$details$minprob)
-    }
+    haztempX <- gethazard (nX, data$binomNcode, nrow(Xrealparval), gkhkX$hk, PIA, data$usge)
+    maskusage <- maskboolean(object$capthist, X, object$details$maxdistance)
+    prmatX <- allhistpolygonfxi (object$detectfn, Xrealparval, haztempX, gkhkX$hk, gkhkX$H, piX, PIA, 
+                                 CH, xy, data$binomNcode, grp, data$usge, X,
+                                 pmix, maskusage, object$details$grain, ncores, object$details$minprob)
     out <- sweep(prmatX, MARGIN=1, STATS=pisum, FUN="/")
   }
   out <- as.list(as.data.frame(t(out)))

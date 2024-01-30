@@ -1,6 +1,7 @@
 ###############################################################################
-## package 'secr'
+## package 'secrpoly'
 ## reparameterize.R
+###############################################################################
 
 reparameterize.sigmak <- function (realparval, D, linear) {
   ## D,sigmak parameterisation 2014-03-12
@@ -106,9 +107,6 @@ reparameterize <- function (realparval, detectfn, details, mask, traps, D, s) {
   else if (details$param %in% c(3,5)) {
     realparval <- reparameterize.a0 (realparval, detectfn, linear)
   }
-  
-  if (all(detector(traps) == 'telemetry'))
-    realparval[,'lambda0'] <- 1.0
   
   realparval
 }

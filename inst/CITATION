@@ -1,19 +1,17 @@
-citHeader("To cite package 'secr' in publications use:")
+citHeader("To cite package 'secrpoly' in publications use:")
 
 year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", meta$Date)
 vers <- paste("R package version", meta$Version)
-url <- "https://CRAN.R-project.org/package=secr"
 
 bibentry(
     bibtype = "Manual",
-    title   = "secr: Spatially explicit capture-recapture models",
+    title   = "secrpoly: Area search spatially explicit capture-recapture models",
     author  = c(person("Murray","Efford")),
     year    = year,
     note    = vers,
-    url     = url,
     textVersion =
         paste("Efford, M. G. (", year,
-        "). secr: Spatially explicit capture-recapture models. ",
-        vers, ". ", url, 
+        "). secr: Area search spatially explicit capture-recapture models. ",
+        vers, ". ", 
         sep = "")
 )

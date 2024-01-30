@@ -1,34 +1,8 @@
 ###############################################################################
-## package 'secr'
+## package 'secrpoly'
 ## pdot.R
 ## return net detection probability in 'traps' for home ranges centred at X
-## 2010 07 01 alpha detection fn
-## 2010 10 09 extended for other detection functions
-## 2010 10 10 esa.plot added
-## 2010 10 11 esa.plot.secr added
-## 2010 10 18 etc. pdot.contour, buffer.contour
-## 2010 10 24 tweaking poly
-## 2010 11 26 usage
-## 2010 11 26 check for ms traps
-## 2010 12 19 more careful handling of detectpars
-## 2011 01 24 debugged pdotpoly
-## 2011 02 06 allow polygonX, transectX
-## 2011 06 13 moved spatialscale to utility.R
-## 2012 12 24 binomN = 'usage'
-## 2014-03-26 pdot.contour and buffer.contour extended to multi-session traps
-## 2014-10-17 userdist fixes
-## 2014-11-17 more userdist fixes
-## 2015-05-15 fill argument for contours
-## 2016-11-12 pdotpoint, markocc
-## 2017-04-04 replaced pdotpoly with hdotpoly
-## 2018-06-01 esa.plot type replaces as.density
-##            esa.plot conditional argument
-##            esa.plot CVpdot
-## 2019-01-21 poly.habitat argument in pdot.contour and buffer.contour functions etc.
-## 2019-07-29 C++
-## 2019-12-28 multithreaded
-## 2021-05-19 cv: pmax protects against negative argument to sqrt     
-## 2022-11-19 esa.plot in separate file
+## 2024-01-29
 ###############################################################################
 
 ## pdot is used in --
@@ -94,7 +68,7 @@ pdot <- function (X, traps, detectfn = 0, detectpar = list(g0 = 0.2, sigma = 25,
     if (!inherits(X, 'mask')) {
         X <- matrix(unlist(X), ncol = 2)
     }
-    if (any(detector(traps) %in% c('polygon','polygonX','transect', 'transectX'))) {
+    if (all(detector(traps) %in% .localstuff$polygondetectors)) {
         if (!is.null(userdist))
             stop("userdist incompatible with polygon-like detectors")
         if (!(detectfn %in% 14:20))
@@ -121,26 +95,8 @@ pdot <- function (X, traps, detectfn = 0, detectpar = list(g0 = 0.2, sigma = 25,
           as.integer(ncores))
         1 - exp(-temp)   ## probability detected at least once, given total hazard
     }
-    else {
-      ## distmat2 <- getdistmat2 (traps, X, userdist)
-      distmat2 <- getuserdist (traps, X, userdist, sessnum = NA, NULL, NULL, miscparm, detectfn == 20)
-      #-------------------------------------------------------------
-      pdotpointcpp(
-        as.matrix(X),
-        as.matrix(traps),
-        as.matrix(distmat2),
-        as.integer(dettype),
-        as.matrix(usge),
-        as.integer(markocc),
-        as.integer(detectfn),
-        as.double(detectpars),
-        as.double(miscparm),
-        as.double(truncate^2),
-        as.integer(expandbinomN(binomN, dettype)),
-        as.integer(grain),
-        as.integer(ncores)
-      )
-    }
+    else stop ("expecting polygon detectors")
+    
 }
 ############################################################################################
 

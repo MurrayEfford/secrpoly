@@ -1,35 +1,7 @@
 ################################################################################
-## package 'secr'
+## package 'secrpoly'
 ## utility.R
-################################################################################
-
-## 2019-07-27 secr 4.0.0
-## 2019-07-27 makelookupcpp replaces makelookup
-## 2019-08-12 individualcovariates
-## 2019-08-14 setNumThreads
-## 2019-11-29 secr 4.1.0
-## 2020-01-08 distancetotrap revised for polygon detectors
-## 2020-01-26 selectCHsession
-## 2020-02-21 secr 4.2.0
-## 2020-05-15 stringsAsFactors function
-## 2020-07-14 secr 4.3.0 distmat
-## 2020-09-05 getknownclass factor bug fixed
-## 2021-04-25 4.4.0
-## 2021-12-16 tidy up transformations, allow arbitrary link X(), invX(), se.invX()
-## 2022-01-04 4.5.0
-## 2022-01-18 4.5.1
-## 2022-01-23 uniformusage() function to assign all-ones usage matrix
-## 2022-02-10 4.5.2 shift to sf where possible
-## 2022-04-22 4.5.4
-## 2022-05-31 4.5.5
-## 2022-10-08 4.5.7
-## 2022-11-29 4.5.8
-## 2023-03-09 4.5.9
-## 2023-03-10 4.5.11
-## 2023-03-10 distancetotrap and nearesttrap moved to separate file
-## 2023-03-10 setNumThreads moved to separate file
-## 2023-05-21 4.6.0
-## 2023-09-17 im2mask converts spatstat im object
+## 2024-01-29
 ################################################################################
 
 # Global variables in namespace
@@ -42,48 +14,26 @@
 .localstuff$packageType <- ' pre-release'
 ##.localstuff$packageType <- ''
 
-.localstuff$validdetectors <- c('single','multi','proximity','count', 
-    'polygonX', 'transectX', 'signal', 'polygon', 'transect', 
-    'capped', 'null','null','null','null', 'telemetry', 'signalnoise')
-.localstuff$simpledetectors <- c('single','multi','proximity','count', 'capped')
-.localstuff$individualdetectors <- c('single','multi','proximity','count',
-    'polygonX', 'transectX', 'signal', 'signalnoise', 'polygon', 'transect',
-                                     'telemetry', 'capped')
-.localstuff$pointdetectors <- c('single','multi','proximity','count',
-    'signal', 'signalnoise', 'unmarked','presence','capped')
+.localstuff$validdetectors <- c('polygonX', 'transectX', 'polygon', 'transect')
+.localstuff$individualdetectors <- c('polygonX', 'transectX', 'polygon', 'transect')
 .localstuff$polydetectors <- c('polygon','transect','polygonX','transectX')
-.localstuff$exclusivedetectors <- c('single','multi','polygonX','transectX')
-.localstuff$countdetectors <- c('count','polygon','transect','unmarked','telemetry')
+.localstuff$exclusivedetectors <- c('polygonX','transectX')
+.localstuff$countdetectors <- c('polygon','transect')
 .localstuff$iter <- 0   ## counter 1
 .localstuff$iter2 <- 0  ## counter 2
 .localstuff$detectionfunctions <-
-  c('halfnormal',
-    'hazard rate',
-    'exponential',
-    'compound halfnormal',
-    'uniform',
-    'w exponential',
-    'annular normal',
-    'cumulative lognormal',
-    'cumulative gamma',
-    'binary signal strength',
-    'signal strength',
-    'signal strength spherical',
-    'signal-noise',
-    'signal-noise spherical',
+  c(as.character(0:13),
     'hazard halfnormal',
     'hazard hazard rate',
     'hazard exponential',
     'hazard annular normal',
     'hazard cumulative gamma',
-    'hazard variable power',
-    'hazard pixelar')
+    'hazard variable power')
 
-.localstuff$DFN <- c('HN', 'HR', 'EX', 'CHN', 'UN', 'WEX', 'ANN', 'CLN', 'CG',
-  'BSS', 'SS', 'SSS', 'SN', 'SNS',
-  'HHN', 'HHR', 'HEX', 'HAN', 'HCG', 'HVP','HPX')
+.localstuff$DFN <- c(as.character(0:13), 
+                     'HHN', 'HHR', 'HEX', 'HAN', 'HCG', 'HVP','HPX')
 
-.localstuff$learnedresponses <- c('b', 'bk', 'B', 'k', 'Bk') ## Bk added 2020-02-26
+.localstuff$learnedresponses <- c('b', 'bk', 'B', 'k', 'Bk') 
 
 #-------------------------------------------------------------------------------
 
@@ -105,42 +55,25 @@ detectionfunctionnumber <- function (detname) {
 #-------------------------------------------------------------------------------
 
 parnames <- function (detectfn) {
-    parnames <- switch (detectfn+1,
-        c('g0','sigma'),   ## 0
-        c('g0','sigma','z'),
-        c('g0','sigma'),
-        c('g0','sigma','z'),
-        c('g0','sigma'),
-        c('g0','sigma','w'),
-        c('g0','sigma','w'),
-        c('g0','sigma','z'),
-        c('g0','sigma','z'),
-        c('b0','b1'),
-        c('beta0','beta1', 'sdS'),    ## include cutval?
-        c('beta0','beta1', 'sdS'),    ## include cutval?
-        c('beta0','beta1', 'sdS','muN','sdN'),
-        c('beta0','beta1', 'sdS','muN','sdN'),
+    list(
         c('lambda0','sigma'),
         c('lambda0','sigma','z'),
         c('lambda0','sigma'),
         c('lambda0','sigma','w'),
         c('lambda0','sigma','z'),
-        c('lambda0','sigma','z'),
-        c('lambda0')    ## 20
-    )
+        c('lambda0','sigma','z')
+        )[[detectfn-13]]
 }
 
 #-------------------------------------------------------------------------------
 
 getdfn <- function (detectfn) {
-    switch (detectfn+1, HN, HR, EX, CHN, UN, WEX, ANN, CLN, CG, BSS, SS, SSS,
-                       SN, SNS, HHN, HHR, HEX, HAN, HCG, HVP, HPX)
+    list(HHN, HHR, HEX, HAN, HCG, HVP)[[detectfn-13]]
 }
 
 #-------------------------------------------------------------------------------
 
-valid.detectfn <- function (detectfn, valid = c(0:3,5:19, 20)) {
-# exclude 4 uniform: too numerically flakey
+valid.detectfn <- function (detectfn, valid = 14:19) {
     if (is.null(detectfn))
         stop ("requires 'detectfn'")
     if (is.character(detectfn))
@@ -156,12 +89,11 @@ valid.detectpar <- function (detectpar, detectfn) {
     if (is.null(detectpar) | is.null(detectfn))
         stop ("requires valid 'detectpar' and 'detectfn'")
 
-    ## 2013-07-19, 2013-10-22
-    ## replace a0 with g0 or lambda0 as appropriate to detectfn
+    ## replace a0 with lambda0 
     if ('a0' %in% names(detectpar)) {
-        aname <- if (detectfn %in% 0:8) 'g0' else 'lambda0'
+        aname <- 'lambda0'
         lambda0 <- detectpar[['a0']] / 2 / pi / detectpar[[2]]^2 * 10000
-        detectpar[[aname]] <- if (detectfn %in% 0:8) 1-exp(-lambda0) else lambda0
+        detectpar[[aname]] <- lambda0
     }
 
     if (!all(parnames(detectfn) %in% names(detectpar)))
@@ -173,7 +105,6 @@ valid.detectpar <- function (detectpar, detectfn) {
 #-------------------------------------------------------------------------------
 
 valid.model <- function(model, CL, detectfn, hcov, userdist, sessioncovnames) {
-    ## 2014-08-25
     if (any(sapply(model, badsmooths)))
         warning ("smooth term may be unsuitable for secr: ",
                  "does not specify k or fx where required")
@@ -199,28 +130,14 @@ getuserdistnames <- function (userdist) {
 
 valid.pnames <- function (details, CL, detectfn, alltelem, sighting, nmix) {
     ## modelled parameters
-    pnames <- switch (detectfn+1,
-        c('g0','sigma'),           # 0 halfnormal
-        c('g0','sigma','z'),       # 1 hazard rate
-        c('g0','sigma'),           # 2 exponential
-        c('g0','sigma','z'),       # 3
-        c('g0','sigma'),           # 4
-        c('g0','sigma','w'),       # 5
-        c('g0','sigma','w'),       # 6
-        c('g0','sigma','z'),       # 7
-        c('g0','sigma','z'),       # 8
-        c('b0','b1'),              # 9
-        c('beta0','beta1','sdS'),  # 10
-        c('beta0','beta1','sdS'),  # 11
-        c('beta0','beta1','sdS'),  # 12  cf parnames() in utility.R: muN, sdN?
-        c('beta0','beta1','sdS'),  # 13  cf parnames() in utility.R: muN, sdN?
+    pnames <- list(
         c('lambda0','sigma'),      # 14 hazard halfnormal
         c('lambda0','sigma','z'),  # 15 hazard hazard rate
         c('lambda0','sigma'),      # 16 hazard exponential
         c('lambda0','sigma','w'),  # 17
         c('lambda0','sigma','z'),  # 18
-        c('lambda0','sigma','z'),  # 19
-        c('lambda0','sigma'))      # 20 hazard pixelar 2021-03-25    
+        c('lambda0','sigma','z')   # 19
+        )[[detectfn-13]]
 
     if (details$param %in% c(2,6))
         pnames[1] <- 'esa'
@@ -233,15 +150,6 @@ valid.pnames <- function (details, CL, detectfn, alltelem, sighting, nmix) {
     }
     if (!CL)
       pnames <- c('D', pnames)
-    if ('noneuc' %in% getuserdistnames(details$userdist))
-      pnames <- c(pnames, 'noneuc')
-    if (sighting)
-      pnames <- c(pnames, 'pID')
-    # if (alltelem) {
-    #     rnum <- match(c('D','lambda0','a0','esa','g0'), pnames)
-    #     rnum[is.na(rnum)] <- 0
-    #     pnames <- pnames[-rnum]
-    # }
     if (nmix>1)
         pnames <- c(pnames, 'pmix')
     pnames
@@ -249,48 +157,9 @@ valid.pnames <- function (details, CL, detectfn, alltelem, sighting, nmix) {
 #-------------------------------------------------------------------------------
 
 valid.userdist <- function (userdist, detector, xy1, xy2, mask, sessnum) {
-    if (is.null(userdist)) {
-        ## default to Euclidean distance
-        result <- edist(xy1, xy2)
-    }
-    else {
-        if (any(detector %in% .localstuff$polydetectors)) {
-            stop ("userdist cannot be used with polygon detector types;")
-        }
-        if (is.function(userdist))
-        {
-            OK <- getuserdistnames(userdist) %in% names(covariates(mask))
-            if ((length(OK)>0) & !all(OK))
-                stop ("covariates required by userdist function not in mask : ",
-                      paste(getuserdistnames(userdist)[!OK], collapse=','))
-            # 2023-02-06 selected columns 1:2 only (mask passes miscparm)
-            result <- do.call(userdist, c(list(xy1[,1:2], xy2[,1:2], mask)))
-        }
-        else {
-            if (is.character(userdist)) {
-                userdist <- get(userdist, pos=-1)
-            }
-
-            if (is.list(userdist) & !is.data.frame(userdist)) {
-                if (missing(sessnum) || is.na(sessnum))
-                    stop("This use does not yet allow for session-specific userdist")
-                else
-                    result <- userdist[[sessnum]]
-            }
-            else {
-                result <- userdist
-            }
-        }
-        if (!all(dim(result) == c(nrow(xy1), nrow(xy2))))
-            stop ("invalid distance matrix dim = ", dim(result)[1], ',', dim(result)[2])
-        baddist <- (!is.finite(result)) | (result<0) | is.na(result)
-        if (any(baddist)) {
-            warning ("replacing infinite, negative and NA userdist values with 1e10", 
-                     call. = FALSE)
-            result[baddist] <- 1e10
-        }
-    }
-    result
+    if (!is.null(userdist)) 
+        stop ("userdist cannot be used with polygon detector types;")
+    edist(xy1, xy2)      ## Euclidean distance
 }
 #-------------------------------------------------------------------------------
 
@@ -321,26 +190,14 @@ new.param <- function (details, model, CL) {
 }
 
 #-------------------------------------------------------------------------------
-# secr 3.0 2016-10-05
-## NEEDS MULTI-SESSION FORM
 
 detectorcode <- function (object, MLonly = TRUE, noccasions = NULL) {
     ## numeric detector code from a traps object
     detcode <- sapply(detector(object), switch,
-        single      = -1,
-        multi       = 0,
-        proximity   = 1,
-        count       = 2,
         polygonX    = 3,
         transectX   = 4,
-        signal      = 5,
         polygon     = 6,
         transect    = 7,
-        capped      = 8,
-        unmarked    = 10,
-        presence    = 11,
-        signalnoise = 12,
-        telemetry   = 13,
         -2)
     
     if (MLonly) {
@@ -690,85 +547,6 @@ leadingzero <- function (x) {
 
 ## Detection functions
 
-HN <- function (r, pars, cutval) {
-    g0 <- pars[1]; sigma <- pars[2]
-    g0 * exp (-r^2 / 2 / sigma^2)
-}
-HR <- function (r, pars, cutval) {
-    g0 <- pars[1]; sigma <- pars[2]; z <- pars[3]
-    g0 * (1 - exp (-(r / sigma)^-z))
-}
-EX <- function (r, pars, cutval) {
-    g0 <- pars[1]; sigma <- pars[2]
-    g0 * exp (-r / sigma)
-}
-UN <- function (r, pars, cutval) {
-    g0 <- pars[1]; sigma <- pars[2]
-    ifelse (r<=sigma, g0, 0)
-}
-CHN <- function (r, pars, cutval) {
-    g0 <- pars[1]; sigma <- pars[2]; z <- pars[3]
-    g0 * ( 1 - (1 - exp (-r^2 / 2 / sigma^2)) ^ z )
-}
-WEX <- function (r, pars, cutval) {
-    g0 <- pars[1]; sigma <- pars[2]; w <- pars[3]
-    ifelse(r<=w, g0, g0*exp (-(r-w) / sigma))
-}
-ANN <- function (r, pars, cutval) {
-    g0 <- pars[1]; sigma <- pars[2]; w <- pars[3]
-    g0 * exp (-(r-w)^2 / 2 / sigma^2)
-}
-CLN <- function (r, pars, cutval) {
-    g0 <- pars[1]; sigma <- pars[2]; z <- pars[3]
-    CV2 <- (z/sigma)^2
-    sdlog <- log(1 + CV2)^0.5
-    meanlog <- log(sigma) - sdlog^2/2
-    g0 * plnorm(r, meanlog, sdlog, lower.tail = FALSE)
-}
-CG <- function (r, pars, cutval) {
-    g0 <- pars[1]; sigma <- pars[2]; z <- pars[3]
-    g0 * pgamma(r, shape=z, scale=sigma/z, lower.tail = FALSE)
-}
-CN <- function (r, pars, cutval) {
-    g0 <- pars[1]; sigma <- pars[2]; z <- pars[3]
-    x <- z * (r - sigma)
-    g0 * (1 + (1 - exp(x)) / (1 + exp(x)))/2
-}
-BSS <- function (r, pars, cutval) {
-    b0 <- pars[1]; b1 <- pars[2]
-    gam <- -(b0 + b1 * r);
-    pnorm (gam, mean=0, sd=1, lower.tail=FALSE)
-}
-SS <- function (r, pars, cutval) {
-    beta0 <- pars[1]; beta1 <- pars[2]; sdS <- pars[3]
-    if (is.null(cutval))
-        stop ("require 'details$cutval' for signal strength plot")
-    mu <- beta0 + beta1 * r
-    1 - pnorm (q=cutval, mean=mu, sd=sdS)
-}
-SSS <- function (r, pars, cutval) {
-    beta0 <- pars[1]; beta1 <- pars[2]; sdS <- pars[3]
-    if (is.null(cutval))
-        stop ("require 'details$cutval' for signal strength plot")
-    ## spherical so assume distance r measured from 1 m
-    mu <- beta0 - 10 * log ( r^2 ) / 2.302585 + beta1 * (r-1)
-    mu[r<1] <- beta0
-    1 - pnorm (q=cutval, mean=mu, sd=sdS)
-}
-SN <- function (r, pars, cutval) {
-    beta0 <- pars[1]; beta1 <- pars[2]; sdS <- pars[3];
-    muN <- pars[4]; sdN <- pars[5]
-    muS <- beta0 + beta1 * r
-    1 - pnorm (q=cutval, mean=muS-muN, sd=sqrt(sdS^2+sdN^2))
-}
-SNS <- function (r, pars, cutval) {
-    beta0 <- pars[1]; beta1 <- pars[2]; sdS <- pars[3];
-    muN <- pars[4]; sdN <- pars[5]
-    ## spherical so assume distance r measured from 1 m
-    muS <- beta0 - 10 * log ( r^2 ) / 2.302585 + beta1 * (r-1)
-    muS[r<1] <- beta0
-    1 - pnorm (q=cutval, mean=muS-muN, sd=sqrt(sdS^2+sdN^2))
-}
 HHN <- function (r, pars, cutval) {
     lambda0 <- pars[1]; sigma <- pars[2]
     1 - exp(-lambda0 * exp (-r^2 / 2 / sigma^2))
@@ -792,11 +570,6 @@ HCG <- function (r, pars, cutval) {
 HVP <- function (r, pars, cutval) {
     lambda0 <- pars[1]; sigma <- pars[2]; z <- pars[3]
     1 - exp(-lambda0 * exp(-(r/sigma)^z))
-}
-HPX <- function (r, pars, cutval) {
-    g0 <- 1-exp(-pars[1])
-    radius <- pars[2]
-    ifelse (r<=radius, g0, 0)  # circular, not square! crude approx
 }
 
 #-------------------------------------------------------------------------------
@@ -1154,47 +927,6 @@ getbinomN <- function (binomN, detectr) {
 
 #-------------------------------------------------------------------------------
 
-## convert telemetryxy attribute of a combined dataset into a standalone capthist
-
-## TO DO: option of telemetry or polygon output
-
-xy2CH <- function (CH, inflation = 1e-8) {
-    if (ms(CH)) {
-        out <- lapply(CH, xy2CH, inflation)
-        class(out) <- c('capthist', 'list')
-        out
-    }
-    else {
-        xylist <- telemetryxy(CH)
-        if (is.null(xylist))
-            stop ("requires 'telemetryxy' attribute")
-        n <- length(xylist)
-        neach <- sapply(xylist, nrow)
-        allxy <- do.call(rbind, xylist)
-
-        trps <-  allxy[chull(allxy),]
-        trps <- rbind(trps, trps[1,,drop=F])
-        trps <- inflate(trps, 1 + inflation)  ## see also telemetry.R
-
-        trps <- as.data.frame(trps)
-        dimnames(trps) <- list(1:nrow(trps), c('x','y'))
-        class(trps) <- c("traps","data.frame")
-        detector(trps) <- "polygon"
-        polyID(trps) <- factor(rep(1,nrow(trps)))
-
-        rown <- rep(names(xylist), neach)
-        newCH <- array(neach, dim = c(n, 1, 1))
-        attr(newCH, "detectedXY") <- allxy
-        if (!is.null(covariates(CH))) {
-            rowlookup <- match(names(xylist), rownames(CH))
-            covariates(newCH) <- covariates(CH)[rowlookup,, drop=FALSE]
-        }
-        class(newCH) <- "capthist"
-        traps(newCH) <- trps
-        newCH
-    }
-}
-
 #-------------------------------------------------------------------------------
 
 inflatechull <- function (poly, r, ntheta = 60) {
@@ -1315,59 +1047,6 @@ gamsetup <- function(formula, data, ...) {
 }
 #-------------------------------------------------------------------------------
 
-general.model.matrix <- function (formula, data, gamsmth = NULL, 
-    contrasts = NULL, ...) {
-
-    ## A function to compute the design matrix for the model in
-    ## 'formula' given the data in 'data'. This is merely the result
-    ## of model.matrix() unless 'formula' includes smooth terms -- s()
-    ## or te() as described in mgcv ?formula.gam.
-
-    ## If smooth terms are present then the matrix may be based on a
-    ## previous gam setup (provided in the argument 'gamsmth') or
-    ## computed de novo with gam(..., fit = FALSE)
-
-    ## note 2014-08-24
-    ## orthogonal polynomials e.g. poly(x,2) are handled by model.matrix,
-    ## but the information needed for prediction at new data is not
-    ## saved by secr.fit, so predict.secr generally fails with message
-    ## "'degree' must be less than number of unique points"
-
-    ##  head(eval(parse(text = attr(terms(~ poly(x,y, degree=2)),
-    ##  'term.labels')[1]), env=possummask))
-
-    ## 2014-08-24, 2014-09-09, 2017-11-30
-    ## 2019-10-12 drop row names
-    ## 2021-12-09 f optional argument
-    
-    dots <- list(...)
-
-    if (any(polys(formula)))
-        stop ("orthogonal polynomials are temporarily blocked")  ## 2014-09-12
-    if (any(smooths(formula))) {
-        if (is.null(gamsmth)) {
-            ## setup knots etc from scratch
-            mat <- gamsetup(formula, data, ...)$X
-        }
-        else {
-            ## fool predict.gam into generating the necessary
-            ## predictor matrix from previous setup
-            class (gamsmth) <- 'gam'
-            gamsmth$coefficients <- rep(NA, ncol(gamsmth$X))
-            mat <- mgcv::predict.gam(gamsmth, newdata = data, type = 'lpmatrix')
-            colnames(mat) <- colnames(gamsmth$X)
-        }
-    }
-    else {
-        ## model.matrix(formula, data, ...)
-        mat <- model.matrix(formula, data = data, contrasts.arg = contrasts)
-    }
-    rownames (mat) <- NULL
-    mat
-}
-
-#-------------------------------------------------------------------------------
-
 makerealparameters <- function (design, beta, parindx, link, fixed) {
     modelfn <- function(i) {
         ## linear predictor for real parameter i
@@ -1453,7 +1132,7 @@ secr.lpredictor <- function (formula, newdata, indx, beta, field, beta.vcv=NULL,
     }
     else {
         
-        mat <- general.model.matrix(formula, data = newdata, gamsmth = smoothsetup, 
+        mat <- secr:::general.model.matrix(formula, data = newdata, gamsmth = smoothsetup, 
             contrasts = contrasts)
         if (nrow(mat) < nrow(newdata))
             warning ("missing values in predictors?", call. = FALSE)
@@ -1528,29 +1207,6 @@ edist <- function (xy1, xy2) {
     y1 <- matrix(xy1[,2], nr, nc)
     y2 <- matrix(xy2[,2], nr, nc, byrow=T)
     sqrt((x1-x2)^2 + (y1-y2)^2)
-}
-
-#-------------------------------------------------------------------------------
-
-## least cost paths from mask including barriers to movement
-## use edist for equivalent Euclidean distances
-
-nedist <- function (xy1, xy2, mask, inf = Inf, ...) {
-    newargs <- list(...)
-    if (missing(mask)) mask <- xy2
-    noneuc <- covariates(mask)$noneuc
-    if (is.null(noneuc)) noneuc <- rep(1, nrow(mask))
-    defaultargs <- list(transitionFunction = mean, directions = 16)
-    args <- replace(defaultargs, names(newargs), newargs)
-    args$x <- raster(mask, values = noneuc)
-    if (requireNamespace('gdistance', quietly = TRUE)) {    ## 2015-01-23
-        tr <- do.call(gdistance::transition, args)
-        tr <- gdistance::geoCorrection(tr, type = "c", multpl = FALSE)
-        out <- gdistance::costDistance(tr, as.matrix(xy1), as.matrix(xy2))
-    }
-    else stop ("package gdistance is required for nedist")
-    if (is.finite(inf)) out[!is.finite(out)] <- inf
-    out
 }
 
 #-------------------------------------------------------------------------------
@@ -1751,35 +1407,6 @@ addzerodf <- function (df, oldCH, sess) {
         }
     }
     df
-}
-
-#-------------------------------------------------------------------------------
-
-## including pre-marked animals never sighted
-## cov is optional dataframe of covariates
-addzeroCH <- function (CH, nzero, cov = NULL) {
-    if (nzero == 0)
-        return(CH)
-    else {
-        nc <- nrow(CH)
-        chdim <- dim(CH)
-        chdim[1] <- nzero
-        extra <- array(0, dim=chdim)
-        dimnames(extra) <- c(list(paste('Z', 1:nzero, sep='')), dimnames(CH)[2:3])
-        CH2 <- abind(CH, extra, along = 1)
-        class(CH2) <- 'capthist'
-        traps(CH2) <- traps(CH)
-        xy(CH2) <- xy(CH)  ## order is not affected by adding zero histories
-        if (!is.null(covariates(CH)) & (nrow(CH)>0)) {
-            if (is.null(cov)) {
-                cov <- covariates(CH)[rep(1,nzero),]
-                cov[,] <- NA   ## covariates are unknown
-            }
-            covariates(CH2) <- rbind(covariates(CH), cov[1:nzero,])
-        }
-        ## ... and other essential attributes?
-        CH2
-    }
 }
 
 #-------------------------------------------------------------------------------
@@ -2051,16 +1678,6 @@ maskboolean <- function (ch, mask, threshold) {
 
 #-------------------------------------------------------------------------------
 
-telemcode <- function(object, ...) {
-    if (inherits(object, 'traps') && !ms(object))
-        switch (telemetrytype(object), none = 0, 
-                independent = 1, dependent = 2, concurrent = 3, 0)
-    else 
-        NA
-}
-
-#-------------------------------------------------------------------------------
-
 uniquerownames <- function (capthist) {
     if (!ms(capthist)) {
         return(capthist)
@@ -2231,143 +1848,3 @@ im2mask <- function(im) {
     read.mask(data = df, spacing = im$xstep)
 }
 #-------------------------------------------------------------------------------
-
-# LIST 2023-03-10
-# detectionfunctionname (fn)
-# detectionfunctionnumber (detname)
-# parnames (detectfn)
-# getdfn (detectfn)
-# valid.detectfn (detectfn, valid = c(0:3,5:19, 20)) 
-# valid.detectpar (detectpar, detectfn) 
-# valid.model(model, CL, detectfn, hcov, userdist, sessioncovnames) 
-# getuserdistnames (userdist) 
-# valid.pnames (details, CL, detectfn, alltelem, sighting, nmix) 
-# valid.userdist (userdist, detector, xy1, xy2, mask, sessnum) 
-# new.param (details, model, CL) 
-# detectorcode (object, MLonly = TRUE, noccasions = NULL) 
-# expanddet(CH) 
-# ndetectpar (detectfn)
-# replacedefaults (default, user)
-# discreteN (n, N)
-# ndetector (traps)
-# memo (text, trace)
-# insertdim (x, dimx, dims)
-# pad1 (x, n) 
-# padarray (x, dims)
-# stdform (flist)
-# invlogit (y) 1/(1+exp(-y))   # plogis(y)
-# logit    (x) log(x/(1-x))    # qlogis(x), except for invalid argument
-# sine     (x) asin (x*2-1)
-# invsine  (y) (sin(y)+1) / 2
-# odds     (x) x / (1-x)
-# invodds  (y) y / (1+y)
-# lnbinomial (x,size,prob) 
-# model.string (model, userDfn)
-# fixed.string (fixed)
-# var.in.model(v,m)
-# get.nmix (model, capthist, hcov)
-# fixpmix(x, nmix)
-# add.cl (df, alpha, loginterval, lowerbound = 0)
-# spatialscale (object, detectfn, session = '')
-#     
-# # logical for whether object specifies userDfn
-# userD (object) 
-# # mean and SD if x numeric
-# getMeanSD(xy) 
-# nclusters (capthist)
-# leadingzero (x) 
-# HN  (r, pars, cutval)
-# HR  (r, pars, cutval)
-# EX  (r, pars, cutval)
-# UN  (r, pars, cutval)
-# CHN (r, pars, cutval)
-# WEX (r, pars, cutval)
-# ANN (r, pars, cutval)
-# CLN (r, pars, cutval)
-# CG  (r, pars, cutval)
-# CN  (r, pars, cutval)
-# BSS (r, pars, cutval)
-# SS  (r, pars, cutval)
-# SSS (r, pars, cutval)
-# SN  (r, pars, cutval)
-# SNS (r, pars, cutval)
-# HHN (r, pars, cutval)
-# HHR (r, pars, cutval)
-# HEX (r, pars, cutval)
-# HAN (r, pars, cutval)
-# HCG (r, pars, cutval)
-# HVP (r, pars, cutval)
-# HPX (r, pars, cutval)
-# gradient (pars, fun, eps=0.001, ...)
-
-# transform (x, link)
-# se.transform (real, sereal, link)
-# untransform (beta, link)
-# se.untransform (beta, sebeta, link)
-# Xtransform (real, linkfn, varnames)
-# se.Xtransform (real, sereal, linkfn, varnames)
-# Xuntransform (beta, linkfn, varnames)
-# se.Xuntransform (beta, sebeta, linkfn, varnames)
-# mlogit.untransform (beta, latentmodel)
-# clean.mlogit(x)
-# mlogit (x)
-
-# group.levels (capthist, groups, sep='.')
-# h.levels (capthist, hcov, nmix) 
-# n.occasion (capthist) 
-# group.factor (capthist, groups, sep='.')
-
-# getgrpnum (capthist, groups)
-# make.lookup (tempmat)
-# getknownclass(capthist, nmix, hcov)
-# getnmix (details)
-# fullbeta (beta, fb)
-# inflate (xy, rmult = 1)
-# getbinomN (binomN, detectr)
-# xy2CH (CH, inflation = 1e-8)
-# inflatechull (poly, r, ntheta = 60)
-# maskarea (mask, sessnum = 1)
-# masklength (mask, sessnum = 1)
-# masksize (mask, sessnum = 1)
-# complete.beta (object)
-# complete.beta.vcv (object)
-# smooths (formula)
-# polys (formula)
-# badsmooths (formula)
-# gamsetup(formula, data, ...)
-# general.model.matrix (formula, data, gamsmth = NULL, 
-# makerealparameters (design, beta, parindx, link, fixed)
-# secr.lpredictor (formula, newdata, indx, beta, field, beta.vcv=NULL,
-# edist (xy1, xy2)
-# nedist (xy1, xy2, mask, inf = Inf, ...)
-# getcellsize (mask)
-# updatemodel (model, detectfn, detectfns, oldvar, newvar, warn = FALSE)
-# deleteMaskPoints (mask, onebyone = TRUE, add = FALSE, poly = NULL,
-# nparameters (object)
-# mapbeta (parindx0, parindx1, beta0, betaindex)
-# xyinpoly (xy, trps)
-# addzerodf (df, oldCH, sess)
-# addzeroCH (CH, nzero, cov = NULL)
-# expandbinomN (binomN, detectorcodes)
-# check3D (object)
-# updateCH(object)
-# newstr <-function (strings)
-# outsidemask(CH, mask, threshold = spacing(mask) / sqrt(2))
-# shareFactorLevels (object, columns = NULL, stringsAsFactors = TRUE)
-# allzero (object)
-# primarysessions(intervals)
-# secondarysessions(intervals)
-# boundarytoSF (poly)
-# pointsInPolygon (xy, poly, logical = TRUE)
-# firstsk (PIAx)
-# maskboolean (ch, mask, threshold)
-# telemcode(object, ...)
-# uniquerownames (capthist)
-# selectCHsession(capthist, sessnum)
-# stringsAsFactors (DF)
-# getdistmat2 (traps, mask, userdist, HPX = FALSE)
-# uniformusage(object, noccasions)
-# sfrotate (x, degrees, centrexy = NULL, usecentroid = FALSE)
-# snap_points(x, y, max_dist = 1000)
-# rtpois(n, lambda)
-    

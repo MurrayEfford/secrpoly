@@ -82,4 +82,4 @@ importFrom(sf,
 
 useDynLib (secrpoly)
 ## DEBUGGING ONLY (cpp functions not documented)
-exportPattern("*cpp")
+## exportPattern("*cpp")

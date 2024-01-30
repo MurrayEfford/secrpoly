@@ -28,7 +28,6 @@ Imports:
     RcppParallel (>= 5.1.1),
     sf,
     stats, 
-    tools, 
     utils
 Suggests: 
     knitr, 

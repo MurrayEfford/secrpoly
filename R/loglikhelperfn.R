@@ -57,28 +57,6 @@ getpmix <- function(knownclass, PIA, realparval)
     pmixn
 }
 #--------------------------------------------------------------------------------
-getpID <- function(PIA, realparval, MRdata)
-{
-    ss <- dim(PIA)[3]
-    nmix <- dim(PIA)[5]
-    pID <- matrix(1, nrow = ss, ncol = nmix)
-    if ('pID' %in% colnames(realparval)) {
-        nc <- dim(PIA)[2]
-        if (!is.null(MRdata$Tm) || !is.null(MRdata$Tn)) {
-            for (s in 1:ss) {
-                if (MRdata$markocc[s]<1)
-                    for (x in 1:nmix) {
-                        k <- match(TRUE, PIA[1,1,s,,x]>0)
-                        c <- PIA[1,1,s,k,x]
-                        pID[s,x] <- realparval[c, 'pID'] 
-                    }
-            }
-        }
-    }
-    pID
-}
-
-#--------------------------------------------------------------------------------
 getmiscparm <- function(miscparm, detectfn, beta, parindx, cutval) {
     ## miscparm is used to package beta parameters that are not modelled
     ## and hence do not have a beta index specified by parindx.
@@ -96,43 +74,6 @@ getmiscparm <- function(miscparm, detectfn, beta, parindx, cutval) {
     miscparm
 }
 #--------------------------------------------------------------------------------
-getuserdist <- function (traps, mask, userdist, sessnum, noneuc, density, miscparm, HPX) {
-    ## Apply user-provided distance function or basic distance function getdistmat2()
-    if (is.null(userdist)) {
-        getdistmat2(traps, mask, NULL, HPX)
-    }
-    # 
-    # if (any(detector(traps) %in% .localstuff$polydetectors)) {
-    #     matrix(0, nrow = nrow(traps), ncol = m)
-    # }
-    # else if (is.null(userdist)) {
-    #     edist2cpp(as.matrix(traps), as.matrix(mask))
-    # }
-    else {
-        userdistnames <- getuserdistnames(userdist)
-        m <- nrow(mask)
-        if (is.null(covariates(mask)))
-            covariates(mask) <- data.frame(row.names = 1:m)
-        if (('noneuc' %in% userdistnames) && !is.null(noneuc))
-            covariates(mask)$noneuc <- noneuc  ## NE[1:m,,min(dim(NE)[3],sessnum)]
-        if (('D' %in% userdistnames) && !is.null(density))
-            covariates(mask)$D <- density
-        ## pass miscellaneous unmodelled parameter(s)
-        attr(mask, 'miscparm') <- miscparm
-        distmat2 <- valid.userdist (userdist,
-                                    detector(traps),
-                                    xy1 = traps,
-                                    xy2 = mask,
-                                    mask = mask,
-                                    sessnum = sessnum)^2
-        baddist <- (!is.finite(distmat2)) | (distmat2<0) | is.na(distmat2)
-        if (any(baddist)) {
-            warning ("replacing infinite, negative and NA userdist values with 1e10")
-            distmat2[baddist] <- 1e10
-        }
-        distmat2
-    }
-}
 #--------------------------------------------------------------------------------
 getD <- function (designD, beta, mask, parindx, link, fixed,
                   grouplevels, sessionlevels, parameter = 'D',

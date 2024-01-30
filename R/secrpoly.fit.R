@@ -323,8 +323,7 @@ secrpoly.fit <- function (capthist,  model = list(D~1, lambda0~1, sigma~1), mask
     
     defaultmodel <- list(D=~1, lambda0=~1, lambda0=~1,  esa=~1, a0=~1,
                          sigma=~1, sigmak=~1, z=~1, w=~1, c=~1, d=~1,
-                         noneuc=~1, beta0=~1, beta1=~1,
-                         sdS=~1, b0=~1, b1=~1, pID=~1, pmix=~1)
+                         pmix=~1)
     defaultmodel <- replace (defaultmodel, names(model), model)
     
     #################################################
@@ -404,10 +403,8 @@ secrpoly.fit <- function (capthist,  model = list(D~1, lambda0~1, sigma~1), mask
     
     defaultlink <- list(D='log', g0='logit', lambda0='log', esa='log',
                         a0='log', sigma='log', sigmak='log', z='log',
-                        w='log', c='identity', d='log', noneuc='log',
-                        beta0='identity', beta1='neglog', sdS='log',
-                        b0='log', b1='neglog',  pID='logit',
-                        pmix='logit', cut='identity')
+                        w='log', c='identity', d='log', 
+                        pmix='logit')
     
     # if (anycount) defaultlink$g0 <- 'log'
     link <- replace (defaultlink, names(link), link)

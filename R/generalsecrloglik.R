@@ -189,9 +189,6 @@ generalsecrloglikfn <- function (
     #####################################################################
     pmixn <- getpmix (data$knownclass, PIA, Xrealparval)  ## membership prob by animal
     
-    pID <- getpID(PIA, Xrealparval, data$MRdata)
-    distmat2 <- data$distmat2
-    
     ## precompute gk, hk for polygon and transect detectors
     dimension <- (data$dettype[1] %in% c(3,6)) + 1   ## 1 = 1D, 2 = 2D
     # 2019-11-25 not safe to use multithreading with 2-D integration 

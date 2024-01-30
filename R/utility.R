@@ -7,8 +7,6 @@
 # Global variables in namespace
 #
 ## define a local environment for temporary variables e.g. iter
-## e.g. Roger Peng https://stat.ethz.ch/pipermail/r-devel/2009-March/052883.html
-
 .localstuff <- new.env()
 
 .localstuff$packageType <- ' pre-release'
@@ -67,12 +65,6 @@ parnames <- function (detectfn) {
 
 #-------------------------------------------------------------------------------
 
-getdfn <- function (detectfn) {
-    list(HHN, HHR, HEX, HAN, HCG, HVP)[[detectfn-13]]
-}
-
-#-------------------------------------------------------------------------------
-
 valid.detectfn <- function (detectfn, valid = 14:19) {
     if (is.null(detectfn))
         stop ("requires 'detectfn'")
@@ -81,25 +73,6 @@ valid.detectfn <- function (detectfn, valid = 14:19) {
     if (!(detectfn %in% valid))
         stop ("invalid detection function")
     detectfn
-}
-
-#-------------------------------------------------------------------------------
-
-valid.detectpar <- function (detectpar, detectfn) {
-    if (is.null(detectpar) | is.null(detectfn))
-        stop ("requires valid 'detectpar' and 'detectfn'")
-
-    ## replace a0 with lambda0 
-    if ('a0' %in% names(detectpar)) {
-        aname <- 'lambda0'
-        lambda0 <- detectpar[['a0']] / 2 / pi / detectpar[[2]]^2 * 10000
-        detectpar[[aname]] <- lambda0
-    }
-
-    if (!all(parnames(detectfn) %in% names(detectpar)))
-        stop ("requires 'detectpar' ", paste(parnames(detectfn), collapse=','),
-            " for ", detectionfunctionname(detectfn), " detectfn")
-    detectpar[parnames(detectfn)]
 }
 
 #-------------------------------------------------------------------------------
@@ -1240,76 +1213,6 @@ updatemodel <- function (model, detectfn, detectfns, oldvar, newvar, warn = FALS
 
 #-------------------------------------------------------------------------------
 
-## Manually remove some mask points
-# simplified 2022-02-03
-
-deleteMaskPoints <- function (mask, onebyone = TRUE, add = FALSE, poly = NULL,
-                              poly.habitat = FALSE, ...) {
-    ## interface does not work properly in RStudio
-
-    if (ms(mask)) {         ## a list of mask objects
-        if (inherits(poly, 'list') & (!is.data.frame(poly)))
-            stop ("lists of polygons not implemented in 'make.mask'")
-        temp <- lapply (mask, deleteMaskPoints, onebyone = onebyone, add = add,
-                        poly = poly, poly.habitat = poly.habitat, ...)
-        class (temp) <- c('mask', 'list')
-        temp
-    }
-    else {
-        plot(mask, add = add, ...)
-        if (!is.null(poly)) {
-            if (poly.habitat)
-                pointstodrop <- (1:nrow(mask))[!pointsInPolygon(mask, poly)]
-            else
-                pointstodrop <- (1:nrow(mask))[pointsInPolygon(mask, poly)]
-        }
-        else if (onebyone) {
-            cat ('Click to select points; right-click to stop\n')
-            flush.console()
-            xy <- locator(type = 'p', pch=1, col='red')
-            pointstodrop <- if (length(xy$x)==0)
-                numeric(0)
-            else
-                nearesttrap(xy, mask)
-        }
-        else {
-            cat ('Click to select polygon vertices; right-click to stop\n')
-            flush.console()
-            xy <- locator(type = 'l', col='red')
-            xy <- as.data.frame(xy)
-            xy <- rbind(xy, xy[1,])
-            if (poly.habitat)
-                pointstodrop <- (1:nrow(mask))[!pointsInPolygon(mask, xy)]
-            else
-                pointstodrop <- (1:nrow(mask))[pointsInPolygon(mask, xy)]
-        }
-        npts <- length(pointstodrop)
-        if (npts>0) {
-            points(mask[pointstodrop,], pch = 16, col = 'red')
-            if(.Platform$OS.type == "windows") {
-                pl <- if (npts>1) 's' else ''
-                msg <- paste ('Delete ', npts, ' red point',pl, '?', sep='')
-                response <-  utils::winDialog(type = "okcancel", msg)
-            } else {
-                response <- 'OK'
-            }
-            if (response == 'OK') {
-                mask <- subset(mask, -pointstodrop)
-            if (npts==1)
-                message("1 point deleted")
-            else
-                message(npts, " points deleted")
-            }
-        else
-            message ("point(s) not deleted")
-        }
-        else
-            message ("no points to delete")
-        plot(mask, col='green')
-        mask
-    }
-}
-
 #-------------------------------------------------------------------------------
 
 nparameters <- function (object) {
@@ -1717,46 +1620,6 @@ stringsAsFactors <- function (DF) {
 
 #-------------------------------------------------------------------------------
 
-# see also getuserdist in loglikhelperfn.R
-# 2021-03-30 moved from preparedata.R 
-# 2021-03-30 integrate HPX 
-
-getdistmat2 <- function (traps, mask, userdist, HPX = FALSE) {
-    ## Static distance matrix
-    if (is.function(userdist)) {
-        NULL   ## compute dynamically later
-    }
-    else {
-        if (HPX) {
-            if (any(detector(traps) %in% .localstuff$polydetectors)) {
-                trps <- split(traps, polyID(traps))
-                inside <- t(sapply(trps, pointsInPolygon, xy = mask))
-                d2 <- 1-inside      # 0 inside, 1 outside
-                d2[d2>0] <- 1e10    # 0 inside, 1e10 outside
-                d2
-            }
-            else {
-                # maximum of squared distance in x- or y- directions
-                xydist2cpp(as.matrix(traps), as.matrix(mask))
-            }
-        }
-        else {
-            if (any(detector(traps) %in% .localstuff$polydetectors)) {
-                ## do not use result if detector is one of
-                ## polygonX, polygon, transectX, transect, OR telemetry?
-                matrix(0, nrow = nrow(traps), ncol = nrow(mask))
-            }
-            else {
-                # Euclidean distance
-              ## edist(as.matrix(traps), as.matrix(mask))^2
-              edist2cpp(as.matrix(traps), as.matrix(mask))
-            }
-        }
-    }
-}
-
-#-------------------------------------------------------------------------------
-
 ## function to assign all-ones usage matrix
 uniformusage <- function(object, noccasions) {
   if (inherits(object, 'capthist')) {
@@ -1832,12 +1695,6 @@ snap_points <- function(x, y, max_dist = 1000) {
     return(out)
 }
 
-#-------------------------------------------------------------------------------
-
-# random truncated Poisson
-rtpois <- function(n, lambda) {
-    qpois(runif(n, dpois(0, lambda), 1), lambda)
-}
 #-------------------------------------------------------------------------------
 
 im2mask <- function(im) {

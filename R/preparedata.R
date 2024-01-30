@@ -158,8 +158,6 @@ prepareSessionData <- function (capthist, mask, maskusage,
         knownclass <- getknownclass(capthist, details$nmix, hcov)
         
         ## get static distance matrix
-        distmat2 <- getdistmat2(traps, mask, details$userdist, detectfn == 20)
-
         n.distrib <- switch (tolower(details$distribution), poisson=0, binomial=1, 0)
         xy <- getxy (dettype, capthist)
         usge <- usage(traps)
@@ -222,7 +220,6 @@ prepareSessionData <- function (capthist, mask, maskusage,
             usge = usge,
             mask = mask,
             externalpdot = externalpdot,
-            distmat2 = distmat2,
             knownclass = knownclass,
             n.distrib = n.distrib,
             xy = xy,

@@ -1,24 +1,15 @@
-<!-- badges: start -->
-[![CRAN status](https://www.r-pkg.org/badges/version/secr)](https://cran.r-project.org/package=secr)
-[![Downloads (total)](https://cranlogs.r-pkg.org/badges/grand-total/secr)](https://www.r-pkg.org/pkg/secr)
-[![R-CMD-check](https://github.com/MurrayEfford/secr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MurrayEfford/secr/actions/workflows/R-CMD-check.yaml)
-<!-- badges: end -->
+# secrpoly
+Area Search Spatially Explicit Capture-Recapture
 
-# secr
-Spatially Explicit Capture-Recapture
-
-This is the development version of the R package distributed on [CRAN](https://CRAN.R-project.org/package=secr). 
+This is an experimental R package. 
 
 It may be installed using
 ```
-devtools::install_github("MurrayEfford/secr")
+devtools::install_github("MurrayEfford/secrpoly")
 ```
 
 Compilation of C++ code is required.
 
 Please report bugs as Issues on this GitHub page. 
-
-Help is also available from the
-DENSITY | secr forum at [phidot.org](http://www.phidot.org/forum/index.php) or the Google group [secr](https://groups.google.com/g/secrgroup).
 
 See [www.otago.ac.nz/density](https://www.otago.ac.nz/density/) for general background.

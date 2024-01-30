@@ -9,3 +9,5 @@ revdep
 extraR
 README.md
 ^\.github$
+^sourcecode.R$
+^testing.R$

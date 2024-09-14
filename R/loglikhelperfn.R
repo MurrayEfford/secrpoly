@@ -4,29 +4,30 @@
 ## 2024-01-29
 ###############################################################################
 
-gethazard <- function (m, binomN, cc, hk, PIA, usge) {
-    nmix <- dim(PIA)[5]
-    if (any(binomN == -2)) {   ## multi-catch trap
-        nc <- dim(PIA)[2]
-        s <- dim(PIA)[3]
-        k <- dim(PIA)[4]
-        haztemp <- gethcpp(
-            as.integer(nc),
-            as.integer(cc),
-            as.integer(nmix),
-            as.integer(k),
-            as.integer(s),
-            as.integer(m),
-            as.integer(PIA),
-            as.matrix(usge),
-            as.double(hk))
-        haztemp$h <- array(haztemp$h, dim = c(nmix, m, max(haztemp$hindex)+1))
-        haztemp
-    }
-    else {
-        list(h = array(-1, dim=c(nmix,1,1)), hindex = matrix(-1))
-    }
-}
+# gethazard exported by secr 4.7.0
+# gethazard <- function (m, binomN, cc, hk, PIA, usge) {
+#     nmix <- dim(PIA)[5]
+#     if (any(binomN == -2)) {   ## multi-catch trap
+#         nc <- dim(PIA)[2]
+#         s <- dim(PIA)[3]
+#         k <- dim(PIA)[4]
+#         haztemp <- gethcpp(
+#             as.integer(nc),
+#             as.integer(cc),
+#             as.integer(nmix),
+#             as.integer(k),
+#             as.integer(s),
+#             as.integer(m),
+#             as.integer(PIA),
+#             as.matrix(usge),
+#             as.double(hk))
+#         haztemp$h <- array(haztemp$h, dim = c(nmix, m, max(haztemp$hindex)+1))
+#         haztemp
+#     }
+#     else {
+#         list(h = array(-1, dim=c(nmix,1,1)), hindex = matrix(-1))
+#     }
+# }
 #--------------------------------------------------------------------------------
 ## mixture proportions by animal        
 ## assume dim(PIA)[1] == 1

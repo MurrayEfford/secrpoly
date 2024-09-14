@@ -1,0 +1,34 @@
+# development.txt 
+
+# 2024-09-24
+
+cpp functions
+=============
+
+makegkpoly.cpp
+    makegkPolygoncpp()
+            uses hintegral1Ncpp, hintegral2Ncpp, integral1DNRcpp, integral2DNRcpp
+    
+hdot.cpp
+    hdotpolycpp()
+            uses hintegral1Ncpp, hintegral2Ncpp, integral1DNRcpp, integral2DNRcpp
+    
+polygonN.cpp
+    defines hintegral1Ncpp, hintegral2Ncpp(), integral1DNRcpp(), integral2DNRcpp()
+
+prwipolygon.cpp
+    polygonhistoriescpp()
+
+prwipolygonfxi.cpp
+     polygonfxicpp()
+
+simsecr.cpp
+    simdetectpolycpp()
+        uses hintegral1Ncpp
+    
+trapping.cpp    
+    trappingpolygon(), trappingpolygonX()
+        none
+    trappingtransect(), trappingtransectX()
+        uses hintegral1Ncpp(), integral1DNRcpp()
+        

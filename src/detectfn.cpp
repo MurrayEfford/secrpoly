@@ -1,5 +1,4 @@
-// #include <Rcpp.h>
-#include "secr.h"
+#include "poly.h"
 using namespace Rcpp;
 
 //     Detection functions
@@ -39,13 +38,6 @@ using namespace Rcpp;
 
 //--------------------------------------------------------------------
 // define functions with third parameter z
-
-int par3 (int fn) {
-    if ((fn == 15) || (fn==17) || (fn == 18))
-	return(1);
-    else
-	return(0);
-}
 
 // hazard halfnormal 
 double zhhnr (const NumericVector& param, const double r) {

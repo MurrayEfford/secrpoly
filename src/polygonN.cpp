@@ -470,7 +470,7 @@ double integral2DNRcpp
 
 //===============================================================
 
-// rpoint defined in secr.h
+// rpoint defined in poly.h
 
 rpoint getxycpp(
         const double l, 

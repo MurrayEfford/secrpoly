@@ -1,4 +1,4 @@
-#include "secr.h"
+#include "poly.h"
 
 using namespace Rcpp;
 using namespace RcppParallel;

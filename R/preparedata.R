@@ -120,8 +120,6 @@ decompressCH <- function (CH, fastproximity) {
         return (CH)
     }
 }
-############################################################################################
-
 ##############################################################################
 
 prepareSessionData <- function (capthist, mask, maskusage, 

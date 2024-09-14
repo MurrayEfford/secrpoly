@@ -1,7 +1,4 @@
-// next two lines must be in order (RcppNumerical precedes secr.h)
-// #include <RcppNumerical.h>
-
-#include "secr.h"
+#include "poly.h"
 
 using namespace std;
 using namespace Rcpp;
@@ -47,26 +44,6 @@ double d2cpp (
         (A1(k,0) - A2(m,0)) * (A1(k,0) - A2(m,0)) +
             (A1(k,1) - A2(m,1)) * (A1(k,1) - A2(m,1))
     );
-}
-//--------------------------------------------------------------------------
-
-// [[Rcpp::export]]
-NumericMatrix edist2cpp (
-        const NumericMatrix &A1,
-        const NumericMatrix &A2)
-    // return squared distance between points in A1
-    // and A2
-{
-    int kk = A1.nrow();
-    int mm = A2.nrow();
-    NumericMatrix d2(kk, mm);
-    for (int k=0; k<kk; k++) {
-        for (int m=0; m<mm; m++) {
-            d2(k,m) =  (A1(k,0) - A2(m,0)) * (A1(k,0) - A2(m,0)) +
-                (A1(k,1) - A2(m,1)) * (A1(k,1) - A2(m,1));
-        }
-    }
-    return(d2);
 }
 //--------------------------------------------------------------------------
 
@@ -327,121 +304,6 @@ rpoint getxy(
 // p = p1 + mu1 (p2-p1)
 // p = p1 + mu2 (p2-p1)
 // Return 0 if line segment does not intersect circle
-
-void SegCircle (
-        double *p1x, double *p1y, 
-        double *p2x, double *p2y, 
-        double *scx, double *scy, 
-        double *r, 
-        double *seg) 
-{
-    double a,b,c;
-    double bb4ac;
-    double dpx;
-    double dpy;
-    
-    double mu1;
-    double mu2;
-    int p1in;
-    int p2in;
-    
-    double i1x;
-    double i1y;
-    double i2x;
-    double i2y;
-    
-    int i1between;
-    double d1,d2;
-    
-    *seg = 0;
-    
-    // case where both p1 and p2 inside circle 
-    
-    //
-    // Rprintf ("p1 %6.3f %6.3f\n", *p1x, *p1y);
-    // Rprintf ("p2 %6.3f %6.3f\n", *p2x, *p2y);
-    // Rprintf ("sc %6.3f %6.3f\n", *scx, *scy);
-    // Rprintf ("r %6.3f \n", *r);
-    
-    
-    p1in = ((*scx - *p1x) * (*scx - *p1x) + 
-    (*scy - *p1y) * (*scy - *p1y)) < (*r * *r);
-    p2in = ((*scx - *p2x) * (*scx - *p2x) + 
-        (*scy - *p2y) * (*scy - *p2y)) < (*r * *r);
-    dpx = *p2x - *p1x;
-    dpy = *p2y - *p1y;
-    
-    a = dpx * dpx + dpy * dpy;
-    b = 2 * (dpx * (*p1x - *scx) + dpy * (*p1y - *scy));
-    c = *scx * *scx + *scy * *scy;
-    c += *p1x * *p1x + *p1y * *p1y;
-    c -= 2 * (*scx * *p1x + *scy * *p1y);
-    c -= *r * *r;
-    bb4ac = b * b - 4 * a * c;
-    
-    // case of no intersection 
-    if ((fabs(a) < 1e-10) || (bb4ac < 0)) {
-        *seg = 0;   
-    }
-    else {
-        
-        mu1 = (-b + std::sqrt(bb4ac)) / (2 * a);
-        mu2 = (-b - std::sqrt(bb4ac)) / (2 * a);
-        
-        i1x = *p1x + mu1 * (*p2x - *p1x);
-        i1y = *p1y + mu1 * (*p2y - *p1y);
-        i2x = *p1x + mu2 * (*p2x - *p1x);
-        i2y = *p1y + mu2 * (*p2y - *p1y);
-        if (((mu1<0) && (mu2<0)) || ((mu1>1) && (mu2>1))) {
-            // no intersection 
-            *seg = 0;
-        }
-        else {
-            if (((mu1<0) && (mu2>1)) || ((mu1>1) && (mu2<0))) {
-                // both inside 
-                *seg = std::sqrt ((*p1x - *p2x) * (*p1x - *p2x) + 
-                    (*p1y - *p2y) * (*p1y - *p2y));
-            }
-            else {
-                if ((mu1>0) && (mu1<1) && (mu2>0) && (mu2<1)) {
-                    // two intersections 
-                    *seg = std::sqrt ((i1x - i2x) * (i1x - i2x) + 
-                        (i1y - i2y) * (i1y - i2y));
-                }
-                else {
-                    // one intersection 
-                    d1 = std::sqrt((i1x - *p1x) * (i1x * *p1x) + 
-                        (i1y - *p1y) * (i1y - *p1y));
-                    d2 = std::sqrt((i1x - *p2x) * (i1x * *p2x) + 
-                        (i1y - *p2y) * (i1y - *p2y));
-                    i1between = std::sqrt(a) < (d1 + d2 + 1e-10);
-                    if (p1in) {
-                        if (i1between) {
-                            i2x = *p1x;
-                            i2y = *p1y;
-                        }
-                        else {
-                            i1x = *p1x;
-                            i1y = *p1y;
-                        }
-                    }
-                    if (p2in) {
-                        if (i1between) {
-                            i2x = *p2x;
-                            i2y = *p2y;
-                        }
-                        else {
-                            i1x = *p2x;
-                            i1y = *p2y;
-                        }
-                    }
-                    *seg = std::sqrt ((i1x - i2x) * (i1x - i2x) + 
-                        (i1y - i2y) * (i1y - i2y));
-                }
-            }
-        }    
-    }
-}
 
 double SegCircle2 (
         double p1x, double p1y, 
@@ -991,23 +853,6 @@ int nval(int detect0, int nc1, int cc, int ss, int nk) {
 }
 //=============================================================
 
-NumericMatrix makedist2cpp (
-        const NumericMatrix &traps, 
-        const NumericMatrix &mask) 
-{
-    int kk, mm;
-    int k, m;
-    kk = traps.nrow();
-    mm = mask.nrow();
-    NumericMatrix dist2(kk,mm);
-    // fill array with squared Euclidean distances 
-    for (k=0; k<kk; k++)
-        for (m=0; m<mm; m++) 
-            dist2(k,m) = d2cpp(k, m, traps, mask);
-    return(dist2);
-}
-//--------------------------------------------------------------------------
-
 void squaredistcpp (
         NumericMatrix &dist2)
 {
@@ -1137,95 +982,6 @@ void getdetspec (
         for (i=0; i< (nc * ss * nk); i++)
             detspec[6+i] = (double) start[i];
     }
-}
-//=============================================================
-
-void geth2 (
-        const int nc1, 
-        const int cc, 
-        const int nmix, 
-        const int mm, 
-        const IntegerVector &PIA, 
-        const std::vector<double> &hk, 
-        const NumericMatrix &Tsk, 
-        std::vector<double> &h, 
-        std::vector<int> &hindex) 
-    
-    // This function fills a vector h representing a 4-D (x,m,n,s) array with
-    // the total hazard (summed across traps) for animal n on occasion s 
-    // wrt mask point m and latent class x
-    
-    // Computation is limited to combinations of n, s with unique parameter combinations 
-    // (values in PIA and Tsk) and the returned n x s matrix 'hindex' contains the index for
-    // each n, s to the unique total in h (for given x, m).
-    
-    // adapted from gethcpp in openCR 2018-11-09
-    // replaces defective geth
-    
-{
-    int c,i,m,n,k,x,gi,hi,s;
-    int nk = Tsk.nrow();
-    int ss = Tsk.ncol(); 
-    double Tski;          
-    int row, col;
-    int nrow, ncol;
-    int uniquerows;
-    List lookuplist;
-    nrow = nc1*ss;
-    ncol = nk*(nmix+1);
-    NumericMatrix xmat(nrow, ncol);
-    
-    //---------------------------------------
-    // find unique combinations
-    for (n=0; n<nc1; n++) {
-        for (s=0; s<ss; s++) {
-            row = nc1*s+n;
-            for (k=0; k<nk; k++) {                         
-                for(x=0; x<nmix; x++) {
-                    col = x * nk + k;
-                    xmat(row,col) = PIA[i4(n,s,k,x, nc1, ss, nk)];
-                }
-                col = nmix * nk + k;  // append usage for this trap and occasion
-                xmat(row,col) = Tsk(k,s);		
-            }
-        }
-    }
-    
-    lookuplist = makelookupcpp(xmat);
-    uniquerows = lookuplist["uniquerows"];
-    hindex = as <std::vector<int> >(lookuplist["index"]);
-    
-    // need zero-based index 
-    for (i=0; i< nrow; i++) hindex[i]--;
-    
-    // zero array for accumulated hazard h
-    for (i=0; i<(uniquerows * mm * nmix); i++) h[i] = 0;
-    
-    // search hindex for each row index in turn, identifying first n,s with the index
-    // fill h[] for this row
-    hi = 0;
-    for (s=0; s < ss; s++) {    // scan by occasion as new hi appear in column order
-        for (n=0; n < nc1; n++) {
-            if (hindex[s*nc1 + n] == hi) {
-                for (k=0; k < nk; k++) {
-                    Tski = Tsk[s * nk + k];
-                    for (x=0; x<nmix; x++) {
-                        c = PIA[i4(n,s,k,x, nc1, ss, nk)]-1;
-                        // c<0 (PIA=0) implies detector not used on this occasion
-                        if (c >= 0) {
-                            for (m=0; m<mm; m++) {
-                                gi = i3(c,k,m,cc,nk);
-                                h[i3(x,m,hi, nmix, mm)] += Tski * hk[gi];
-                            }
-                        }
-                    }
-                }
-                hi++;
-            } 
-            if (hi >= uniquerows) break;
-        }
-        if (hi >= uniquerows) break;
-    }   
 }
 //=============================================================
 

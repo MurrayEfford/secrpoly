@@ -785,37 +785,6 @@ getgrpnum <- function (capthist, groups) {
 
 #-------------------------------------------------------------------------------
 
-make.lookup <- function (tempmat) {
-
-    ## should add something to protect make.lookup from bad data...
-    nrw <- nrow(tempmat)
-    ncl <- ncol(tempmat)
-    nam <- colnames(tempmat)
-
-    df <- is.data.frame(tempmat)
-    if (df) {
-       lev <- lapply(tempmat, levels)
-       tempmat[] <- sapply(tempmat, as.numeric)
-       tempmat <- as.matrix(tempmat)
-    }
-    dimnames(tempmat) <- NULL
-
-    temp <- makelookupcpp(tempmat)
-    
-    lookup <- temp$lookup
-    colnames(lookup) <- nam
-    if (df) {
-        lookup <- as.data.frame(lookup)
-        ## restore factors
-        for (i in 1: length(lev))
-            if (!is.null(lev[[i]]))
-                lookup[,i] <- factor(lev[[i]][lookup[,i]], levels = lev[[i]])
-    }
-    list (lookup=lookup, index=temp$index)
-}
-
-#-------------------------------------------------------------------------------
-
 ## Return an integer vector of class membership defined by a categorical
 ## individual covariate in a capthist object. Individuals of unknown
 ## class (including those with class exceeding nmix) are coded 1,
@@ -1568,7 +1537,7 @@ maskboolean <- function (ch, mask, threshold) {
       x <- tapply(df$x, df$id, mean, na.rm=T)
       y <- tapply(df$y, df$id, mean, na.rm=T)
       xy <- data.frame(x=x,y=y)
-      d2 <- edist2cpp(as.matrix(xy), as.matrix(mask))
+      d2 <- edist(xy, mask)
       out <- (d2 <= threshold^2)
     }
     else {

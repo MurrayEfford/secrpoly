@@ -1,6 +1,4 @@
-#include <Rcpp.h>
-#include <RcppParallel.h>
-#include "secr.h"
+#include "poly.h"
 
 //==============================================================================
 // 2020-01-26

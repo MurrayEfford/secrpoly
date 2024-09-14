@@ -8,3 +8,4 @@ src/*.dll
 ^sourcecode.R$
 ^testing.R$
 ^secrpoly.Rproj$
+extraR

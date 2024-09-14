@@ -1,5 +1,4 @@
-cran-comments*.txt
-knownbugs.txt
+development.txt
 ^.*\.Rproj$
 ^\.Rproj\.user$
 .build.timestamp

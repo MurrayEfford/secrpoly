@@ -209,10 +209,9 @@ generalsecrloglikfn <- function (
     }
     
     #######################################################################
-    if (all(data$dettype %in% c(0,1,2,3,4,6,7,8,13))) {
-        ## hazard for exclusive detectors or related
-        haztemp <- gethazard (data$m, data$binomNcode, nrow(Xrealparval), gkhk$hk, PIA, data$usge)
-    }
+    ## hazard for exclusive detectors or related
+    haztemp <- gethazard (data$m, data$binomNcode, nrow(Xrealparval), gkhk$hk, PIA, data$usge)
+    
     ## model detection histories (prw) conditional on detection (pdot)
     if (data$nc == 0) {
         prw <- 1  ## simple if no animals detected

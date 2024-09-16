@@ -237,27 +237,6 @@ memo <- function (text, trace) {
 
 #-------------------------------------------------------------------------------
 
-insertdim <- function (x, dimx, dims) {
-  ## make vector of values
-  ## using x repeated so as to fill array
-  ## with dim = dims and the x values occupying dimension(s) dimx
-  olddim <- 1:length(dims)
-  olddim <- c(olddim[dimx], olddim[-dimx])
-  temp <- array (dim=c(dims[dimx], dims[-dimx]))
-  tempval <- array(dim=dims[dimx])
-  if (length(x) > length(tempval))
-      tempval[] <- x[1:length(tempval)]
-  else
-      tempval[] <- x     ## repeat as needed
-  temp[] <- tempval  ## repeat as needed
-  if (is.factor(x))
-    factor(levels(x), levels=levels(x))[aperm(temp, order(olddim))]   ## 2010 02 25
-  else
-    as.vector(aperm(temp, order(olddim)))
-}
-
-#-------------------------------------------------------------------------------
-
 pad1 <- function (x, n) {
 ## pad x to length n with dummy (first value)
     if (is.factor(x)) {
@@ -307,8 +286,6 @@ stdform <- function (flist) {
 
 ## miscellaneous functions
 
-invlogit <- function (y) 1/(1+exp(-y))   # plogis(y)
-logit    <- function (x) log(x/(1-x))    # qlogis(x), except for invalid argument
 sine     <- function (x) asin (x*2-1)
 invsine  <- function (y) (sin(y)+1) / 2
 odds     <- function (x) x / (1-x)
@@ -479,18 +456,6 @@ userD <- function (object) {
 
 #-------------------------------------------------------------------------------
 
-## mean and SD if x numeric
-getMeanSD <- function(xy) {
-    MeanSD <- function (x) {
-        if (is.numeric(x))
-            c(mean(x, na.rm = TRUE), sd(x, na.rm = TRUE))
-        else
-            c(NA,NA)
-    }
-    as.data.frame (apply(xy, 2, MeanSD))
-}
-
-#-------------------------------------------------------------------------------
 
 nclusters <- function (capthist) {
     if (ms(capthist)) {
@@ -882,29 +847,6 @@ inflatechull <- function (poly, r, ntheta = 60) {
 
 #-------------------------------------------------------------------------------
 
-maskarea <- function (mask, sessnum = 1) {
-    if (!ms(mask)) nrow(mask) * attr(mask,'area')
-    else nrow(mask[[sessnum]]) * attr(mask[[sessnum]],'area')
-}
-
-#-------------------------------------------------------------------------------
-
-masklength <- function (mask, sessnum = 1) {
-    if (!ms(mask)) nrow(mask) * attr(mask,'spacing')/1000
-    else nrow(mask[[sessnum]]) * attr(mask[[sessnum]],'spacing')/1000
-}
-
-#-------------------------------------------------------------------------------
-
-masksize <- function (mask, sessnum = 1) {
-    if (inherits(mask, 'linearmask'))
-        masklength(mask, sessnum)
-    else
-        maskarea(mask, sessnum)
-}
-
-#-------------------------------------------------------------------------------
-
 complete.beta <- function (object) {
     fb <- object$details$fixedbeta
     # modified 2022-04-02 for consistency with ipsecr
@@ -1141,18 +1083,6 @@ secr.lpredictor <- function (formula, newdata, indx, beta, field, beta.vcv=NULL,
 
 #-------------------------------------------------------------------------------
 
-edist <- function (xy1, xy2) {
-    nr <- nrow(xy1)
-    nc <- nrow(xy2)
-    x1 <- matrix(xy1[,1], nr, nc)
-    x2 <- matrix(xy2[,1], nr, nc, byrow=T)
-    y1 <- matrix(xy1[,2], nr, nc)
-    y2 <- matrix(xy2[,2], nr, nc, byrow=T)
-    sqrt((x1-x2)^2 + (y1-y2)^2)
-}
-
-#-------------------------------------------------------------------------------
-
 getcellsize <- function (mask) {
     if (inherits(mask, 'linearmask'))
         cell <- attr(mask, 'spacing') / 1000  ## per km
@@ -1292,59 +1222,6 @@ expandbinomN <- function (binomN, detectorcodes) {
 
 #-------------------------------------------------------------------------------
 
-check3D <- function (object) {
-    if (ms(object)) {
-        out <- lapply(object, check3D)
-        class(out) <- class(object)
-        out
-    }
-    else {
-        if (is.matrix(object)) {
-            warning("secr >= 3.0 requires 3-D capthist; ",
-                    "using updateCH() to convert", call. = FALSE)
-            updateCH(object)
-        }
-        else {
-            object
-        }
-    }
-}
-
-#-------------------------------------------------------------------------------
-
-updateCH <- function(object) {
-    if (!inherits(object, 'capthist'))
-        stop ("requires capthist object")
-    # following replaces this old code 2020-08-29
-    # reduce(object, dropunused = FALSE)
-    if (ms(object)) {
-        out <- lapply(object, updateCH)
-        class (out) <- c("capthist", "list")
-        out
-    }
-    else {
-        if (length(dim(object)) == 3) {
-            return(object)
-        }
-        else {
-            K <- ndetector(traps(object))
-            ch <- array(0, dim = c(dim(object), K), dimnames = 
-                    list(rownames(object), colnames(object), 1:K))
-            OK <- as.logical(object!=0)
-            animal <- row(object)[OK]
-            occ <- col(object)[OK] 
-            detn <- object[OK]
-            ch[cbind(animal, occ, detn)] <- 1
-            traps(ch) <- traps(object)
-            class (ch) <- "capthist"
-            session(ch) <- session(object)
-            ch
-        }
-    }
-}
-
-#-------------------------------------------------------------------------------
-
 newstr <-function (strings) {
     ## compress a character vector
     ## use run length encoding function
@@ -1365,47 +1242,6 @@ outsidemask <- function(CH, mask, threshold = spacing(mask) / sqrt(2)) {
         distancetotrap(centres, mask)
     }
     sapply(xylist, dfun) > threshold
-}
-
-#-------------------------------------------------------------------------------
-
-shareFactorLevels <- function (object, columns = NULL, stringsAsFactors = TRUE) {
-    ## stringsAsFactors added 2020-05-16
-    if (ms(object)) {
-        if (!is.null(covariates(object))) {
-            df <- do.call(rbind, covariates(object))
-            if (is.null(columns)) {
-                columns <- 1:ncol(df)
-            }
-            if (stringsAsFactors) {
-                df[,columns] <- stringsAsFactors(df[,columns, drop = FALSE])
-            }
-            for (i in columns) {
-                if (is.factor(df[,i])) {
-                    levelsi <- levels(df[,i])
-                    for (sess in 1:length(object)) {
-                        covariates(object[[sess]])[,i] <-
-                            factor(covariates(object[[sess]])[,i],
-                                   levels = levelsi)
-                    }
-                }
-            }
-        }
-    }
-    else {
-        # modified 2021-04-27 to apply to covariates, not object itself
-        if (!is.null(covariates(object))) {
-            if (stringsAsFactors) {
-                df <- covariates(object)
-                if (is.null(columns)) {
-                    columns <- 1:ncol(df)
-                }
-                df[,columns] <- stringsAsFactors(df[,columns, drop = FALSE])
-                covariates(object) <- df
-            }
-        }
-    }
-    object
 }
 
 #-------------------------------------------------------------------------------

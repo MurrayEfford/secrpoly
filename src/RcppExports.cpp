@@ -11,31 +11,6 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// xydist2cpp
-NumericMatrix xydist2cpp(const NumericMatrix& A1, const NumericMatrix& A2);
-RcppExport SEXP _secrpoly_xydist2cpp(SEXP A1SEXP, SEXP A2SEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const NumericMatrix& >::type A1(A1SEXP);
-    Rcpp::traits::input_parameter< const NumericMatrix& >::type A2(A2SEXP);
-    rcpp_result_gen = Rcpp::wrap(xydist2cpp(A1, A2));
-    return rcpp_result_gen;
-END_RCPP
-}
-// nearestcpp
-List nearestcpp(const NumericMatrix& xy, const NumericMatrix& traps, bool non_zero);
-RcppExport SEXP _secrpoly_nearestcpp(SEXP xySEXP, SEXP trapsSEXP, SEXP non_zeroSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const NumericMatrix& >::type xy(xySEXP);
-    Rcpp::traits::input_parameter< const NumericMatrix& >::type traps(trapsSEXP);
-    Rcpp::traits::input_parameter< bool >::type non_zero(non_zeroSEXP);
-    rcpp_result_gen = Rcpp::wrap(nearestcpp(xy, traps, non_zero));
-    return rcpp_result_gen;
-END_RCPP
-}
 // insidecpp
 bool insidecpp(const NumericVector& xy, const int n1, const int n2, const NumericMatrix& poly);
 RcppExport SEXP _secrpoly_insidecpp(SEXP xySEXP, SEXP n1SEXP, SEXP n2SEXP, SEXP polySEXP) {
@@ -185,8 +160,6 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_secrpoly_xydist2cpp", (DL_FUNC) &_secrpoly_xydist2cpp, 2},
-    {"_secrpoly_nearestcpp", (DL_FUNC) &_secrpoly_nearestcpp, 3},
     {"_secrpoly_insidecpp", (DL_FUNC) &_secrpoly_insidecpp, 4},
     {"_secrpoly_hdotpolycpp", (DL_FUNC) &_secrpoly_hdotpolycpp, 11},
     {"_secrpoly_makegkPolygoncpp", (DL_FUNC) &_secrpoly_makegkPolygoncpp, 9},

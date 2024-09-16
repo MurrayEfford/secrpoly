@@ -67,10 +67,6 @@ double pfnS (
 
 //--------------------------------------------------------------------------
 
-// probability of count with distribution specified by binomN 
-double countp (int count, int binomN, double lambda);
-//--------------------------------------------------------------------------
-
 double SegCircle2 (double p1x, double p1y, double p2x, double p2y, double scx, double scy, 
                    double r);
 
@@ -80,75 +76,19 @@ double expmin (double x);
 
 double distance1 (const rpoint p1, const rpoint p2);
 
-double rcount (const int binomN, const double lambda, const double Tsk);
+// double gr (
+//         const int fn, 
+//         Rcpp::NumericVector gsb, 
+//         const rpoint xy, 
+//         const rpoint animal);
 //---------------------------------------------------------------------
 
-rpoint getxy(
-        const double l, 
-        double cumd[], 
-                   const rpoint line[], 
-                                    const int kk, 
-                                    const int offset);   // double before 2022-01-18
+// double hazard (double pp);
 
-//---------------------------------------------------------------------
-
-double randomtime (double p);
-double randomtimel (double lambda);
-//---------------------------------------------------------------------
-
-void probsort (
-        const int n, 
-        std::vector<trap_animal> &tran);
-
-//---------------------------------------------------------------------
-
-double gr (
-        const int fn, 
-        Rcpp::NumericVector gsb, 
-        const rpoint xy, 
-        const rpoint animal);
-//---------------------------------------------------------------------
-
-// random point from 2-D radial distribution specified by g function 
-Rcpp::NumericVector gxy (const int fn, 
-                         const Rcpp::NumericVector par, 
-                         const double w);
-
-//---------------------------------------------------------------------
-
-double hazard (double pp);
-
-void getdetspec (
-        const Rcpp::IntegerVector &detect, 
-        const int fn, 
-        const int nc,  
-        const int nc1, 
-        const int cc, 
-        const int nmix, 
-        const int nd, 
-        const int nk, 
-        const int ss, 
-        const int mm, 
-        const Rcpp::IntegerVector &PIA, 
-        const Rcpp::NumericVector &miscparm, 
-        const std::vector<int> &start, 
-        std::vector<double> &detspec);
-
-//---------------------------------------------------------------------
-// 
-double gpois (int count, double lambda);
 double gbinom(int count, int size, double p);
 double pski ( int binomN, int count, double Tski, double g, double pI);
 
 //--------------------------------------------------------------------------
-
-// double d2 (int k, int m, double A1[], double A2[], int A1rows, int A2rows);
-
-double d2cpp (
-        const int k, 
-        const int m, 
-        const Rcpp::NumericMatrix &A1, 
-        const Rcpp::NumericMatrix &A2);
 
 // Functions to characterize detector type 
 // polygon, transect and signal detector types must be constant across occasions
@@ -173,20 +113,11 @@ bool anyb (
 
 // miscellaneous functions
 
-int nval(int detect0, int nc1, int cc, int ss, int nk);
-
-void squaredistcpp (Rcpp::NumericMatrix &dist2);
-
 bool insidecpp (
         const Rcpp::NumericVector &xy,
         const int    n1,
         const int    n2,
         const Rcpp::NumericMatrix &poly);
-
-void fillngcpp(const int nc, 
-               const int gg, 
-               const Rcpp::IntegerVector &grp, 
-               std::vector<int> &ng);
 
 //---------------------------------------------------------------
 // Return probability individual n belongs to class x. This may be binary 

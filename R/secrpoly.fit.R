@@ -773,7 +773,7 @@ secrpoly.fit <- function (capthist,  model = list(D~1, lambda0~1, sigma~1), mask
                     proctime = (proc.time() - ptm)[3]
     )
     
-    class(output) <- 'secr'
+    class(output) <- c('secrpoly', 'secr')
     
     memo(paste('Completed in ', round(output$proctime,2), ' seconds at ',
                format(Sys.time(), "%H:%M:%S %d %b %Y"),

@@ -1,6 +1,6 @@
 # development.txt 
 
-# 2024-09-24
+# 2024-09-14
 
 cpp functions
 =============
@@ -23,12 +23,16 @@ prwipolygonfxi.cpp
      polygonfxicpp()
 
 simsecr.cpp
-    simdetectpolycpp()
-        uses hintegral1Ncpp
-    
+    sim.detect
+        simdetectpolycpp()
+            uses hintegral1Ncpp etc.
+
+# remaining in 'secr'
+=====================
+
 trapping.cpp    
     trappingpolygon(), trappingpolygonX()
         none
     trappingtransect(), trappingtransectX()
-        uses hintegral1Ncpp(), integral1DNRcpp()
+        uses hintegral1(), integral1D()
         

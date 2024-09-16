@@ -57,7 +57,7 @@ secrpoly.fit (capthist, model = list(D~1, lambda0~1, sigma~1),
 likelihood depends on the detector type ("polygon" etc.) of the \code{traps} attribute of \code{capthist} (Borchers and Efford 2008, Efford 2011). 
 
 The default \code{model} is null (\code{model = list(D~1, lambda0~1,
-sigma~1)} for \code{detectfn = 'HN'} and \code{CL = FALSE}), meaning
+sigma~1)} for \code{detectfn = 'HHN'} and \code{CL = FALSE}), meaning
 constant density and detection hazard). The set of variables
 available for use in linear predictors includes some that are
 constructed automatically (t, T, b, B, bk, Bk, k, K), group (g), and

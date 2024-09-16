@@ -4,13 +4,12 @@
 
 \docType{package}
 
-\title{Spatially Explicit Capture--Recapture Models }
+\title{Area-search Spatially Explicit Capture--Recapture }
 
 \description{
 
   Functions to estimate the density and size of a spatially
-  distributed animal population sampled with an array of passive
-  detectors, such as traps, or by searching polygons or transects.
+  distributed animal population sampled by searching polygons or transects.
 
 }
 
@@ -19,12 +18,14 @@
 \tabular{ll}{
 Package: \tab secrpoly\cr
 Type: \tab Package\cr
-Version: \tab 1.0.0\cr
-Date: \tab 2024-01-29\cr
+Version: \tab 1.0.1\cr
+Date: \tab 2024-09-15\cr
 License: \tab GNU General Public License Version 2 or later\cr
 }
 
-This contains a subset of the functionality in \pkg{secr}.
+This contains a subset of the functionality in \pkg{secr}. 
+In future that may be removed from \pkg{secr}.
+
 }
 
 \author{ Murray Efford \email{murray.efford@otago.ac.nz} }

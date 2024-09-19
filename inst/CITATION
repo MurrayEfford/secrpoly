@@ -5,13 +5,13 @@ vers <- paste("R package version", meta$Version)
 
 bibentry(
     bibtype = "Manual",
-    title   = "secrpoly: Area-search spatially explicit capture-recapture models",
+    title   = "secrpoly: Area-search spatially explicit capture-recapture",
     author  = c(person("Murray","Efford")),
     year    = year,
     note    = vers,
     textVersion =
         paste("Efford, M. G. (", year,
-        "). secr: Area-search spatially explicit capture-recapture models. ",
+        "). secr: Area-search spatially explicit capture-recapture. ",
         vers, ". ", 
         sep = "")
 )

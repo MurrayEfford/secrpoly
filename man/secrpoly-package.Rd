@@ -19,7 +19,7 @@
 Package: \tab secrpoly\cr
 Type: \tab Package\cr
 Version: \tab 1.0.1\cr
-Date: \tab 2024-09-15\cr
+Date: \tab 2024-09-19\cr
 License: \tab GNU General Public License Version 2 or later\cr
 }
 

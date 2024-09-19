@@ -7,14 +7,14 @@ cpp functions
 
 makegkpoly.cpp
     makegkPolygoncpp()
-            uses hintegral1Ncpp, hintegral2Ncpp, integral1DNRcpp, integral2DNRcpp
+            uses hintegral1DNRcpp, hintegral2DNRcpp, integral1DNRcpp, integral2DNRcpp
     
 hdot.cpp
-    hdotpolycpp()
-            uses hintegral1Ncpp, hintegral2Ncpp, integral1DNRcpp, integral2DNRcpp
+    hdotpolycpp()  # used in pdot() only
+            uses hintegral1DNRcpp, hintegral2DNRcpp, integral1DNRcpp, integral2DNRcpp
     
 polygonN.cpp
-    defines hintegral1Ncpp, hintegral2Ncpp(), integral1DNRcpp(), integral2DNRcpp()
+    defines hintegral1DNRcpp, hintegral2DNRcpp(), integral1DNRcpp(), integral2DNRcpp()
 
 prwipolygon.cpp
     polygonhistoriescpp()
@@ -22,17 +22,18 @@ prwipolygon.cpp
 prwipolygonfxi.cpp
      polygonfxicpp()
 
-simsecr.cpp
-    sim.detect
-        simdetectpolycpp()
-            uses hintegral1Ncpp etc.
 
 # remaining in 'secr'
 =====================
 
+simsecr.cpp
+    sim.detect
+        simdetectpolycpp()
+            uses RcppNumerical hintegral1Dcpp etc.
+            
 trapping.cpp    
     trappingpolygon(), trappingpolygonX()
         none
     trappingtransect(), trappingtransectX()
-        uses hintegral1(), integral1D()
+        uses hintegral1Dcpp(), integral1Dcpp()
         

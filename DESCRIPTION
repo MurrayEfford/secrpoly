@@ -15,7 +15,7 @@ Authors@R: c(person("Murray", "Efford",
     comment = "(faster transect search and spacing)"))
 Depends: 
     R (>= 3.5.0), 
-    secr,
+    secr (>= 4.7.0),
     methods
 Imports: 
     graphics, 

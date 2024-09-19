@@ -3,6 +3,7 @@
 
 \alias{hornedlizard}
 \alias{hornedlizardCH}
+\alias{FTHL.fit}
 
 \title{ Flat-tailed Horned Lizard Dataset }
 

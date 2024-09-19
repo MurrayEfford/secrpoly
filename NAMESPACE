@@ -5,8 +5,8 @@ import (secr)
 
 # Base R
 
-importFrom (graphics, .filled.contour, contour, lines, points)
-importFrom (grDevices, chull, contourLines)
+importFrom (graphics, .filled.contour, contour, lines, points, legend, par)
+importFrom (grDevices, chull, contourLines, rainbow)
 importFrom (methods, as, is, Ops, Math)
 importFrom (stats, approx, as.formula, coef, dpois, nlm, optim, optimise, pgamma, 
             qnorm, qpois, sd, terms, uniroot, update, update.formula, var)

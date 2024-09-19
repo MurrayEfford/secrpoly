@@ -146,30 +146,32 @@ likelihood methods for capture--recapture studies. \emph{Biometrics}
 
 \examples{
 
-\dontrun{
+\donttest{
 
-fxi.secr(secrdemo.0, i = 1, X = c(365,605))
+plot(hornedlizardCH, border = 20)
+points(550,520, pch = 16) # pick a point
+fxi.secr(FTHL.fit, i = 1, X = c(550,520))
 
 ## contour first 5 detection histories
-plot(secrdemo.0$capthist)
-fxi.contour (secrdemo.0, i = 1:5, add = TRUE,
+fxi.contour (FTHL.fit, i = 1:5, add = TRUE,
     plotmode = TRUE, drawlabels = FALSE)
 
 ## extract modes only
-## these are more reliable than those from fit.mode called directly as
-## they use a contour-based approximation for the starting point
-fxiout <- fxi.contour (secrdemo.0, i = 1:5, plt = FALSE, fitmode = TRUE)
+## these are slower but more reliable than those from fit.mode called directly 
+## as they use a contour-based approximation for the starting point
+
+fxiout <- fxi.contour (FTHL.fit, i = 1:5, plt = FALSE, fitmode = TRUE)
 t(sapply(fxiout, "[[", "mode"))
 
 ## using fill colours
 ## lty = 0 suppresses contour lines
 ## nx = 256 ensures smooth outline
-plot(traps(captdata))
-fxi.contour(secrdemo.0, i = 1:5, add = TRUE, p = c(0.5,0.95), drawlabels
+plot(traps(hornedlizardCH), border = 20)
+fxi.contour(FTHL.fit, i = 1:5, add = TRUE, p = c(0.5,0.95), drawlabels
     = FALSE, nx = 256, fill = topo.colors(4), lty = 0)
 
 ## output as simple features
-sf <- fxi.contour(secrdemo.0, i = 1:3, plt = FALSE, p = c(0.5,0.95),
+sf <- fxi.contour(FTHL.fit, i = 1:3, plt = FALSE, p = c(0.5,0.95),
     nx = 256, output = 'sf', fitmode = TRUE)
 
 ## save as ESRI shapefile testsf.shp etc.
@@ -180,7 +182,7 @@ plot(st_as_sfc(sf))    # outline only
 points(sf$modex, sf$modey)
 
 ## output as SpatialPolygonsDataFrame
-spdf <- fxi.contour(secrdemo.0, i = 1:3, plt = FALSE, p = c(0.5,0.95),
+spdf <- fxi.contour(FTHL.fit, i = 1:3, plt = FALSE, p = c(0.5,0.95),
     nx = 256, output = 'SPDF', fitmode = TRUE)
 sp::plot(spdf)
 points(data.frame(spdf))
@@ -188,5 +190,3 @@ points(data.frame(spdf))
 }
 
 }
-
-\keyword{ hplot }

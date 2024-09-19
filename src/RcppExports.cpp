@@ -128,6 +128,32 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// simplehistoriesfxicpp
+NumericMatrix simplehistoriesfxicpp(const int x, const int mm, const int nc, const int cc, const int grain, const int ncores, const IntegerVector binomN, const IntegerVector w, const IntegerVector group, const NumericVector gk, const NumericVector hk, const NumericMatrix density, const IntegerVector PIA, const NumericMatrix Tsk, const NumericMatrix h, const IntegerMatrix hindex);
+RcppExport SEXP _secrpoly_simplehistoriesfxicpp(SEXP xSEXP, SEXP mmSEXP, SEXP ncSEXP, SEXP ccSEXP, SEXP grainSEXP, SEXP ncoresSEXP, SEXP binomNSEXP, SEXP wSEXP, SEXP groupSEXP, SEXP gkSEXP, SEXP hkSEXP, SEXP densitySEXP, SEXP PIASEXP, SEXP TskSEXP, SEXP hSEXP, SEXP hindexSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const int >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const int >::type mm(mmSEXP);
+    Rcpp::traits::input_parameter< const int >::type nc(ncSEXP);
+    Rcpp::traits::input_parameter< const int >::type cc(ccSEXP);
+    Rcpp::traits::input_parameter< const int >::type grain(grainSEXP);
+    Rcpp::traits::input_parameter< const int >::type ncores(ncoresSEXP);
+    Rcpp::traits::input_parameter< const IntegerVector >::type binomN(binomNSEXP);
+    Rcpp::traits::input_parameter< const IntegerVector >::type w(wSEXP);
+    Rcpp::traits::input_parameter< const IntegerVector >::type group(groupSEXP);
+    Rcpp::traits::input_parameter< const NumericVector >::type gk(gkSEXP);
+    Rcpp::traits::input_parameter< const NumericVector >::type hk(hkSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix >::type density(densitySEXP);
+    Rcpp::traits::input_parameter< const IntegerVector >::type PIA(PIASEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix >::type Tsk(TskSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix >::type h(hSEXP);
+    Rcpp::traits::input_parameter< const IntegerMatrix >::type hindex(hindexSEXP);
+    rcpp_result_gen = Rcpp::wrap(simplehistoriesfxicpp(x, mm, nc, cc, grain, ncores, binomN, w, group, gk, hk, density, PIA, Tsk, h, hindex));
+    return rcpp_result_gen;
+END_RCPP
+}
 // ontransectcpp
 bool ontransectcpp(NumericVector xy, NumericMatrix transect, int n1, int n2, double tol);
 RcppExport SEXP _secrpoly_ontransectcpp(SEXP xySEXP, SEXP transectSEXP, SEXP n1SEXP, SEXP n2SEXP, SEXP tolSEXP) {
@@ -165,6 +191,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_secrpoly_makegkPolygoncpp", (DL_FUNC) &_secrpoly_makegkPolygoncpp, 9},
     {"_secrpoly_polygonhistoriescpp", (DL_FUNC) &_secrpoly_polygonhistoriescpp, 22},
     {"_secrpoly_polygonfxicpp", (DL_FUNC) &_secrpoly_polygonfxicpp, 21},
+    {"_secrpoly_simplehistoriesfxicpp", (DL_FUNC) &_secrpoly_simplehistoriesfxicpp, 16},
     {"_secrpoly_ontransectcpp", (DL_FUNC) &_secrpoly_ontransectcpp, 5},
     {"_secrpoly_alongtransectcpp", (DL_FUNC) &_secrpoly_alongtransectcpp, 5},
     {NULL, NULL, 0}

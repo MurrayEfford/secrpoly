@@ -260,7 +260,7 @@ model, and parameter estimates should not be trusted. See
 
 \examples{
 
-\dontrun{
+\donttest{
 
 pol <- make.poly()
 CH <- sim.capthist(pol, popn = list(D = 30), detectfn = 'HHN', 
@@ -273,6 +273,4 @@ fxi.contour(fit0)
 }
 
 }
-
-\keyword{ models }
 

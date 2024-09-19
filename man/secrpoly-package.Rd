@@ -52,7 +52,7 @@ explicit capture--recapture with area searches. \emph{Ecology}
 
 \examples{
 
-\dontrun{
+\donttest{
 
 FTHL.fit <- secr.fit(hornedlizardCH, buffer = 80, ncores = 7)
 predict(FTHL.fit)

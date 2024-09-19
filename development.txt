@@ -1,27 +1,56 @@
 # development.txt 
 
+What functionality is overridden from 'secr'?
+
+-- secrpoly.fit()
+-- fxi.secrpoly
+
 # 2024-09-14
 
 cpp functions
 =============
 
 makegkpoly.cpp
-    makegkPolygoncpp()
+    makegkPolygoncpp() # used model fitting only (generalsecrloglik) 
             uses hintegral1DNRcpp, hintegral2DNRcpp, integral1DNRcpp, integral2DNRcpp
     
 hdot.cpp
-    hdotpolycpp()  # used in pdot() only
+    # used in pdot() only
+    # pdot used in fx.total()
+    hdotpolycpp()  
             uses hintegral1DNRcpp, hintegral2DNRcpp, integral1DNRcpp, integral2DNRcpp
     
-polygonN.cpp
+polygonNR.cpp
     defines hintegral1DNRcpp, hintegral2DNRcpp(), integral1DNRcpp(), integral2DNRcpp()
 
-prwipolygon.cpp
+prwipolygon.cpp     # used model fitting only (generalsecrloglik) 
     polygonhistoriescpp()
 
-prwipolygonfxi.cpp
+prwipolygonfxi.cpp  # used allhistpolygonfxi() only (fxi.secr) 
      polygonfxicpp()
 
+pdot is used in --
+
+## esa*
+## esa.plot
+## pdot.contour
+
+# fixed
+
+## fx.total*
+
+# poly supppressed in secr
+
+## reparameterize.esa
+## CVa
+## CVpdot
+## make.mask (pdot option restricted to point detectors)
+## [bias.D  disabled]
+## MCgof
+
+# defunct in 4.7.0
+
+## derivedSystematic
 
 # remaining in 'secr'
 =====================

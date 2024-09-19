@@ -35,28 +35,30 @@ importFrom (RcppParallel,
     setThreadOptions, 
     defaultNumThreads)
 
-export (secrpoly.fit)
-
 importFrom(sf, 
     st_as_sf, 
     st_as_sfc, 
     st_bbox, 
     st_cast,
-    st_centroid, 
-    st_crs, 
-    "st_crs<-", 
     st_distance, 
     st_geometry, 
     st_geometry_type, 
-    st_length, 
     st_linestring, 
     st_nearest_feature, 
-    st_nearest_points, 
-    st_point, 
     st_polygon,
     st_sf,
-    st_sfc, 
-    st_within)
+    st_sfc)
+
+export (secrpoly.fit)
+export (fxi.secr)
+export (fxi.contour)
+export (fxi.mode)
+export (fx.total)
+
+export (esa)
+export (esa.plot)
+export (pdot)
+export (pdot.contour)
 
 useDynLib (secrpoly)
 ## DEBUGGING ONLY (cpp functions not documented)

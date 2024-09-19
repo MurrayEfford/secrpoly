@@ -21,6 +21,10 @@ polygonfxicpp <- function(nc, detectfn, grain, ncores, minp, binomN, w, xy, star
     .Call('_secrpoly_polygonfxicpp', PACKAGE = 'secrpoly', nc, detectfn, grain, ncores, minp, binomN, w, xy, start, group, hk, H, gsbval, pID, mask, density, PIA, Tsk, h, hindex, mbool)
 }
 
+simplehistoriesfxicpp <- function(x, mm, nc, cc, grain, ncores, binomN, w, group, gk, hk, density, PIA, Tsk, h, hindex) {
+    .Call('_secrpoly_simplehistoriesfxicpp', PACKAGE = 'secrpoly', x, mm, nc, cc, grain, ncores, binomN, w, group, gk, hk, density, PIA, Tsk, h, hindex)
+}
+
 ontransectcpp <- function(xy, transect, n1, n2, tol) {
     .Call('_secrpoly_ontransectcpp', PACKAGE = 'secrpoly', xy, transect, n1, n2, tol)
 }

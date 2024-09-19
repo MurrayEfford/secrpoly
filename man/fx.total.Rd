@@ -88,9 +88,9 @@ a habitat mask where the main or only contribution is from D.nc.
 
 \examples{
 
-\dontrun{
+\donttest{
 
-tmp <- fx.total(secrdemo.0)
+tmp <- fx.total(FTHL.fit)
 
 ## to plot we must name one of the covariates:
 ## the Dsurface default 'D.0' causes an error 
@@ -103,13 +103,7 @@ if (interactive()) {
     spotHeight(tmp, prefix = 'D.sum')
 }
 
-fxsurface <- fx.total(ovenbird.model.D, sessnum = 3)
-plot(fxsurface, covariate = 'D.sum')
-
 }
 
 
 }
-
-\keyword{ model }
-

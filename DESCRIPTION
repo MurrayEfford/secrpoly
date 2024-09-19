@@ -42,5 +42,7 @@ LinkingTo:
     RcppParallel
 VignetteBuilder: knitr
 License: GPL (>= 2)
+LazyData: yes
+LazyDataCompression: xz
 SystemRequirements: GNU make
 URL: https://www.otago.ac.nz/density/

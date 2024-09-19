@@ -19,7 +19,7 @@
 
 ## * has ncores argument
 
-pdot <- function (X, traps, detectfn = 0, detectpar = list(g0 = 0.2, sigma = 25, z = 1),
+pdot <- function (X, traps, detectfn = 14, detectpar = list(g0 = 0.2, sigma = 25, z = 1),
                   noccasions = NULL, binomN = NULL, userdist = NULL, ncores = NULL) {
 
     ## X should be 2-column dataframe, mask, matrix or similar
@@ -30,7 +30,7 @@ pdot <- function (X, traps, detectfn = 0, detectpar = list(g0 = 0.2, sigma = 25,
 
     if (is.character(detectfn))
         detectfn <- detectionfunctionnumber(detectfn)
-    if ((detectfn > 9) & (detectfn<14) & is.null(detectpar$cutval))
+    if ((detectfn > 9) && (detectfn<14) && is.null(detectpar$cutval))
         stop ("requires 'cutval' for detectfn 10:13")
     if (ms(traps))
         stop ("requires single-session traps")
@@ -38,7 +38,7 @@ pdot <- function (X, traps, detectfn = 0, detectpar = list(g0 = 0.2, sigma = 25,
     truncate <- ifelse(is.null(detectpar$truncate), 1e+10, detectpar$truncate)
 
     detectpars <- unlist(detectpar[parnames(detectfn)])
-    if ((detectfn>9) & (detectfn<14))  detectpars <- c(detectpars, detectpar$cutval)
+    if ((detectfn>9) && (detectfn<14))  detectpars <- c(detectpars, detectpar$cutval)
     if (length(detectpars)<3) detectpars <- c(detectpars,0)
     miscparm <- numeric(4);   ## dummy
 
@@ -68,7 +68,7 @@ pdot <- function (X, traps, detectfn = 0, detectpar = list(g0 = 0.2, sigma = 25,
     if (!inherits(X, 'mask')) {
         X <- matrix(unlist(X), ncol = 2)
     }
-    if (all(detector(traps) %in% .localstuff$polygondetectors)) {
+    if (all(detector(traps) %in% .localstuff$polydetectors)) {
         if (!is.null(userdist))
             stop("userdist incompatible with polygon-like detectors")
         if (!(detectfn %in% 14:20))
@@ -81,7 +81,7 @@ pdot <- function (X, traps, detectfn = 0, detectpar = list(g0 = 0.2, sigma = 25,
         dim <- if (any(detector(traps) %in% c('transect', 'transectX'))) 1 else 2
             
         warning("assuming convex polygons in pdot()")
-        temp <- hdotpolycpp (
+        temp <- secrpoly:::hdotpolycpp (
           as.matrix(X),
           as.matrix(traps),
           as.matrix(usge),
@@ -100,7 +100,7 @@ pdot <- function (X, traps, detectfn = 0, detectpar = list(g0 = 0.2, sigma = 25,
 }
 ############################################################################################
 
-pdot.contour <- function (traps, border = NULL, nx = 64, detectfn = 0,
+pdot.contour <- function (traps, border = NULL, nx = 64, detectfn = 14,
                           detectpar = list(g0 = 0.2, sigma = 25, z = 1),
                           noccasions = NULL, binomN = NULL,
                           levels = seq(0.1, 0.9, 0.1),

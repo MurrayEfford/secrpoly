@@ -1,8 +1,7 @@
 ##############################################################################
-## package 'secr'
-## fxi.R
-## 2019-08-17 fxi.secr uses C++ call
-## 2022-02-13 'sp' now in suggests
+## package 'secrpoly'
+## fxipoly.R
+## 2024-09-19 built on secr
 ###############################################################################
 
 fxi2SPDF <- function (x, ID, levels) {
@@ -203,6 +202,39 @@ fx.total <- function (object, sessnum = 1, mask = NULL, ncores = NULL, ...)
 
 ###############################################################################
 
+allhistfxi <- function (m, realparval, haztemp, gkhk, pi.density, PIA, usge,
+                        CH, binomN, grp, pmixn, grain, ncores) {
+    nc <- nrow(CH)
+    nmix <- nrow(pmixn)
+    sump <- matrix(0, nrow = nc, ncol = m)
+    for (x in 1:nmix) {
+        hx <- if (any(binomN==-2)) matrix(haztemp$h[x,,], nrow = m) else -1 ## lookup sum_k (hazard)
+        hi <- if (any(binomN==-2)) haztemp$hindex else -1                   ## index to hx
+        
+        temp <- simplehistoriesfxicpp(
+            as.integer(x-1),
+            as.integer(m),
+            as.integer(nc),
+            as.integer(nrow(realparval)),
+            as.integer(grain),
+            as.integer(ncores),
+            as.integer(binomN),
+            as.integer(CH),   
+            as.integer(grp)-1L,
+            as.double (gkhk$gk),     ## precomputed probability 
+            as.double (gkhk$hk),     ## precomputed hazard
+            as.matrix (pi.density),
+            as.integer(PIA),
+            as.matrix(usge),
+            as.matrix (hx),                
+            as.matrix (hi))
+        ## 2024-09-09 purge uncomputed values for robustness
+        temp[is.na(temp)] <- 0
+        sump <- sump + sweep(temp, MARGIN=1, STATS = pmixn[x,], FUN = "*")
+    }
+    sump
+}
+
 allhistpolygonfxi <- function (
         detectfn, realparval, haztemp, hk, H, pi.density, PIA, 
         CH, xy, binomNcode, grp, usge, mask, 
@@ -345,9 +377,15 @@ fxi.secr <- function (object, i = NULL, sessnum = 1, X = NULL, ncores = NULL) {
                   NE, D, miscparm, Xrealparval, grain, ncores)
   haztemp <- gethazard (data$m, data$binomNcode, nrow(realparval), gkhk$hk, PIA, data$usge)
   
-  prmat <- allhistpolygonfxi (object$detectfn, Xrealparval, haztemp, gkhk$hk, gkhk$H, pimask, PIA, 
-                              CH, xy, data$binomNcode, grp, data$usge, data$mask,
-                              pmix, data$maskusage, grain, ncores, object$details$minprob)
+  if (data$dettype[1] %in% c(0,1,2,5,8,13)) {
+      prmat <- allhistfxi (data$m, Xrealparval, haztemp, gkhk, pimask, PIA, data$usge,
+                           CH, data$binomNcode, grp, pmix, grain, ncores)
+  }
+  else {
+      prmat <- allhistpolygonfxi (object$detectfn, Xrealparval, haztemp, gkhk$hk, gkhk$H, pimask, PIA, 
+                                  CH, xy, data$binomNcode, grp, data$usge, data$mask,
+                                  pmix, data$maskusage, grain, ncores, object$details$minprob)
+  }
   
   pisum <- apply(prmat,1,sum)
   
@@ -360,9 +398,18 @@ fxi.secr <- function (object, i = NULL, sessnum = 1, X = NULL, ncores = NULL) {
         sessnum, NE, D, miscparm, Xrealparval, grain, ncores)
     haztempX <- gethazard (nX, data$binomNcode, nrow(Xrealparval), gkhkX$hk, PIA, data$usge)
     maskusage <- maskboolean(object$capthist, X, object$details$maxdistance)
-    prmatX <- allhistpolygonfxi (object$detectfn, Xrealparval, haztempX, gkhkX$hk, gkhkX$H, piX, PIA, 
-                                 CH, xy, data$binomNcode, grp, data$usge, X,
-                                 pmix, maskusage, object$details$grain, ncores, object$details$minprob)
+    if (data$dettype[1] %in% c(0,1,2,5,8,13)) {
+        ## point detectors
+        prmatX <- allhistfxi (nX, Xrealparval, haztempX, gkhkX, piX, PIA, data$usge,
+                              CH, data$binomNcode, grp, pmix, object$details$grain, ncores)
+    }
+    else {
+        ## polygon-like detectors
+        maskusage <- maskboolean(object$capthist, X, object$details$maxdistance)  # 2024-01-30
+        prmatX <- allhistpolygonfxi (object$detectfn, Xrealparval, haztempX, gkhkX$hk, gkhkX$H, piX, PIA, 
+                                     CH, xy, data$binomNcode, grp, data$usge, X,
+                                     pmix, maskusage, object$details$grain, ncores, object$details$minprob)
+    }
     out <- sweep(prmatX, MARGIN=1, STATS=pisum, FUN="/")
   }
   out <- as.list(as.data.frame(t(out)))

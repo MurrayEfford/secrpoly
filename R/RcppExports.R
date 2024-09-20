@@ -13,12 +13,12 @@ makegkPolygoncpp <- function(detectfn, dim, convex, grain, ncores, gsbval, cumk,
     .Call('_secrpoly_makegkPolygoncpp', PACKAGE = 'secrpoly', detectfn, dim, convex, grain, ncores, gsbval, cumk, traps, mask)
 }
 
-polygonhistoriescpp <- function(nc, detectfn, grain, ncores, minp, binomN, w, xy, start, group, hk, H, gsbval, pID, mask, density, PIA, Tsk, h, hindex, mbool, debug) {
-    .Call('_secrpoly_polygonhistoriescpp', PACKAGE = 'secrpoly', nc, detectfn, grain, ncores, minp, binomN, w, xy, start, group, hk, H, gsbval, pID, mask, density, PIA, Tsk, h, hindex, mbool, debug)
+polygonhistoriescpp <- function(nc, detectfn, grain, ncores, minp, binomN, w, xy, start, group, hk, H, gsbval, pID, mask, density, PIA, Tsk, h, hindex, debug) {
+    .Call('_secrpoly_polygonhistoriescpp', PACKAGE = 'secrpoly', nc, detectfn, grain, ncores, minp, binomN, w, xy, start, group, hk, H, gsbval, pID, mask, density, PIA, Tsk, h, hindex, debug)
 }
 
-polygonfxicpp <- function(nc, detectfn, grain, ncores, minp, binomN, w, xy, start, group, hk, H, gsbval, pID, mask, density, PIA, Tsk, h, hindex, mbool) {
-    .Call('_secrpoly_polygonfxicpp', PACKAGE = 'secrpoly', nc, detectfn, grain, ncores, minp, binomN, w, xy, start, group, hk, H, gsbval, pID, mask, density, PIA, Tsk, h, hindex, mbool)
+polygonfxicpp <- function(nc, detectfn, grain, ncores, minp, binomN, w, xy, start, group, hk, H, gsbval, pID, mask, density, PIA, Tsk, h, hindex) {
+    .Call('_secrpoly_polygonfxicpp', PACKAGE = 'secrpoly', nc, detectfn, grain, ncores, minp, binomN, w, xy, start, group, hk, H, gsbval, pID, mask, density, PIA, Tsk, h, hindex)
 }
 
 simplehistoriesfxicpp <- function(x, mm, nc, cc, grain, ncores, binomN, w, group, gk, hk, density, PIA, Tsk, h, hindex) {

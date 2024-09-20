@@ -13,7 +13,7 @@
 
 #--------------------------------------------------------------------------------
 allhistpolygon <- function (detectfn, realparval, haztemp, hk, H, pi.density, PIA, 
-                           CH, xy, binomNcode, grp, usge, mask, pmixn, maskusage,
+                           CH, xy, binomNcode, grp, usge, mask, pmixn, 
                            grain, ncores, minprob, debug=FALSE) {
   nc <- nrow(CH)
   m <- nrow(pi.density)
@@ -45,7 +45,6 @@ allhistpolygon <- function (detectfn, realparval, haztemp, hk, H, pi.density, PI
         as.matrix(usge),
         as.matrix (hx),                
         as.matrix (hi),      
-        as.matrix(maskusage),
         as.integer(debug)
       )
       sump <- sump + pmixn[x,] * temp
@@ -58,16 +57,15 @@ allhistpolygon <- function (detectfn, realparval, haztemp, hk, H, pi.density, PI
 #--------------------------------------------------------------------------------
 
 integralprw1poly <- function (detectfn, realparval0, haztemp, hk, H, pi.density, PIA0, 
-                              CH0, binomNcode, grp, usge, mask, pmixn, maskusage,
+                              CH0, binomNcode, grp, usge, mask, pmixn, 
                               grain, ncores, minprob, debug = FALSE) {
-    
   nc <- dim(PIA0)[2]
   nr <- nrow(CH0)       ## unique naive animals (1 or nc)
   m <- nrow(pi.density)
   nmix <- nrow(pmixn)
-  if (length(grp)<=1) grp <- rep(1,nc)
+  if (length(grp)<=1) grp <- rep(1,nr)
   s <- ncol(usge)
-  ngroup <- length(levels(grp))
+  ngroup <- max(length(unique(grp)),1) # length(levels(grp))
   sump <- numeric(nc)
   for (x in 1:nmix) {
       hx <- if (any(binomNcode==-2)) matrix(haztemp$h[x,,], nrow = m) else -1 ## sum_k (hazard)
@@ -82,20 +80,19 @@ integralprw1poly <- function (detectfn, realparval0, haztemp, hk, H, pi.density,
         as.double(minprob),          
         as.integer(binomNcode),
         as.integer(CH0),   
-        as.matrix(0L),  # empty for null history
-        as.vector(0L),  # empty for null history
+        as.matrix(0L),   # empty for null history
+        as.integer(0L),  # empty for null history
         as.integer(g)-1L,
         as.double(hk),
         as.double(H),
         as.matrix(realparval0),
-        matrix(1,nrow=s, ncol=nmix),  ## pID?
+        matrix(1, nrow=s, ncol=nmix),  ## pID?
         as.matrix(mask),
         as.matrix (pi.density),
         as.integer(PIA0[1,1:nr,,,x]),
         as.matrix(usge),
         as.matrix (hx),                
         as.matrix (hi),      
-        as.matrix(maskusage),
         as.integer(debug)
       )
       if (nr == 1) temp <- rep(temp, nc)
@@ -219,7 +216,7 @@ generalsecrloglikfn <- function (
     else {
         prw <- allhistpolygon (detectfn, Xrealparval, haztemp, gkhk$hk, gkhk$H, pi.density, PIA, 
                                data$CH, data$xy, data$binomNcode, data$grp, data$usge, data$mask,
-                               pmixn, data$maskusage, details$grain, details$ncores, details$minprob,
+                               pmixn, details$grain, details$ncores, details$minprob,
                                debug = details$debug>3)
     }    
     ## polygon types
@@ -243,7 +240,7 @@ generalsecrloglikfn <- function (
     else {
         pdot <- integralprw1poly (detectfn, Xrealparval0, haztemp, gkhk$hk, 
                                   gkhk$H, pi.density, PIA0, data$CH0, data$binomNcode, data$grp, 
-                                  data$usge, data$mask, pmixn, data$maskusage, details$grain, 
+                                  data$usge, data$mask, pmixn, details$grain, 
                                   details$ncores, details$minprob, debug = details$debug>3)
     }
     

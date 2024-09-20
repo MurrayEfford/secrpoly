@@ -1,7 +1,7 @@
 ############################################################################################
 ## package 'secrpoly'
 ## esa.R
-## 2024-01-29
+## 2024-09-20
 ############################################################################################
 
 esa <- function (object, sessnum = 1, beta = NULL, real = NULL, noccasions = NULL, ncores = NULL)
@@ -20,11 +20,14 @@ esa <- function (object, sessnum = 1, beta = NULL, real = NULL, noccasions = NUL
     else
         capthists <- object$capthist
 
-    # 2023-06-01
     if (nrow(capthists) == 0) {
         return (numeric(0))    
     }
+    if (!all(detector(traps(capthists)) %in% .localstuff$polydetectors)) {
+        return(secr::esa(object, sessnum, beta, real, noccasions, ncores))
+    }
     
+    # Remainder applies only to polydetectors
     if (ms(object$mask))
         mask <- object$mask[[sessnum]]
     else
@@ -39,6 +42,8 @@ esa <- function (object, sessnum = 1, beta = NULL, real = NULL, noccasions = NUL
     n       <- max(nrow(capthists), 1)
     s       <- ncol(capthists)
     dettype <- detectorcode(trps, noccasions = s)
+    
+    
     constant <- !is.null(noccasions)    ## fix 2011-04-07
     if (is.null(noccasions)) {
         noccasions <- s
@@ -138,32 +143,33 @@ esa <- function (object, sessnum = 1, beta = NULL, real = NULL, noccasions = NUL
           pi.density <- matrix(1/m, nrow=m, ncol=1)
           ncores <- setNumThreads(ncores)  
           grain <- if (ncores==1) 0 else 1
-          gkhk <- makegk (dettype, object$detectfn, trps, mask, object$details, sessnum, NE, 
+          gkhk <- secrpoly:::makegk (dettype, object$detectfn, trps, mask, object$details, sessnum, NE, 
                           pi.density, miscparm, Xrealparval0, grain, ncores)
-          CH0 <- nullCH (c(n,s,K), object$design0$individual)
-          binomNcode <- recodebinomN(dettype, binomN)
+          if (any(dettype==0)) {
+              CH0 <- nullCH (c(n,s), object$design0$individual)
+          }
+          else {
+              CH0 <- nullCH (c(n,s,K), object$design0$individual)
+          }
+          binomNcode <- recodebinomN(dettype, binomN, telemcode(trps))
           pmixn <- getpmix (knownclass, PIA0, Xrealparval0)
-          haztemp <- gethazard(m, binomNcode, nrow(Xrealparval0), gkhk$hk, PIA0, usge)
-          
-          pdot <- integralprw1poly (
-              object$detectfn, 
-              Xrealparval0, 
-              haztemp, 
-              gkhk$hk, 
-              gkhk$H, 
-              pi.density, 
-              PIA0, 
-              CH0, 
-              binomNcode, 
-              grp = rep(1,n),
-              usge, 
-              mask, 
-              pmixn, 
-              object$details$maskusage, 
-              grain, 
-              ncores, 
-              object$details$minprob, 
-              debug = object$details$debug>3)
+          pdot <- secrpoly:::integralprw1poly (
+              detectfn    = object$detectfn,
+              realparval0 = Xrealparval0, 
+              haztemp     = gethazard(m, binomNcode, nrow(Xrealparval0), gkhk$hk, PIA0, usge), 
+              hk          = gkhk$hk, 
+              H           = gkhk$H, 
+              pi.density  = pi.density, 
+              PIA0        = PIA0, 
+              CH0         = CH0, 
+              binomNcode  = binomNcode, 
+              grp         = rep(1,n),
+              usge        = usge, 
+              mask        = mask, 
+              pmixn       = pmixn, 
+              grain       = grain, 
+              ncores      = ncores, 
+              minprob     = object$details$minprob)
           
           pdot * cellsize * m
         }

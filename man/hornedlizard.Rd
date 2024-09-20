@@ -3,7 +3,8 @@
 
 \alias{hornedlizard}
 \alias{hornedlizardCH}
-\alias{FTHL.fit}
+\alias{FTHL.0}
+\alias{FTHL.CL}
 
 \title{ Flat-tailed Horned Lizard Dataset }
 
@@ -67,7 +68,8 @@ to specify `binomN = 1' in secr.fit.
 \tabular{ll}{
   Object \tab Description \cr
   hornedlizardCH \tab single-session capthist object \cr
-  FTHL.fit \tab fitted model (see Examples) \cr
+  FTHL.0 \tab fitted model (see Examples) \cr
+  FTHL.CL \tab fitted model (see Examples) \cr
 }
 
 }
@@ -118,10 +120,13 @@ head(xy(hornedlizardCH))
 
 ## Compare default (Poisson) and binomial models for number
 ## caught
-FTHL.fit <- secr.fit(hornedlizardCH, buffer = 80)
-FTHLbn.fit <- secr.fit(hornedlizardCH, buffer = 80, details =
+FTHL.0 <- secr.fit(hornedlizardCH, buffer = 80)
+FTHL.bn <- secr.fit(hornedlizardCH, buffer = 80, details =
     list(distribution = "binomial"))
 collate(FTHL.fit, FTHLbn.fit)[,,,"D"]
+
+## Conditional likelihood
+FTHL.CL <- secr.fit(hornedlizardCH, buffer = 80, CL = TRUE)
 
 }
 

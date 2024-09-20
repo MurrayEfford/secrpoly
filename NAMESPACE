@@ -55,6 +55,8 @@ export (fxi.contour)
 export (fxi.mode)
 export (fx.total)
 
+S3method(derived, secrpoly)
+
 export (esa)
 export (esa.plot)
 export (pdot)

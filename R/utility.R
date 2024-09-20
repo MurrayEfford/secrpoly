@@ -1,7 +1,7 @@
 ################################################################################
 ## package 'secrpoly'
 ## utility.R
-## 2024-01-29
+## 2024-01-29, 2024-09-20
 ################################################################################
 
 # Global variables in namespace
@@ -12,11 +12,18 @@
 .localstuff$packageType <- ' pre-release'
 ##.localstuff$packageType <- ''
 
-.localstuff$validdetectors <- c('polygonX', 'transectX', 'polygon', 'transect')
-.localstuff$individualdetectors <- c('polygonX', 'transectX', 'polygon', 'transect')
+.localstuff$validdetectors <- c('single','multi','proximity','count', 
+                                'polygonX', 'transectX', 'signal', 'polygon', 'transect', 
+                                'capped', 'null','null','null','null', 'telemetry', 'signalnoise')
+.localstuff$simpledetectors <- c('single','multi','proximity','count', 'capped')
+.localstuff$individualdetectors <- c('single','multi','proximity','count',
+                                     'polygonX', 'transectX', 'signal', 'signalnoise', 'polygon', 'transect',
+                                     'telemetry', 'capped')
+.localstuff$pointdetectors <- c('single','multi','proximity','count',
+                                'signal', 'signalnoise', 'unmarked','presence','capped')
 .localstuff$polydetectors <- c('polygon','transect','polygonX','transectX')
-.localstuff$exclusivedetectors <- c('polygonX','transectX')
-.localstuff$countdetectors <- c('polygon','transect')
+.localstuff$exclusivedetectors <- c('single','multi','polygonX','transectX')
+.localstuff$countdetectors <- c('count','polygon','transect','unmarked','telemetry')
 .localstuff$iter <- 0   ## counter 1
 .localstuff$iter2 <- 0  ## counter 2
 .localstuff$detectionfunctions <-
@@ -139,27 +146,6 @@ new.param <- function (details, model, CL) {
     newparam
 }
 
-#-------------------------------------------------------------------------------
-
-detectorcode <- function (object, MLonly = TRUE, noccasions = NULL) {
-    ## numeric detector code from a traps object
-    detcode <- sapply(detector(object), switch,
-        polygonX    = 3,
-        transectX   = 4,
-        polygon     = 6,
-        transect    = 7,
-        -2)
-    
-    if (MLonly) {
-        detcode <- ifelse (detcode==-1, rep(0,length(detcode)), detcode)
-        if (any(detcode<0))
-            stop ("Unrecognised detector type")
-    }
-
-    if (!is.null(noccasions) & (length(detcode)==1))
-        detcode <- rep(detcode, noccasions)
-    detcode
-}
 #-------------------------------------------------------------------------------
 
 expanddet <- function(CH) {
@@ -768,3 +754,114 @@ selectCHsession <- function(capthist, sessnum) {
 }
 
 #-------------------------------------------------------------------------------
+
+getk <- function(traps) {
+    if (!all(detector(traps) %in% .localstuff$polydetectors)) {
+        nrow(traps)
+    }
+    else {
+        if (all(detector(traps) %in% c('polygon','polygonX'))) {        
+            k <- table(polyID(traps))       
+        }
+        else if (all(detector(traps) %in% c('transect','transectX'))) {        
+            k <- table(transectID(traps))   # transectX, transect
+        }
+        else stop ("unrecognised poly detector type")
+        c(k,0) ## zero terminate
+    }
+}
+#--------------------------------------------------------------------------------
+
+nullCH <- function (dimCH, individual) {
+    if (is.null(individual)) {
+        individual <- TRUE   ## 2020-05-16 for backward compatibility
+    }
+    if (!individual) {
+        dimCH[1] <- 1
+    }
+    array(0, dim = dimCH)
+}
+#--------------------------------------------------------------------------------
+
+telemcode <- function(object, ...) {
+    if (inherits(object, 'traps') && !ms(object))
+        switch (telemetrytype(object), none = 0, 
+                independent = 1, dependent = 2, concurrent = 3, 0)
+    else 
+        NA
+}
+
+#-------------------------------------------------------------------------------
+
+recodebinomN <- function (dettype, binomN, telemcode) {
+    binomN <- expandbinomN(binomN, dettype)
+    detectr <- .localstuff$validdetectors[dettype+2]
+    detectr[(detectr %in% c('count','polygon', 'transect')) & (binomN == 0)] <- "poissoncount"
+    detectr[(detectr %in% c('count','polygon', 'transect')) & (binomN > 0)]  <- "binomialcount"
+    newbinomN <- function (det,N) {
+        recoded <- switch(det, 
+                          single = -2, multi = -2, polygonX = -2, transectX = -2,
+                          proximity = -1, signal = -1, capped = -1, 
+                          poissoncount = 0, binomialcount = N, telemetry = -3, -9)
+        ## dummy value -9 indicates no action
+        if (recoded == -3 && telemcode == 0) recoded <- -7
+        recoded
+    }
+    out <- mapply(newbinomN, detectr, binomN)
+    if (any(out < -9))
+        stop("secrpoly not ready for detector type")
+    out
+}
+#--------------------------------------------------------------------------------
+
+getpID <- function(PIA, realparval, MRdata)
+{
+    ss <- dim(PIA)[3]
+    nmix <- dim(PIA)[5]
+    pID <- matrix(1, nrow = ss, ncol = nmix)
+    if ('pID' %in% colnames(realparval)) {
+        nc <- dim(PIA)[2]
+        if (!is.null(MRdata$Tm) || !is.null(MRdata$Tn)) {
+            for (s in 1:ss) {
+                if (MRdata$markocc[s]<1)
+                    for (x in 1:nmix) {
+                        k <- match(TRUE, PIA[1,1,s,,x]>0)
+                        c <- PIA[1,1,s,k,x]
+                        pID[s,x] <- realparval[c, 'pID'] 
+                    }
+            }
+        }
+    }
+    pID
+}
+#--------------------------------------------------------------------------------
+
+## mixture proportions by animal        
+## assume dim(PIA)[1] == 1
+getpmix <- function(knownclass, PIA, realparval)
+{
+    nc <- dim(PIA)[2]
+    # not needed nc <- length(knownclass)   ## 2020-11-04
+    k <- dim(PIA)[4]
+    nmix <- dim(PIA)[5]
+    pmixn <- matrix(1, nrow = nmix, ncol = nc)
+    pmix <- numeric(nmix)
+    if (nmix>1) {
+        # index of first non-missing occasion s and detector k
+        fsk <- sapply(1:nc, function(i) firstsk(PIA[1,i,,,1, drop = FALSE]))
+        kc <- as.vector((fsk-1) %/% k + 1)
+        sc <- as.vector((fsk-1) %/% k + 1)
+        for (x in 1:nmix) {
+            c <- PIA[cbind(1,1:nc,sc,kc,x)]
+            pmixx <- realparval[c, 'pmix']    ## NOT CONSISTENT WITH pmix numeric(nmix)
+            ## knownclass=2 maps to x=1 
+            pmixn[x,] <- ifelse (knownclass > 1,
+                                 ifelse (knownclass == (x+1), 1, 0),
+                                 pmixx)
+        }
+        ## need pmix for each group... not ready yet
+        attr(pmixn, 'pmix') <-  realparval[PIA[cbind(1,1,sc[1],kc[1],1:nmix)],'pmix']
+    }
+    pmixn
+}
+#--------------------------------------------------------------------------------

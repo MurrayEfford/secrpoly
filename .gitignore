@@ -9,3 +9,4 @@ src/*.dll
 ^testing.R$
 ^secrpoly.Rproj$
 extraR
+proposal.txt

@@ -24,8 +24,6 @@ struct polygonfxi : public Worker {
   const RMatrix<double> h;
   const RMatrix<int>    hindex;
   
-  const RMatrix<int>    mbool;      // appears cannot use RMatrix<bool>
-
   // working variables
   int  mm, nk, ss, cc;
   
@@ -55,13 +53,11 @@ struct polygonfxi : public Worker {
     const NumericMatrix h,
     const IntegerMatrix hindex, 
     
-    const LogicalMatrix mbool,
-    
     NumericMatrix output)
     :
     nc(nc), detectfn(detectfn), grain(grain), minp(minp), 
     binomN(binomN), w(w), xy(xy), start(start), group(group), hk(hk), H(H), gsbval(gsbval), 
-    pID(pID), mask(mask), density(density), PIA(PIA), Tsk(Tsk),  h(h), hindex(hindex), mbool(mbool),
+    pID(pID), mask(mask), density(density), PIA(PIA), Tsk(Tsk),  h(h), hindex(hindex), 
     output(output) {
     // now can initialise these derived counts
     mm = mask.nrow();       // number of polygons (detectors)
@@ -138,14 +134,9 @@ struct polygonfxi : public Worker {
               // Not found at any detector on occasion s 
               if (k < 0) {
                   for (m=0; m<mm; m++) {
-                      if (mbool(n,m)) {
-                          Htemp = h(m, hindex(n,s));
-                          //if (Htemp > fuzz)
-                              pm[m] *= exp(-Htemp);
-                      }
-                      else {
-                          pm[m] = 0.0;
-                      }
+                      Htemp = h(m, hindex(n,s));
+                      //if (Htemp > fuzz)
+                      pm[m] *= exp(-Htemp);
                   }
               }
               // detected at detector k on occasion s
@@ -155,23 +146,18 @@ struct polygonfxi : public Worker {
                   if (c >= 0) {    // ignore unused detectors 
                       Tski = Tsk(k,s);
                       for (m=0; m<mm; m++) {
-                          if (mbool(n,m)) {
-                              gi  = i3(c,k,m,cc,nk);
-                              Htemp = h(m, hindex(n,s));
-                              pm[m] *=  Tski * (1-exp(-Htemp)) *  hk[gi] / Htemp;
-                              // if ((grain==0) && (m==1000)) {
-                              //     Rprintf("pm[m]  %10.7e hk[gi] %10.7e gsbval(c,0) %10.7e H[c] %10.7e \n", pm[m], hk[gi], gsbval(c,0), H[c]);
-                              // }
-                              // for each detection compute pdf(xy) | detected 
-                              if (pm[m] > minp) {               // avoid underflow 
-                                  // retrieve hint = integral2D(zfn(x) over k)) 
-                                  hint = hk[gi] / gsbval(c,0) * H[c];  
-                                  pm[m] *= zcpp(start[w3], m, c, gsbval, xy, mask) / hint;
-                                  // if ((grain==0) & (m==1000)) Rprintf("n %4d j %4d pm[m]  %10.7e hk[gi] %10.7e gsbval(c,0) %10.7e H[c] %10.7e hint %10.7e with zcpp\n", n, start[i3(n,s,k,nc,ss)], pm[m], hk[gi], gsbval(c,0), H[c], hint);
-                              }
-                          }
-                          else {
-                              pm[m] = 0.0;
+                          gi  = i3(c,k,m,cc,nk);
+                          Htemp = h(m, hindex(n,s));
+                          pm[m] *=  Tski * (1-exp(-Htemp)) *  hk[gi] / Htemp;
+                          // if ((grain==0) && (m==1000)) {
+                          //     Rprintf("pm[m]  %10.7e hk[gi] %10.7e gsbval(c,0) %10.7e H[c] %10.7e \n", pm[m], hk[gi], gsbval(c,0), H[c]);
+                          // }
+                          // for each detection compute pdf(xy) | detected 
+                          if (pm[m] > minp) {               // avoid underflow 
+                              // retrieve hint = integral2D(zfn(x) over k)) 
+                              hint = hk[gi] / gsbval(c,0) * H[c];  
+                              pm[m] *= zcpp(start[w3], m, c, gsbval, xy, mask) / hint;
+                              // if ((grain==0) & (m==1000)) Rprintf("n %4d j %4d pm[m]  %10.7e hk[gi] %10.7e gsbval(c,0) %10.7e H[c] %10.7e hint %10.7e with zcpp\n", n, start[i3(n,s,k,nc,ss)], pm[m], hk[gi], gsbval(c,0), H[c], hint);
                           }
                       }
                   }
@@ -206,21 +192,16 @@ struct polygonfxi : public Worker {
                   if (c >= 0) {                          // skip if this polygon not used 
                       Tski = Tsk(k,s);
                       for (m=0; m<mm; m++) {
-                          if (mbool(n,m)) {
-                              gi  = i3(c,k,m,cc,nk);
-                              pm[m] *= pski(binomN[s], count, Tski, hk[gi], 1.0);
-                              
-                              // for each detection, pdf(xy) | detected 
-                              if ((pm[m] > minp) && (count>0)) {       // avoid underflow
-                                  // retrieve hint = integral2D(zfn(x) over k)) 
-                                  hint = hk[gi] / gsbval(c,0) * H[c];  
-                                  for (j=start[w3]; j < start[w3]+count; j++) {
-                                      pm[m] *= zcpp(j, m, c, gsbval, xy, mask) / hint;
-                                  }
+                          gi  = i3(c,k,m,cc,nk);
+                          pm[m] *= pski(binomN[s], count, Tski, hk[gi], 1.0);
+                          
+                          // for each detection, pdf(xy) | detected 
+                          if ((pm[m] > minp) && (count>0)) {       // avoid underflow
+                              // retrieve hint = integral2D(zfn(x) over k)) 
+                              hint = hk[gi] / gsbval(c,0) * H[c];  
+                              for (j=start[w3]; j < start[w3]+count; j++) {
+                                  pm[m] *= zcpp(j, m, c, gsbval, xy, mask) / hint;
                               }
-                          }
-                          else {
-                              pm[m] = 0.0;
                           }
                       }
                   }
@@ -255,21 +236,16 @@ struct polygonfxi : public Worker {
                   if (c >= 0) {                          // skip if this transect not used 
                       Tski = Tsk(k,s);
                       for (m=0; m<mm; m++) {
-                          if (mbool(n,m)) {
-                              gi  = i3(c,k,m,cc,nk);
-                              pm[m] *= pski(binomN[s], count, Tski, hk[gi], 1.0);
-                              
-                              // for each detection, pdf(xy) | detected 
-                              if ((pm[m] > minp) && (count>0)) {       // avoid underflow
-                                  // retrieve hint = integral2D(zfn(x) over k)) 
-                                  hint = hk[gi] / gsbval(c,0) * H[c];  
-                                  for (j=start[w3]; j < start[w3]+count; j++) {
-                                      pm[m] *= zcpp(j, m, c, gsbval, xy, mask) / hint;
-                                  }
+                          gi  = i3(c,k,m,cc,nk);
+                          pm[m] *= pski(binomN[s], count, Tski, hk[gi], 1.0);
+                          
+                          // for each detection, pdf(xy) | detected 
+                          if ((pm[m] > minp) && (count>0)) {       // avoid underflow
+                              // retrieve hint = integral2D(zfn(x) over k)) 
+                              hint = hk[gi] / gsbval(c,0) * H[c];  
+                              for (j=start[w3]; j < start[w3]+count; j++) {
+                                  pm[m] *= zcpp(j, m, c, gsbval, xy, mask) / hint;
                               }
-                          }
-                          else {
-                              pm[m] = 0.0;
                           }
                       }
                   }
@@ -325,8 +301,7 @@ NumericVector polygonfxicpp (
     const IntegerVector PIA,
     const NumericMatrix Tsk,
     const NumericMatrix h,
-    const IntegerMatrix hindex, 
-    const LogicalMatrix mbool
+    const IntegerMatrix hindex
     
 ) {
     
@@ -335,7 +310,7 @@ NumericVector polygonfxicpp (
     
     // Construct and initialise
     polygonfxi somehist (nc, detectfn, grain, minp, binomN, w, xy, start, group, 
-                         hk, H, gsbval, pID, mask, density, PIA, Tsk, h, hindex, mbool,
+                         hk, H, gsbval, pID, mask, density, PIA, Tsk, h, hindex, 
                          output);
 
     if (ncores>1) {

@@ -4,60 +4,6 @@
 ## 2024-01-29
 ###############################################################################
 
-# gethazard exported by secr 4.7.0
-# gethazard <- function (m, binomN, cc, hk, PIA, usge) {
-#     nmix <- dim(PIA)[5]
-#     if (any(binomN == -2)) {   ## multi-catch trap
-#         nc <- dim(PIA)[2]
-#         s <- dim(PIA)[3]
-#         k <- dim(PIA)[4]
-#         haztemp <- gethcpp(
-#             as.integer(nc),
-#             as.integer(cc),
-#             as.integer(nmix),
-#             as.integer(k),
-#             as.integer(s),
-#             as.integer(m),
-#             as.integer(PIA),
-#             as.matrix(usge),
-#             as.double(hk))
-#         haztemp$h <- array(haztemp$h, dim = c(nmix, m, max(haztemp$hindex)+1))
-#         haztemp
-#     }
-#     else {
-#         list(h = array(-1, dim=c(nmix,1,1)), hindex = matrix(-1))
-#     }
-# }
-#--------------------------------------------------------------------------------
-## mixture proportions by animal        
-## assume dim(PIA)[1] == 1
-getpmix <- function(knownclass, PIA, realparval)
-{
-    nc <- dim(PIA)[2]
-    # not needed nc <- length(knownclass)   ## 2020-11-04
-    k <- dim(PIA)[4]
-    nmix <- dim(PIA)[5]
-    pmixn <- matrix(1, nrow = nmix, ncol = nc)
-    pmix <- numeric(nmix)
-    if (nmix>1) {
-        # index of first non-missing occasion s and detector k
-        fsk <- sapply(1:nc, function(i) firstsk(PIA[1,i,,,1, drop = FALSE]))
-        kc <- as.vector((fsk-1) %/% k + 1)
-        sc <- as.vector((fsk-1) %/% k + 1)
-        for (x in 1:nmix) {
-            c <- PIA[cbind(1,1:nc,sc,kc,x)]
-            pmixx <- realparval[c, 'pmix']    ## NOT CONSISTENT WITH pmix numeric(nmix)
-            ## knownclass=2 maps to x=1 
-            pmixn[x,] <- ifelse (knownclass > 1,
-                                 ifelse (knownclass == (x+1), 1, 0),
-                                 pmixx)
-        }
-        ## need pmix for each group... not ready yet
-        attr(pmixn, 'pmix') <-  realparval[PIA[cbind(1,1,sc[1],kc[1],1:nmix)],'pmix']
-    }
-    pmixn
-}
-#--------------------------------------------------------------------------------
 getmiscparm <- function(miscparm, detectfn, beta, parindx, cutval) {
     ## miscparm is used to package beta parameters that are not modelled
     ## and hence do not have a beta index specified by parindx.

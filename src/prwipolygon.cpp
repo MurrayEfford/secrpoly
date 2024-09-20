@@ -5,6 +5,8 @@ using namespace RcppParallel;
 
 //==============================================================================
 // 2019-08-19
+// 2024-09-20 drop mbool
+
 struct polygonhistories : public Worker {
   // input data
   const int             nc;
@@ -27,7 +29,6 @@ struct polygonhistories : public Worker {
   const RMatrix<double> h;
   const RMatrix<int>    hindex;
   
-  const RMatrix<int>    mbool;    
   const int debug;
 
   // working variables
@@ -59,14 +60,13 @@ struct polygonhistories : public Worker {
     const NumericMatrix h,
     const IntegerMatrix hindex, 
     
-    const LogicalMatrix mbool,
     const int           debug,
     
     NumericVector output)
     :
     nc(nc), detectfn(detectfn), grain(grain), minp(minp), 
     binomN(binomN), w(w), xy(xy), start(start), group(group), hk(hk), H(H), gsbval(gsbval), 
-    pID(pID), mask(mask), density(density), PIA(PIA), Tsk(Tsk),  h(h), hindex(hindex), mbool(mbool),
+    pID(pID), mask(mask), density(density), PIA(PIA), Tsk(Tsk),  h(h), hindex(hindex), 
     debug(debug), output(output) {
     // now can initialise these derived counts
     mm = mask.nrow();       // number of mask points
@@ -142,13 +142,8 @@ struct polygonhistories : public Worker {
               // Not found at any detector on occasion s 
               if (k < 0) {
                   for (m=0; m<mm; m++) {
-                      if (mbool(n,m)) {
-                          Htemp = h(m, hindex(n,s));
-                              pm[m] *= exp(-Htemp);
-                      }
-                      else {
-                          pm[m] = 0.0;
-                      }
+                      Htemp = h(m, hindex(n,s));
+                      pm[m] *= exp(-Htemp);
                   }
               }
               // detected at detector k on occasion s
@@ -158,19 +153,14 @@ struct polygonhistories : public Worker {
                   if (c >= 0) {    // ignore unused detectors 
                       Tski = Tsk(k,s);
                       for (m=0; m<mm; m++) {
-                          if (mbool(n,m)) {
-                              gi  = i3(c,k,m,cc,nk);
-                              Htemp = h(m, hindex(n,s));
-                              pm[m] *=  Tski * (1-exp(-Htemp)) *  hk[gi] / Htemp;
-                              // for each detection, pdf(xy) | detected 
-                              if (pm[m] > minp) {               // avoid underflow 
-                                  // retrieve hint = integral2D(zfn(x) over k)) 
-                                  hint = hk[gi] / gsbval(c,0) * H[c];  
-                                  pm[m] *= zcpp(start[w3], m, c, gsbval, xy, mask) / hint;
-                              }
-                          }
-                          else {
-                              pm[m] = 0.0;
+                          gi  = i3(c,k,m,cc,nk);
+                          Htemp = h(m, hindex(n,s));
+                          pm[m] *=  Tski * (1-exp(-Htemp)) *  hk[gi] / Htemp;
+                          // for each detection, pdf(xy) | detected 
+                          if (pm[m] > minp) {               // avoid underflow 
+                              // retrieve hint = integral2D(zfn(x) over k)) 
+                              hint = hk[gi] / gsbval(c,0) * H[c];  
+                              pm[m] *= zcpp(start[w3], m, c, gsbval, xy, mask) / hint;
                           }
                       }
                   }
@@ -206,22 +196,17 @@ struct polygonhistories : public Worker {
                       Tski = Tsk(k,s);
                       for (m=0; m<mm; m++) {
                           if (debug>0) Rprintf("k %d, m %d \n", k,m);
-                          if (mbool(n,m)) {
-                              gi  = i3(c,k,m,cc,nk);
-                              pm[m] *= pski(binomN[s], count, Tski, hk[gi], 1.0);
-                              
-                              // for each detection, pdf(xy) | detected 
-                              if ((pm[m] > minp) && (count>0)) {       // avoid underflow
-                                  // retrieve hint = integral2D(zfn(x) over k)) OR 1-D integral
-                                  hint = hk[gi] / gsbval(c,0) * H[c];  
-                                  for (j=start[w3]; j < start[w3]+count; j++) {
-                                    pm[m] *= zcpp(j, m, c, gsbval, xy, mask) / hint;
-                                      
-                                  }
+                          gi  = i3(c,k,m,cc,nk);
+                          pm[m] *= pski(binomN[s], count, Tski, hk[gi], 1.0);
+                          
+                          // for each detection, pdf(xy) | detected 
+                          if ((pm[m] > minp) && (count>0)) {       // avoid underflow
+                              // retrieve hint = integral2D(zfn(x) over k)) OR 1-D integral
+                              hint = hk[gi] / gsbval(c,0) * H[c];  
+                              for (j=start[w3]; j < start[w3]+count; j++) {
+                                  pm[m] *= zcpp(j, m, c, gsbval, xy, mask) / hint;
+                                  
                               }
-                          }
-                          else {
-                              pm[m] = 0.0;
                           }
                       }
                   }
@@ -259,32 +244,34 @@ NumericVector polygonhistoriescpp (
     const int           grain,
     const int           ncores,
     const double        minp,
+    
     const IntegerVector binomN,
     const IntegerVector w,
     const NumericMatrix xy,
     const IntegerVector start,
     const IntegerVector group,
+    
     const NumericVector hk,
     const NumericVector H,
     const NumericMatrix gsbval,
     const NumericMatrix pID,
     const NumericMatrix mask,
+    
     const NumericMatrix density,
     const IntegerVector PIA,
     const NumericMatrix Tsk,
     const NumericMatrix h,
     const IntegerMatrix hindex, 
-    const LogicalMatrix mbool,
     const int           debug
     ) {
   
   NumericVector output(nc);
   
   if (debug>0 && ncores==1) Rprintf("starting polygonhistoriescpp\n");
-  
+
   // Construct and initialise
   polygonhistories somehist (nc, detectfn, grain, minp, binomN, w, xy,
-                             start, group, hk, H, gsbval, pID, mask, density, PIA, Tsk, h, hindex, mbool,
+                             start, group, hk, H, gsbval, pID, mask, density, PIA, Tsk, h, hindex, 
                              debug, output);
   
   if (ncores>1) {

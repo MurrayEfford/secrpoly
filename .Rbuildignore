@@ -1,4 +1,5 @@
 development.txt
+proposal.txt
 ^.*\.Rproj$
 ^\.Rproj\.user$
 .build.timestamp

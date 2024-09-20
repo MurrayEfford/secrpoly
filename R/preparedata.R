@@ -5,23 +5,6 @@
 ###############################################################################
 
 #--------------------------------------------------------------------------------
-getk <- function(traps) {
-  if (!all(detector(traps) %in% .localstuff$polydetectors)) {
-    nrow(traps)
-  }
-  else {
-    if (all(detector(traps) %in% c('polygon','polygonX'))) {        
-      k <- table(polyID(traps))       
-    }
-    else if (all(detector(traps) %in% c('transect','transectX'))) {        
-      k <- table(transectID(traps))   # transectX, transect
-    }
-    else stop ("unrecognised poly detector type")
-    c(k,0) ## zero terminate
-  }
-}
-#--------------------------------------------------------------------------------
-
 getxy <- function(dettype, capthist) {
     xy <- xy(capthist)
     ## start[z] indexes the first row in xy 
@@ -29,32 +12,6 @@ getxy <- function(dettype, capthist) {
     start <- abs(capthist)
     start <- head(cumsum(c(0,start)),length(start))
     list(xy = xy, start = start)
-}
-#--------------------------------------------------------------------------------
-
-recodebinomN <- function (dettype, binomN) {
-  binomN <- expandbinomN(binomN, dettype)
-  detectr <- names(dettype)  # seems to work 2024-01-29
-  detectr[(detectr %in% c('polygon', 'transect')) & (binomN == 0)] <- "poissoncount"
-  detectr[(detectr %in% c('polygon', 'transect')) & (binomN > 0)]  <- "binomialcount"
-  newbinomN <- function (det,N) {
-      switch(det, polygonX = -2, transectX = -2, poissoncount = 0, binomialcount = N, -9)
-  }
-  out <- mapply(newbinomN, detectr, binomN)
-  if (any(out < -9))
-    stop("secrpoly not ready for detector type")
-  out
-}
-#--------------------------------------------------------------------------------
-
-nullCH <- function (dimCH, individual) {
-    if (is.null(individual)) {
-        individual <- TRUE   ## 2020-05-16 for backward compatibility
-    }
-    if (!individual) {
-        dimCH[1] <- 1
-    }
-    array(0, dim = dimCH)
 }
 #--------------------------------------------------------------------------------
 
@@ -146,7 +103,7 @@ prepareSessionData <- function (capthist, mask, maskusage,
         m    <- nrow(mask)
         traps   <- traps(capthist)
         dettype <- detectorcode(traps, MLonly = TRUE, noccasions = s)
-        binomNcode <- recodebinomN(dettype, details$binomN)
+        binomNcode <- recodebinomN(dettype, details$binomN, 0)
         ## k-1 because we have zero-terminated these vectors
         k <- getk(traps)
         K <- if (length(k)>1) length(k)-1 else k

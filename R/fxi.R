@@ -238,7 +238,7 @@ allhistfxi <- function (m, realparval, haztemp, gkhk, pi.density, PIA, usge,
 allhistpolygonfxi <- function (
         detectfn, realparval, haztemp, hk, H, pi.density, PIA, 
         CH, xy, binomNcode, grp, usge, mask, 
-        pmixn, maskusage, grain, ncores, minprob) {
+        pmixn, grain, ncores, minprob) {
     nc <- nrow(CH)
     nmix <- nrow(pmixn)
     m <- length(pi.density)
@@ -267,8 +267,7 @@ allhistpolygonfxi <- function (
             as.integer(PIA[1,,,,x]),
             as.matrix(usge),
             as.matrix (hx),                
-            as.matrix (hi),      
-            as.matrix(maskusage)
+            as.matrix (hi)
         )
         sump <- sump + sweep(temp, MARGIN=1, STATS = pmixn[x,], FUN = "*")
     }
@@ -384,7 +383,7 @@ fxi.secr <- function (object, i = NULL, sessnum = 1, X = NULL, ncores = NULL) {
   else {
       prmat <- allhistpolygonfxi (object$detectfn, Xrealparval, haztemp, gkhk$hk, gkhk$H, pimask, PIA, 
                                   CH, xy, data$binomNcode, grp, data$usge, data$mask,
-                                  pmix, data$maskusage, grain, ncores, object$details$minprob)
+                                  pmix, grain, ncores, object$details$minprob)
   }
   
   pisum <- apply(prmat,1,sum)
@@ -405,10 +404,9 @@ fxi.secr <- function (object, i = NULL, sessnum = 1, X = NULL, ncores = NULL) {
     }
     else {
         ## polygon-like detectors
-        maskusage <- maskboolean(object$capthist, X, object$details$maxdistance)  # 2024-01-30
         prmatX <- allhistpolygonfxi (object$detectfn, Xrealparval, haztempX, gkhkX$hk, gkhkX$H, piX, PIA, 
                                      CH, xy, data$binomNcode, grp, data$usge, X,
-                                     pmix, maskusage, object$details$grain, ncores, object$details$minprob)
+                                     pmix, object$details$grain, ncores, object$details$minprob)
     }
     out <- sweep(prmatX, MARGIN=1, STATS=pisum, FUN="/")
   }

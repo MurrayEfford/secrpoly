@@ -9,15 +9,13 @@
 
 ## CVa
 ## CVpdot
-## esa*
-## derivedSystematic* (via Fewstervarn)
-## fx.total*
-## make.mask (pdotmin option)
-## reparameterize.esa
-## [bias.D  disabled]
+## esa     
+## fxTotal (fxTotal.secrpoly uses secrpoly pdot)
+## make.mask (pdotmin option restricted to point detectors)
+## reparameterize.esa (restricted to point detectors)
+## bias.D  (restricted to point detectors)
 ## pdot.contour
 
-## * has ncores argument
 
 pdot <- function (X, traps, detectfn = 14, detectpar = list(g0 = 0.2, sigma = 25, z = 1),
                   noccasions = NULL, binomN = NULL, userdist = NULL, ncores = NULL) {
@@ -154,73 +152,3 @@ pdot.contour <- function (traps, border = NULL, nx = 64, detectfn = 14,
 }
 ############################################################################################
 
-buffer.contour <- function (traps, buffer, nx = 64, convex = FALSE, ntheta = 100,
-                            plt = TRUE, add = FALSE, poly = NULL, poly.habitat = TRUE,
-                            fill = NULL, ...) {
-    oneconvexbuffer <- function (buffer) {
-        temp  <- data.frame(x = apply(expand.grid(traps$x, buffer * cos(theta)),1,sum),
-                       y = apply(expand.grid(traps$y, buffer * sin(theta)),1,sum))
-        temp <- temp[chull(temp), ]
-        temp <- rbind(temp, temp[1,]) ## ensure closed
-        rownames(temp) <- NULL
-        if (plt)
-            lines(temp,...)
-        temp
-    }
-    if (!(inherits(traps, 'traps') | inherits(traps, 'mask')))
-        stop ("requires 'traps' or 'mask' object")
-
-    if (ms(traps)) {
-        output <- lapply(traps, buffer.contour, buffer = buffer, nx = nx, convex = convex,
-               ntheta = ntheta, plt = plt, add = add, poly = poly, poly.habitat = poly.habitat, ...)
-        if (plt)
-            invisible(output)
-        else
-            output
-    }
-    else {
-        if (convex) {
-            if (!is.null(poly))
-                warning ("'poly' ignored when convex = TRUE")
-            ## could use sf etc. to get intersection?
-            theta <- (2*pi) * (1:ntheta) / ntheta
-            if (!add & plt)
-                plot(traps, border = buffer)
-            temp <- lapply(buffer, oneconvexbuffer)
-            if (plt)
-                invisible (temp)
-            else
-                temp
-        }
-        else {
-            tempmask <- make.mask (traps, max(buffer)*1.2, nx = nx, type = 'traprect')
-            xlevels <- unique(tempmask$x)
-            ylevels <- unique(tempmask$y)
-            z <- distancetotrap(tempmask, traps)
-            if (!is.null(poly)) {
-                OK <- pointsInPolygon(tempmask, poly)
-                if (poly.habitat)
-                    z[!OK] <- 1e20
-                else
-                    z[OK] <- 0
-            }
-            if (plt) {
-                contour (xlevels, ylevels, matrix(z, nrow = nx), add = add,
-                         drawlabels = FALSE, levels = buffer,...)
-                if (!is.null(fill)) {
-                    #z[z < (0.999 * min(levels))] <- NA
-                    #levels <- c(0,levels,1)
-                    levels <- c(0,buffer)
-                    .filled.contour(xlevels, ylevels,  matrix(z, nrow = nx), levels= levels,
-                                    col = fill)
-                }
-                invisible(contourLines(xlevels, ylevels, matrix(z, nrow = nx),
-                                       levels = buffer))
-            }
-            else
-                contourLines(xlevels, ylevels, matrix(z, nrow = nx),
-                             levels = buffer)
-        }
-    }
-}
-################################################################################

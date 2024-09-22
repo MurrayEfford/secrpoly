@@ -1,8 +1,7 @@
-\name{fx.total}
-\alias{fx.total}
+\name{fxTotal}
+\alias{fxTotal.secrpoly}
 
-\title{Activity Centres of Detected and
-  Undetected Animals}
+\title{Activity Centres of Detected and Undetected Animals}
 
 \description{
 
@@ -12,11 +11,13 @@
 }
 
 \usage{
-fx.total(object, sessnum = 1, mask = NULL, ncores = NULL, ...)
+
+\method{fxTotal}{secrpoly}(object, sessnum = 1, mask = NULL, ncores = NULL, ...)
+
 }
 
 \arguments{
-  \item{object}{  a fitted secr model }
+  \item{object}{ a fitted secrpoly model }
   
   \item{sessnum}{ session number if \code{object$capthist} spans
     multiple sessions }
@@ -33,7 +34,7 @@ fx.total(object, sessnum = 1, mask = NULL, ncores = NULL, ...)
   
 \details{
 
-This function calls \code{\link{fxi.secr}} for each detected animal and
+This function calls \code{\link{fxi.secrpoly}} for each detected animal and
 overlays the results to obtain a summed probability density surface D.fx
 for the locations of the home-range centres of detected individuals.
 
@@ -82,7 +83,7 @@ a habitat mask where the main or only contribution is from D.nc.
 
 \seealso{
   
-  \code{\link{fxi.secr}}, \code{\link{fxi.contour}}, \code{\link{pdot}}
+  \code{\link{fxi.secrpoly}}, \code{\link{fxiContour}}, \code{\link{pdot}}
   
 }
 
@@ -90,7 +91,7 @@ a habitat mask where the main or only contribution is from D.nc.
 
 \donttest{
 
-tmp <- fx.total(FTHL.fit)
+tmp <- fxTotal(FTHL.fit)
 
 ## to plot we must name one of the covariates:
 ## the Dsurface default 'D.0' causes an error 

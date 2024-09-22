@@ -1,17 +1,16 @@
 ###############################################################################
-## package 'secr'
-## esa.plot.R
-## 2022-11-19 separated from pdot.R
+## package 'secrpoly'
+## esaPlot.R
 ###############################################################################
 
-esa.plot <- function (object, max.buffer = NULL, spacing = NULL, max.mask = NULL, detectfn,
+esaPlot <- function (object, max.buffer = NULL, spacing = NULL, max.mask = NULL, detectfn,
     detectpar, noccasions, binomN = NULL, thin = 0.1, poly = NULL,
     poly.habitat = TRUE, session = 1,
     plt = TRUE, type = c('density', 'esa','meanpdot', 'CVpdot'),
     n = 1, add = FALSE, overlay = TRUE, conditional = FALSE, ...) {
     type <- match.arg(type)
-    if (inherits(object, 'secr')) {
-        esa.plot.secr (object, max.buffer, max.mask, thin, poly, poly.habitat, session, plt,
+    if (inherits(object, c('secr','secrpoly'))) {
+        secr:::esaPlotsecr (object, max.buffer, max.mask, thin, poly, poly.habitat, session, plt,
             type, add, overlay, conditional, ...)
     }
     else {
@@ -26,14 +25,14 @@ esa.plot <- function (object, max.buffer = NULL, spacing = NULL, max.mask = NULL
                 extra$col <- c("#000000", rainbow(length(object)))
             arg <- c(arg, extra)
             arg$object <- object[[1]]
-            output[[1]] <- do.call( esa.plot.secr, arg)
+            output[[1]] <- do.call( secr:::esaPlotsecr, arg)
             
             if (length(object)>1) {
                 for (i in 2:length(object)) {
                     arg$object <- object[[i]]
                     arg$col <- extra$col[i]
                     arg$add <- TRUE
-                    output[[i]] <- do.call( esa.plot.secr, arg)
+                    output[[i]] <- do.call( secr:::esaPlotsecr, arg)
                 }
                 if (arg$plt) {
                     x1 <- par()$usr[1] + (par()$usr[2]-par()$usr[1])*0.65
@@ -137,68 +136,3 @@ esa.plot <- function (object, max.buffer = NULL, spacing = NULL, max.mask = NULL
 
 ###############################################################################
 
-esa.plot.secr <- function (object, max.buffer = NULL, max.mask = NULL,
-    thin = 0.1, poly = NULL, poly.habitat = TRUE, session = 1, plt = TRUE, type = 'density',
-    add = FALSE, overlay = TRUE, conditional = FALSE, ...) {
-    
-    if (!inherits(object,'secr'))
-        stop("require secr object")
-    MS <- ms(object)
-    if (MS) {
-        sessnames <- session(object$capthist)
-        ## use alphanumeric session ID
-        if (is.numeric(session))
-            session <- sessnames[session]
-    }
-    
-    ## recursive call
-    if (MS & (length(session) > 1)) {
-        esa.plot.outputs <- vector(mode='list')
-        
-        for (i in session) {
-            addthisone <- ifelse (add | (overlay & (i != session[1])),
-                TRUE, FALSE)
-            esa.plot.outputs[[i]] <- esa.plot.secr (object, max.buffer,
-                max.mask, thin, poly, poly.habitat, i, plt, type, addthisone,
-                overlay, conditional, ...)
-        }
-        if (plt)
-            invisible(esa.plot.outputs)
-        else
-            esa.plot.outputs
-    }
-    ## not recursive
-    else {
-        if (MS) {
-            ## select one session
-            trps <- traps(object$capthist[[session]])
-            n <- nrow(object$capthist[[session]])
-            nocc <- ncol(object$capthist[[session]])
-            spacg <- attr(object$mask[[session]], 'spacing')
-            detpar <- detectpar(object)[[session]]
-            spscale <- spatialscale(object, object$detectfn, session)
-        }
-        else {
-            trps <- traps(object$capthist)
-            n <- nrow(object$capthist)
-            nocc <- ncol(object$capthist)
-            spacg <- attr(object$mask, 'spacing')
-            detpar <- detectpar(object)
-            spscale <- spatialscale(object, object$detectfn)
-        }
-        if (is.null(max.mask)) {
-            if (is.null(max.buffer)) {
-                if (add)
-                    max.buffer <- par()$usr[2]  ## width of existing plot
-                else {
-                    max.buffer <- 5 * spscale
-                }
-            }
-        }
-        binomN <- object$details$binomN
-        esa.plot (trps, max.buffer, spacg, max.mask, object$detectfn, detpar,
-            nocc, binomN, thin, poly, poly.habitat, session, plt, type, n, add, overlay,
-            conditional, ...)
-    }
-}
-#################################################################################

@@ -50,15 +50,13 @@ importFrom(sf,
     st_sfc)
 
 export (secrpoly.fit)
-export (fxi.secr)
-export (fxi.contour)
-export (fxi.mode)
-export (fx.total)
 
+S3method(fxi, secrpoly)
+S3method(fxTotal, secrpoly)
 S3method(derived, secrpoly)
+S3method(esa, secrpoly)
 
-export (esa)
-export (esa.plot)
+# export (esaPlot)
 export (pdot)
 export (pdot.contour)
 

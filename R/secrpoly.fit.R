@@ -456,7 +456,7 @@ secrpoly.fit <- function (capthist,  model = list(D~1, lambda0~1, sigma~1), mask
         attr(designD, 'dimD') <- attr(temp, 'dimD')
         if (MS && !is.null(details[['Dlambda']]) && details[['Dlambda']]) {
             if (all(sessionDvars))
-                attr(designD, 'Dfn') <- Dfn2
+                attr(designD, 'Dfn') <- secr::Dfn2
             else {
                 stop ("Dlambda does not allow spatial covariates of density in this version")
             }

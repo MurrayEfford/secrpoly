@@ -268,7 +268,7 @@ CH <- sim.capthist(pol, popn = list(D = 30), detectfn = 'HHN',
 plot(CH, border = 10, gridl = FALSE, varycol = FALSE)
 
 fit0 <- secrpoly.fit(CH, buffer = 100, ncores = 7)
-fxi.contour(fit0)
+fxiContour(fit0)
 
 }
 

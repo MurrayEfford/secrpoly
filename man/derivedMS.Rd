@@ -1,13 +1,15 @@
 \name{derived}
 \alias{derived}
-\alias{esa}
 \alias{derived.secrpoly}
+\alias{esa.secrpoly}
 
 \title{ Derived Parameters of Fitted SECR Model }
 
 \description{
+
 Compute derived parameters of spatially explicit capture-recapture model. 
 Density is a derived parameter when a model is fitted by maximizing the conditional likelihood. So also is the effective sampling area (in the sense of Borchers and Efford 2008).
+
 }
 
 \usage{
@@ -16,8 +18,8 @@ Density is a derived parameter when a model is fitted by maximizing the conditio
     se.esa = FALSE, se.D = TRUE, loginterval = TRUE, distribution = NULL, 
     ncores = NULL, bycluster = FALSE, ...)
 
-esa(object, sessnum = 1, beta = NULL, real = NULL, noccasions = NULL, 
-    ncores = NULL)
+\method{esa}{secrpoly}(object, sessnum = 1, beta = NULL, real = NULL, noccasions = NULL, 
+    ncores = NULL,...)
 
 }
 
@@ -36,7 +38,7 @@ esa(object, sessnum = 1, beta = NULL, real = NULL, noccasions = NULL,
   \item{beta}{ vector of fitted parameters on transformed (link) scale }
   \item{real}{ vector of `real' parameters } 
   \item{noccasions}{ integer number of sampling occasions (see Details) } 
-  \item{...}{other arguments passed to \code{\link{fdHess}}}
+  \item{...}{other arguments passed to \code{\link{fdHess} (derived)}}
 }
 
 \details{

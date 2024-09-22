@@ -1,5 +1,5 @@
-\name{esa.plot}
-\alias{esa.plot}
+\name{esaPlot}
+\alias{esaPlot}
 
 \title{
 
@@ -15,7 +15,7 @@ Plot effective sampling area (Borchers and Efford 2008) as a function of increas
 
 \usage{
 
-esa.plot (object, max.buffer = NULL, spacing = NULL, max.mask = NULL,
+esaPlot (object, max.buffer = NULL, spacing = NULL, max.mask = NULL,
     detectfn, detectpar, noccasions, binomN = NULL, thin = 0.1,
     poly = NULL, poly.habitat = TRUE, session = 1, plt = TRUE, 
     type = c('density', 'esa', 'meanpdot', 'CVpdot'), n = 1, add = FALSE, 
@@ -54,7 +54,7 @@ esa.plot (object, max.buffer = NULL, spacing = NULL, max.mask = NULL,
 
   Effective sampling area (esa) is defined as the integral of net
   capture probability (\eqn{p.(\mathbf{X})}{p.(X)}) over a
-  region. \code{esa.plot} shows the effect of increasing region size on
+  region. \code{esaPlot} shows the effect of increasing region size on
   the value of esa for fixed values of the detection parameters. The
   \code{max.buffer} or \code{max.mask} arguments establish the maximum
   extent of the region; points (cells) within this mask are sorted by
@@ -67,7 +67,7 @@ esa.plot (object, max.buffer = NULL, spacing = NULL, max.mask = NULL,
   multiplied by \code{n}; this is on a more familiar scale (the density
   scale) and hence is easier to interpret.
   
-  Because \code{esa.plot} uses the criterion `distance to nearest
+  Because \code{esaPlot} uses the criterion `distance to nearest
   detector', \code{max.mask} should be constructed to include all
   habitable cells within the desired maximum buffer and no others. This
   is achieved with \code{type = "trapbuffer"} in \code{make.mask}. It is
@@ -80,7 +80,7 @@ esa.plot (object, max.buffer = NULL, spacing = NULL, max.mask = NULL,
   the result is saved and printed) to generate more legible numerical
   output. Use \code{thin=1} to include all points.
 
-  \code{esa.plot} calls the internal function \code{esa.plot.secr} when
+  \code{esaPlot} calls the internal function \code{esaPlotsecr} when
   \code{object} is a fitted model. In this case \code{detectfn},
   \code{detectpar} and \code{noccasions} are inferred from
   \code{object}. 
@@ -129,15 +129,15 @@ likelihood methods for capture--recapture studies. \emph{Biometrics}
 
 ## with previously fitted model
 par(pty = 's', mar = c(4,4,2,2))
-esa.plot(FTHL.fit)
+esaPlot(FTHL.fit)
 
 ## esa from scratch
 trps <- make.poly()
 msk <- make.mask(trps, buffer = 200, spacing = 5, type = "trapbuffer")
 detpar <- list(lambda0 = 0.2, sigma = 25)
-esa.plot(trps, type = 'esa', max.mask = msk, detectfn = 'HHN', detectpar = detpar, 
+esaPlot(trps, type = 'esa', max.mask = msk, detectfn = 'HHN', detectpar = detpar, 
     nocc = 10, col = "blue")
-esa.plot(trps, type = 'esa', max.mask = msk, detectfn = 'HHN', detectpar = detpar, 
+esaPlot(trps, type = 'esa', max.mask = msk, detectfn = 'HHN', detectpar = detpar, 
     nocc = 5, col = "green", add = TRUE)
 
 }

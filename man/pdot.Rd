@@ -6,7 +6,7 @@
 \description{
 
 Compute spatially explicit net probability of detection for individual(s) 
-at given coordinates (pdot).
+at given coordinates.
 
 }
 

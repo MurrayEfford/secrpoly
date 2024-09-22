@@ -3,7 +3,16 @@
 What functionality is overridden from 'secr'?
 
 -- secrpoly.fit()
--- fxi.secrpoly
+-- pdot
+-- pdot.contour
+
+S3 methods
+
+esa.secrpoly
+derived.secrpoly
+fxTotal.secrpoly
+fxi.secrpoly
+
 
 # 2024-09-14
 
@@ -16,7 +25,7 @@ makegkpoly.cpp
     
 hdot.cpp
     # used in pdot() only
-    # pdot used in fx.total()
+    # pdot used in fxTotal()
     hdotpolycpp()  
             uses hintegral1DNRcpp, hintegral2DNRcpp, integral1DNRcpp, integral2DNRcpp
     
@@ -26,20 +35,16 @@ polygonNR.cpp
 prwipolygon.cpp     # used model fitting only (generalsecrloglik) 
     polygonhistoriescpp()
 
-prwipolygonfxi.cpp  # used allhistpolygonfxi() only (fxi.secr) 
+prwipolygonfxi.cpp  # used allhistpolygonfxi() only (fxi.secrpoly) 
      polygonfxicpp()
 
 pdot is used in --
 
-## esa*
-## esa.plot
+## esa.secrpoly
+## esaPlot
 ## pdot.contour
 
-# fixed
-
-## fx.total*
-
-# poly supppressed in secr
+# poly supppressed in secr:
 
 ## reparameterize.esa
 ## CVa

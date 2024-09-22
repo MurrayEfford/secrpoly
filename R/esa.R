@@ -4,7 +4,8 @@
 ## 2024-09-20
 ############################################################################################
 
-esa <- function (object, sessnum = 1, beta = NULL, real = NULL, noccasions = NULL, ncores = NULL)
+esa.secrpoly <- function (object, sessnum = 1, beta = NULL, real = NULL, 
+                          noccasions = NULL, ncores = NULL, ...)
 
 # Return vector of 'a' for given g0, sigma, [z (if hazard fn) ] and session
 # detectfn is integer code for detection function 0 = halfnormal, 1 = hazard, 2 = exponential
@@ -13,8 +14,6 @@ esa <- function (object, sessnum = 1, beta = NULL, real = NULL, noccasions = NUL
 
 ## strictly doesn't need data, so better to avoid when object not available...
 {
-    if (inherits(object, 'secrlist'))
-        stop("object should be secr not secrlist")
     if (ms(object))
         capthists <- object$capthist[[sessnum]]
     else
@@ -23,10 +22,7 @@ esa <- function (object, sessnum = 1, beta = NULL, real = NULL, noccasions = NUL
     if (nrow(capthists) == 0) {
         return (numeric(0))    
     }
-    if (!all(detector(traps(capthists)) %in% .localstuff$polydetectors)) {
-        return(secr::esa(object, sessnum, beta, real, noccasions, ncores))
-    }
-    
+
     # Remainder applies only to polydetectors
     if (ms(object$mask))
         mask <- object$mask[[sessnum]]
@@ -38,7 +34,7 @@ esa <- function (object, sessnum = 1, beta = NULL, real = NULL, noccasions = NUL
     beta <- fullbeta(beta, object$details$fixedbeta)
     trps   <- traps(capthists)  ## need session-specific traps
     if (!all(detector(trps) %in% .localstuff$individualdetectors))
-        stop ("require individual detector type for esa")
+        stop ("require individual detector type for esaPlot")
     n       <- max(nrow(capthists), 1)
     s       <- ncol(capthists)
     dettype <- detectorcode(trps, noccasions = s)
@@ -143,7 +139,7 @@ esa <- function (object, sessnum = 1, beta = NULL, real = NULL, noccasions = NUL
           pi.density <- matrix(1/m, nrow=m, ncol=1)
           ncores <- setNumThreads(ncores)  
           grain <- if (ncores==1) 0 else 1
-          gkhk <- secrpoly:::makegk (dettype, object$detectfn, trps, mask, object$details, sessnum, NE, 
+          gkhk <- makegk (dettype, object$detectfn, trps, mask, object$details, sessnum, NE, 
                           pi.density, miscparm, Xrealparval0, grain, ncores)
           if (any(dettype==0)) {
               CH0 <- nullCH (c(n,s), object$design0$individual)
@@ -153,7 +149,7 @@ esa <- function (object, sessnum = 1, beta = NULL, real = NULL, noccasions = NUL
           }
           binomNcode <- recodebinomN(dettype, binomN, telemcode(trps))
           pmixn <- getpmix (knownclass, PIA0, Xrealparval0)
-          pdot <- secrpoly:::integralprw1poly (
+          pdot <- integralprw1poly (
               detectfn    = object$detectfn,
               realparval0 = Xrealparval0, 
               haztemp     = gethazard(m, binomNcode, nrow(Xrealparval0), gkhk$hk, PIA0, usge), 

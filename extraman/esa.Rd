@@ -76,11 +76,11 @@ Borchers, D. L. and Efford, M. G. (2008) Spatially explicit maximum likelihood m
 \donttest{
 
 ## fitted lambda0, sigma
-esa(FTHL.fit)
+esa(FTHL.0)
 
 ## force different lambda0, sigma
-esa(FTHL.fit, real = c(0.2, 25))
-
+esa(FTHL.0, real = c(0.2, 25))
+#Error in haztemp$h[x, , ] : subscript out of bounds
 }
 
 }

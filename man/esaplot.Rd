@@ -129,7 +129,7 @@ likelihood methods for capture--recapture studies. \emph{Biometrics}
 
 ## with previously fitted model
 par(pty = 's', mar = c(4,4,2,2))
-esaPlot(FTHL.fit)
+esaPlot(FTHL.0)
 
 ## esa from scratch
 trps <- make.poly()

@@ -91,7 +91,7 @@ a habitat mask where the main or only contribution is from D.nc.
 
 \donttest{
 
-tmp <- fxTotal(FTHL.fit)
+tmp <- fxTotal(FTHL.0)
 
 ## to plot we must name one of the covariates:
 ## the Dsurface default 'D.0' causes an error 

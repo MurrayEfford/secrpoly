@@ -1,17 +1,9 @@
 #include "poly.h"
-// #include <algorithm>  
 
 using namespace Rcpp;
 using namespace RcppParallel;
 
 //===============================================================================
-
-// 2019-11-25
-// FTHL.fit <- secr.fit(hornedlizardCH, buffer = 80, trace = TRUE)
-//     Warning: stack imbalance in '<-', 2 then -4
-
-// Error in .localstuff$iter <- .localstuff$iter + 1 : 
-//     R_Reprotect: only 1 protected item, can't reprotect index -1
 
 struct Hckmpoly : public Worker {
   

@@ -33,8 +33,6 @@ esa.secrpoly <- function (object, sessnum = 1, beta = NULL, real = NULL,
         beta <- object$fit$par
     beta <- fullbeta(beta, object$details$fixedbeta)
     trps   <- traps(capthists)  ## need session-specific traps
-    if (!all(detector(trps) %in% .localstuff$individualdetectors))
-        stop ("require individual detector type for esaPlot")
     n       <- max(nrow(capthists), 1)
     s       <- ncol(capthists)
     dettype <- detectorcode(trps, noccasions = s)

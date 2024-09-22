@@ -15,14 +15,7 @@
 .localstuff$validdetectors <- c('single','multi','proximity','count', 
                                 'polygonX', 'transectX', 'signal', 'polygon', 'transect', 
                                 'capped', 'null','null','null','null', 'telemetry', 'signalnoise')
-.localstuff$simpledetectors <- c('single','multi','proximity','count', 'capped')
-.localstuff$individualdetectors <- c('single','multi','proximity','count',
-                                     'polygonX', 'transectX', 'signal', 'signalnoise', 'polygon', 'transect',
-                                     'telemetry', 'capped')
-.localstuff$pointdetectors <- c('single','multi','proximity','count',
-                                'signal', 'signalnoise', 'unmarked','presence','capped')
 .localstuff$polydetectors <- c('polygon','transect','polygonX','transectX')
-.localstuff$exclusivedetectors <- c('single','multi','polygonX','transectX')
 .localstuff$countdetectors <- c('count','polygon','transect','unmarked','telemetry')
 .localstuff$iter <- 0   ## counter 1
 .localstuff$iter2 <- 0  ## counter 2
@@ -36,7 +29,7 @@
     'hazard variable power')
 
 .localstuff$DFN <- c(as.character(0:13), 
-                     'HHN', 'HHR', 'HEX', 'HAN', 'HCG', 'HVP','HPX')
+                     'HHN', 'HHR', 'HEX', 'HAN', 'HCG', 'HVP')
 
 .localstuff$learnedresponses <- c('b', 'bk', 'B', 'k', 'Bk') 
 
@@ -672,39 +665,6 @@ allzero <- function (object) {
 
 #-------------------------------------------------------------------------------
 
-boundarytoSF <- function (poly) {
-  if (is.null(poly)) {
-    NULL
-  }
-  else if(inherits(poly, c('sf','sfc'))) {
-    poly <- st_geometry(poly) # extract sfc if not already sfc
-    geomtype <- st_geometry_type(poly, by_geometry = FALSE)
-    if (geomtype == 'GEOMETRY') {   # 2023-06-02
-        geomtype <- st_geometry_type(poly, by_geometry = TRUE)
-    }
-    if (!all(geomtype %in% c("POLYGON", "MULTIPOLYGON"))) {
-      stop ("poly sf/sfc should be of type POLYGON or MULTIPOLYGON")
-    }
-    poly
-  }
-  else if (inherits(poly, 'SpatialPolygons')) {   # also SPDF?
-    st_as_sfc(poly)
-  }
-  else if (inherits(poly, 'SpatVector')) {
-    st_as_sfc(as(poly,"Spatial"))
-  }
-  else if (inherits(poly, c('matrix', 'data.frame'))) {
-    ## input is 2-column matrix for a single polygon
-    poly <- matrix(unlist(poly), ncol = 2)
-    poly <- rbind (poly, poly[1,])  ## force closure of polygon
-    st_sfc(st_polygon(list(poly)))
-  }
-  else stop (class(poly), " not valid input to boundarytoSF")
-}
-
-#-------------------------------------------------------------------------------
-
-
 ## return indices of first occasion and detector for which PIAx is non-zero 
 firstsk <- function (PIAx) {
   ## PIAx dim n,s,k
@@ -715,36 +675,6 @@ firstsk <- function (PIAx) {
 }
 
 #-------------------------------------------------------------------------------
-
-maskboolean <- function (ch, mask, threshold) {
-  if (ms(ch)) {
-    if (!ms(mask)) stop ("masklookup: multisession ch requires multisession mask")
-    outlist <- mapply(maskboolean, ch, mask, MoreArgs = list(threshold = threshold), SIMPLIFY = FALSE)
-    outlist
-  }
-  else {
-    id <- animalID(ch, names = FALSE, sortorder = 'snk')
-    tr <- trap(ch, names = FALSE, sortorder = 'snk')
-    trps <- traps(ch)
-    m <- nrow(mask)
-    if (!is.null(threshold) && all(detector(trps) %in% .localstuff$pointdetectors)) {
-      df <- data.frame(id = id, x = trps$x[tr], y = trps$y[tr])
-      x <- tapply(df$x, df$id, mean, na.rm=T)
-      y <- tapply(df$y, df$id, mean, na.rm=T)
-      xy <- data.frame(x=x,y=y)
-      d2 <- edist(xy, mask)
-      out <- (d2 <= threshold^2)
-    }
-    else {
-      ## NULL option
-      out <- matrix(TRUE, nrow = nrow(ch), ncol = m)
-    }
-    out
-  }
-}
-
-#-------------------------------------------------------------------------------
-
 
 selectCHsession <- function(capthist, sessnum) {
     if (ms(capthist)) 
@@ -863,5 +793,17 @@ getpmix <- function(knownclass, PIA, realparval)
         attr(pmixn, 'pmix') <-  realparval[PIA[cbind(1,1,sc[1],kc[1],1:nmix)],'pmix']
     }
     pmixn
+}
+#--------------------------------------------------------------------------------
+
+# previously in preparedata.R
+
+getxy <- function(dettype, capthist) {
+    xy <- xy(capthist)
+    ## start[z] indexes the first row in xy 
+    ## for each possible count z (including zeros), where z is w-order (isk) 
+    start <- abs(capthist)
+    start <- head(cumsum(c(0,start)),length(start))
+    list(xy = xy, start = start)
 }
 #--------------------------------------------------------------------------------

@@ -18,7 +18,7 @@ CHpolyX <- sim.capthist (polyX, popn = list(D = 100, buffer = 100),
                         detectfn = 'HHN', detectpar = list(lambda0 = 0.5, sigma = 25), 
                         noccasions = 1)
 
-CHpoly <- sim.capthist (detectors, popn = list(D = 100, buffer = 100), 
+CHpoly <- sim.capthist (poly, popn = list(D = 100, buffer = 100), 
                         detectfn = 'HHN', detectpar = list(lambda0 = 0.5, sigma = 25), 
                         noccasions = 1)
 

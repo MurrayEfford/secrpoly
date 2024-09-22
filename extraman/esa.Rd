@@ -15,7 +15,7 @@ esa(object, sessnum = 1, beta = NULL, real = NULL, noccasions = NULL,
 }
 
 \arguments{
-  \item{object}{ \code{secr} object output from \code{secr.fit}, or an
+  \item{object}{ \code{secrpoly} object output from \code{secrpoly.fit}, or an
   object of class \code{c("secrlist", "list")} }
   \item{sessnum}{ index of session in object$capthist for which output required }
   \item{beta}{ vector of fitted parameters on transformed (link) scale }

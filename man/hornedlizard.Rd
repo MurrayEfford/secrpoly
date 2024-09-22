@@ -63,7 +63,7 @@ Non-zero entries in a polygonX capture-history matrix indicate the
 number of the polygon containing the detection. In this case there was
 just one polygon, so entries are 0 or 1. No animal can appear more than
 once per occasion with the polygonX detector type, so there is no need
-to specify `binomN = 1' in secr.fit.
+to specify `binomN = 1' in secrpoly.fit.
 
 \tabular{ll}{
   Object \tab Description \cr

@@ -24,7 +24,7 @@ Density is a derived parameter when a model is fitted by maximizing the conditio
 }
 
 \arguments{
-  \item{object}{ \code{secr} object output from \code{secr.fit}, or an
+  \item{object}{ \code{secrpoly} object output from \code{secrpoly.fit}, or an
   object of class \code{c("secrlist", "list")} }
   \item{sessnum}{ index of session in object$capthist for which output required }
   \item{groups}{ vector of covariate names to define group(s) (see Details) }
@@ -51,7 +51,7 @@ The derived estimate of density is a Horvitz-Thompson-like estimate:
 
 A non-null value of the argument \code{distribution} overrides the value
 in \code{object$details}. The sampling variance of \eqn{\hat{D}}{D-hat}
-from \code{secr.fit} by default is spatially unconditional
+from \code{secrpoly.fit} by default is spatially unconditional
 (\code{distribution = "Poisson"}). For sampling variance conditional on the population of the
 habitat mask (and therefore dependent on the mask area), specify
 \code{distribution = "binomial"}. The equation for the conditional

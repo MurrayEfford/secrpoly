@@ -24,7 +24,7 @@ esaPlot (object, max.buffer = NULL, spacing = NULL, max.mask = NULL,
 }
 
 \arguments{
-  \item{object}{\code{traps} object or \code{secr} object output from \code{secr.fit} }
+  \item{object}{\code{traps} object or \code{secrpoly} object output from \code{secrpoly.fit} }
   \item{max.buffer}{ maximum width of buffer in metres }
   \item{spacing}{ distance between mask points }
   \item{max.mask}{ \code{\link{mask}} object }

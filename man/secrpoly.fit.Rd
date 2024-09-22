@@ -158,8 +158,8 @@ When \code{details$LLonly = TRUE} a single log-likelihood is returned, with attr
 \item{preptime}{ elapsed setup time in seconds,}
 \item{LLtime}{ elapsed time for single likelihood evaluation, exclusive of setup.}
 
-Otherwise, \code{secr.fit} returns an object of class secr representing the fitted SECR model.  This has
-components
+Otherwise, \code{secrpoly.fit} returns an object of class secr representing the 
+fitted SECR model.  This has components
 
   \item{call }{function call) }
 

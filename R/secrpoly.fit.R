@@ -157,7 +157,7 @@ secrpoly.fit <- function (capthist,  model = list(D~1, lambda0~1, sigma~1), mask
     }
     if (details$savecall) {
         cl   <- match.call(expand.dots=TRUE)
-        cl[[1]] <- quote(secr.fit)
+        cl[[1]] <- quote(secrpoly.fit)
     }
     else cl <- NULL
     

@@ -120,13 +120,13 @@ head(xy(hornedlizardCH))
 
 ## Compare default (Poisson) and binomial models for number
 ## caught
-FTHL.0 <- secr.fit(hornedlizardCH, buffer = 80)
-FTHL.bn <- secr.fit(hornedlizardCH, buffer = 80, details =
+FTHL.0 <- secrpoly.fit(hornedlizardCH, buffer = 80)
+FTHL.bn <- secrpoly.fit(hornedlizardCH, buffer = 80, details =
     list(distribution = "binomial"))
-collate(FTHL.fit, FTHLbn.fit)[,,,"D"]
+collate(FTHL.0, FTHL.bn)[,,,"D"]
 
 ## Conditional likelihood
-FTHL.CL <- secr.fit(hornedlizardCH, buffer = 80, CL = TRUE)
+FTHL.CL <- secrpoly.fit(hornedlizardCH, buffer = 80, CL = TRUE)
 
 }
 

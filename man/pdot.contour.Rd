@@ -98,7 +98,7 @@ University of Otago, Dunedin, New Zealand
 FTHLtraps <- traps(hornedlizardCH)
 plot(FTHLtraps, border = 100)
 pdot.contour(FTHLtraps, detectfn = 'HHN', nx = 128, detectpar =
-    detectpar(FTHL.fit), levels = c(0.1, 0.01, 0.001),
+    detectpar(FTHL.0), levels = c(0.1, 0.01, 0.001),
     noccasions = 14, add = TRUE)
     
 }

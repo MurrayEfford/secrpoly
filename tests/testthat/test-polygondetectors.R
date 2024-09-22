@@ -1,4 +1,4 @@
-## Started 2024-01-29
+## 2024-09-23
 
 library(secrpoly)
 
@@ -8,20 +8,35 @@ Sys.setenv(RCPP_PARALLEL_BACKEND = "tinythread")
 
 ####################################################################
 
-# Poisson counts
+# Polygon detectors
 
 set.seed(123)
-detectors <- make.grid (nx = 6, ny = 8, detector = "count")
-CHpois <- sim.capthist (detectors, popn = list(D = 10, buffer = 100), 
-    detectpar = list(g0 = 0.2, sigma = 25), noccasions = 1)
+polyX <- make.poly (exclusive = TRUE)
+poly  <- make.poly (exclusive = FALSE)
 
-test_that("correct likelihood (Poisson count data)", {
-    args <- list(capthist = CHpois, detectfn = 'HN', buffer = 100, 
-        start = c(2.121835788, -1.040097594,  3.201521728), verify = FALSE)
+CHpolyX <- sim.capthist (polyX, popn = list(D = 100, buffer = 100), 
+                        detectfn = 'HHN', detectpar = list(lambda0 = 0.5, sigma = 25), 
+                        noccasions = 1)
+
+CHpoly <- sim.capthist (detectors, popn = list(D = 100, buffer = 100), 
+                        detectfn = 'HHN', detectpar = list(lambda0 = 0.5, sigma = 25), 
+                        noccasions = 1)
+
+test_that("correct likelihood (polygonX data)", {
+    args <- list(capthist = CHpolyX, detectfn = 'HHN', buffer = 100, 
+                 start = log(c(100, 0.5,  25)), verify = FALSE,
+                 details = list(LLonly = TRUE))
+    LL1 <- do.call(secrpoly.fit, args)[1]
+    expect_equal(LL1, -510.65755, tolerance = 1e-4, check.attributes = FALSE)
     
-    args$details <- list(LLonly = TRUE, fastproximity = TRUE)
-    LL1 <- do.call(secr.fit, args)[1]
-    expect_equal(LL1, -122.138538, tolerance = 1e-4, check.attributes = FALSE)
+})
+
+test_that("correct likelihood (polygon data)", {
+    args <- list(capthist = CHpoly, detectfn = 'HHN', buffer = 100, 
+                 start = log(c(100, 0.5,  25)), verify = FALSE,
+                 details = list(LLonly = TRUE))
+    LL1 <- do.call(secrpoly.fit, args)[1]
+    expect_equal(LL1, -482.73604, tolerance = 1e-4, check.attributes = FALSE)
     
 })
 

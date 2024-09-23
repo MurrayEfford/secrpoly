@@ -495,7 +495,7 @@ secrpoly.fit <- function (capthist,  model = list(D~1, lambda0~1, sigma~1), mask
     names(parindx) <- names(np)[np>0]
     if (!D.modelled) parindx$D <- NULL
     parindx$noneuc <- NULL
-    data <- prepareSessionData(capthist, mask, details$maskusage, design, 
+    data <- prepareSessionData(capthist, mask, NULL, design, 
                     design0, detectfn, groups, fixed, hcov, details)
 
     ############################################

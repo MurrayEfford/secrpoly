@@ -1,5 +1,5 @@
-\name{pdot.contour}
-\alias{pdot.contour}
+\name{pdotContour}
+\alias{pdotContour}
 
 \title{
 Contour Detection Probability
@@ -12,7 +12,7 @@ area within a specified distance of detectors.
 }
 \usage{
 
-pdot.contour(traps, border = NULL, nx = 64, detectfn = 14,
+pdotContour(traps, border = NULL, nx = 64, detectfn = 14,
     detectpar = list(g0 = 0.2, sigma = 25, z = 1), noccasions = NULL,
     binomN = NULL, levels = seq(0.1, 0.9, 0.1), poly =
     NULL, poly.habitat = TRUE, plt = TRUE, add = FALSE, fill = NULL, ...)
@@ -20,7 +20,7 @@ pdot.contour(traps, border = NULL, nx = 64, detectfn = 14,
 }
 
 \arguments{
-  \item{traps}{ \code{traps} object (or mask for \code{buffer.contour}) }
+  \item{traps}{ \code{traps} object }
   \item{border}{ width of blank margin around the outermost detectors }
   \item{nx}{ dimension of interpolation grid in x-direction }
   \item{detectfn}{ integer code or character string for shape of
@@ -41,7 +41,7 @@ pdot.contour(traps, border = NULL, nx = 64, detectfn = 14,
 }
 \details{
 
-\code{pdot.contour} constructs a rectangular mask and applies \code{\link{pdot}} to
+\code{pdotContour} constructs a rectangular mask and applies \code{\link{pdot}} to
 compute the p.(X) at each mask point.
 
 If \code{traps} has a \link{usage} attribute then \code{noccasions} is
@@ -81,9 +81,6 @@ University of Otago, Dunedin, New Zealand
   arguments of \code{contour} are \code{col} (colour of contour lines)
   and \code{lwd} (line width).
 
-  You may wish to consider function st_buffer in package \pkg{sf} as an
-  alternative to \code{buffer.contour}..
-
 }
 
 \seealso{
@@ -97,7 +94,7 @@ University of Otago, Dunedin, New Zealand
 
 FTHLtraps <- traps(hornedlizardCH)
 plot(FTHLtraps, border = 100)
-pdot.contour(FTHLtraps, detectfn = 'HHN', nx = 128, detectpar =
+pdotContour(FTHLtraps, detectfn = 'HHN', nx = 128, detectpar =
     detectpar(FTHL.0), levels = c(0.1, 0.01, 0.001),
     noccasions = 14, add = TRUE)
     

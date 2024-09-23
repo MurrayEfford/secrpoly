@@ -58,7 +58,7 @@ S3method(esa, secrpoly)
 
 # export (esaPlot)
 export (pdot)
-export (pdot.contour)
+export (pdotContour)
 
 useDynLib (secrpoly)
 ## DEBUGGING ONLY (cpp functions not documented)

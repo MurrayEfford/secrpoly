@@ -115,9 +115,9 @@ fxi.secrpoly <- function (object, i = NULL, sessnum = 1, X = NULL, ncores = NULL
     object$details$fastproximity <- FALSE   ## 2020-08-30
     
     ## data for a single session
-    data <- prepareSessionData(object$capthist, object$mask, object$details$maskusage, 
-                             object$design, object$design0, object$detectfn, object$groups, 
-                             object$fixed, object$hcov, object$details)
+    data <- prepareSessionData(object$capthist, object$mask, NULL, 
+           object$design, object$design0, object$detectfn, object$groups, 
+           object$fixed, object$hcov, object$details)
     
   sessionlevels <- session(object$capthist)
   beta <- coef(object)$beta
@@ -231,7 +231,6 @@ fxi.secrpoly <- function (object, i = NULL, sessnum = 1, X = NULL, ncores = NULL
     gkhkX <- makegk (data$dettype, object$detectfn, data$traps, X, object$details, 
         sessnum, NE, D, miscparm, Xrealparval, grain, ncores)
     haztempX <- gethazard (nX, data$binomNcode, nrow(Xrealparval), gkhkX$hk, PIA, data$usge)
-    maskusage <- maskboolean(object$capthist, X, object$details$maxdistance)
     if (data$dettype[1] %in% c(0,1,2,5,8,13)) {
         ## point detectors
         prmatX <- allhistfxi (nX, Xrealparval, haztempX, gkhkX, piX, PIA, data$usge,

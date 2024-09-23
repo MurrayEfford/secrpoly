@@ -14,7 +14,7 @@
 ## make.mask (pdotmin option restricted to point detectors)
 ## reparameterize.esa (restricted to point detectors)
 ## bias.D  (restricted to point detectors)
-## pdot.contour
+## pdotContour
 
 
 pdot <- function (X, traps, detectfn = 14, detectpar = list(g0 = 0.2, sigma = 25, z = 1),
@@ -98,7 +98,7 @@ pdot <- function (X, traps, detectfn = 14, detectpar = list(g0 = 0.2, sigma = 25
 }
 ############################################################################################
 
-pdot.contour <- function (traps, border = NULL, nx = 64, detectfn = 14,
+pdotContour <- function (traps, border = NULL, nx = 64, detectfn = 14,
                           detectpar = list(g0 = 0.2, sigma = 25, z = 1),
                           noccasions = NULL, binomN = NULL,
                           levels = seq(0.1, 0.9, 0.1),
@@ -107,7 +107,7 @@ pdot.contour <- function (traps, border = NULL, nx = 64, detectfn = 14,
     if (ms(traps)) {
         if (length(noccasions) == 1)
             noccasions <- rep(noccasions,length(traps))
-        output <- mapply(pdot.contour, traps, detectpar=detectpar, noccasions=noccasions,
+        output <- mapply(pdotContour, traps, detectpar=detectpar, noccasions=noccasions,
                          MoreArgs = list(border = border, nx = nx,
                          detectfn = detectfn, binomN = binomN,
                          levels = levels, poly = poly, poly.habitat = poly.habitat, plt = plt, add = add, ...))

@@ -1,19 +1,5 @@
 # development.txt 
 
-What functionality is overridden from 'secr'?
-
--- secrpoly.fit()
--- pdot
--- pdot.contour
-
-S3 methods
-
-esa.secrpoly
-derived.secrpoly
-fxTotal.secrpoly
-fxi.secrpoly
-
-
 # 2024-09-14
 
 cpp functions
@@ -42,7 +28,7 @@ pdot is used in --
 
 ## esa.secrpoly
 ## esaPlot
-## pdot.contour
+## pdotContour
 
 # poly supppressed in secr:
 
@@ -71,3 +57,36 @@ trapping.cpp
     trappingtransect(), trappingtransectX()
         uses hintegral1Dcpp(), integral1Dcpp()
         
+
+################################################################################
+
+Differences
+
+'secr' features blocked
+
+fastproximity
+MCgof
+bias.D
+
+secrpoly.fit does not use boolean mask (maskusage, mbool)
+
+Functionality overridden from 'secr'
+
+-- secrpoly.fit() class of output c('secrpoly','secr')
+-- pdot
+-- pdotContour
+
+S3 generics with secrpoly method
+
+esa.secrpoly
+derived.secrpoly
+fxTotal.secrpoly
+fxi.secrpoly
+
+Relies on 'secr' for
+
+data input etc.
+predict
+region.N
+esaPlot
+discretization

@@ -71,7 +71,7 @@ A vector of probabilities, one for each row in X.
 \seealso{ 
   \code{\link{make.mask}},
   \code{\link{Detection functions}}, 
-  \code{\link{pdot.contour}}
+  \code{\link{pdotContour}}
 }
 
 \examples{

@@ -92,7 +92,7 @@ secrpoly.fit <- function (capthist,  model = list(D~1, lambda0~1, sigma~1), mask
         detectfn <- 14
     }
     else {
-        detectfn <- valid.detectfn(detectfn, 14:20)  
+        detectfn <- secr::valid.detectfn(detectfn, 14:19)  
     }
 
     #################################################

@@ -52,31 +52,6 @@ detectionfunctionnumber <- function (detname) {
 
 #-------------------------------------------------------------------------------
 
-parnames <- function (detectfn) {
-    list(
-        c('lambda0','sigma'),
-        c('lambda0','sigma','z'),
-        c('lambda0','sigma'),
-        c('lambda0','sigma','w'),
-        c('lambda0','sigma','z'),
-        c('lambda0','sigma','z')
-        )[[detectfn-13]]
-}
-
-#-------------------------------------------------------------------------------
-
-valid.detectfn <- function (detectfn, valid = 14:19) {
-    if (is.null(detectfn))
-        stop ("requires 'detectfn'")
-    if (is.character(detectfn))
-        detectfn <- detectionfunctionnumber(detectfn)
-    if (!(detectfn %in% valid))
-        stop ("invalid detection function")
-    detectfn
-}
-
-#-------------------------------------------------------------------------------
-
 valid.model <- function(model, CL, detectfn, hcov, userdist, sessioncovnames) {
     if (any(sapply(model, badsmooths)))
         warning ("smooth term may be unsuitable for secr: ",
@@ -640,7 +615,6 @@ getcellsize <- function (mask) {
 }
 
 #-------------------------------------------------------------------------------
-
 
 expandbinomN <- function (binomN, detectorcodes) {
     # assumes detectorcodes is a vector of length = noccasions

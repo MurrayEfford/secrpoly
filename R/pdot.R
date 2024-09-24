@@ -35,7 +35,7 @@ pdot <- function (X, traps, detectfn = 14, detectpar = list(g0 = 0.2, sigma = 25
 
     truncate <- ifelse(is.null(detectpar$truncate), 1e+10, detectpar$truncate)
 
-    detectpars <- unlist(detectpar[parnames(detectfn)])
+    detectpars <- unlist(detectpar[secr::parnames(detectfn)])
     if ((detectfn>9) && (detectfn<14))  detectpars <- c(detectpars, detectpar$cutval)
     if (length(detectpars)<3) detectpars <- c(detectpars,0)
     miscparm <- numeric(4);   ## dummy
@@ -58,7 +58,7 @@ pdot <- function (X, traps, detectfn = 14, detectpar = list(g0 = 0.2, sigma = 25
             stop("must specify noccasions when traps does not have usage attribute")
         usge <- matrix(1, ndetector(traps), noccasions)
     }
-    dettype <- detectorcode(traps, noccasions = noccasions)
+    dettype <- secr::detectorcode(traps, noccasions = noccasions)
     binomN <- getbinomN (binomN, detector(traps))
     markocc <- markocc(traps)
     

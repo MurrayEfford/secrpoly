@@ -35,7 +35,7 @@ esa.secrpoly <- function (object, sessnum = 1, beta = NULL, real = NULL,
     trps   <- traps(capthists)  ## need session-specific traps
     n       <- max(nrow(capthists), 1)
     s       <- ncol(capthists)
-    dettype <- detectorcode(trps, noccasions = s)
+    dettype <- secr::detectorcode(trps, noccasions = s)
     
     
     constant <- !is.null(noccasions)    ## fix 2011-04-07
@@ -72,9 +72,6 @@ esa.secrpoly <- function (object, sessnum = 1, beta = NULL, real = NULL,
         else {
             realparval0 <- makerealparameters (object$design0, beta,
                 object$parindx, object$link, object$fixed)  # naive
-            # realparval0 <- as.list(realparval0)
-            # names(realparval0) <- parnames(object$detectfn)
-            ## 2016-11-12
             realparval0 <- as.list(realparval0[1,])
             realparval0$cutval <- attr(object$capthist,'cutval')  ## 2016-05-22 may be NULL
         }

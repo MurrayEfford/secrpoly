@@ -2,7 +2,7 @@ Package: secrpoly
 Type: Package
 Title: Area Search Spatially Explicit Capture-Recapture 
 Version: 1.0.1
-Date: 2024-09-23
+Date: 2025-11-19
 Description: Functions to estimate the density and size of a spatially 
   distributed animal population sampled by searching polygons or transects.
   An experimental subset of 'secr' capability.

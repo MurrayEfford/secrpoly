@@ -1,10 +1,11 @@
-Changes in version 1.0.1 (2024-09-19)
+Changes in version 1.0.1 (2025-11-19)
 
 New features or changed behaviour of old functions
     o   none
     
 Other
     o   removed unused functions, general tidy
+    o   added secr_ prefix to functions not exported by secr
     
 Changes in version 1.0.0 (2024-01-29)
 

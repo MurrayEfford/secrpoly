@@ -451,7 +451,7 @@ secrpoly.fit <- function (capthist,  model = list(D~1, lambda0~1, sigma~1), mask
         if (!is.null(envD)) {
             assign('Dfn', identity, envir = envD)
         }
-        designD <- secr:::general.model.matrix(model$D, data = temp, gamsmth = smoothsetup$D, 
+        designD <- secr:::secr_general.model.matrix(model$D, data = temp, gamsmth = smoothsetup$D, 
                                         contrasts = details$contrasts)
         attr(designD, 'dimD') <- attr(temp, 'dimD')
         if (MS && !is.null(details[['Dlambda']]) && details[['Dlambda']]) {

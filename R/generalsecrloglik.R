@@ -156,9 +156,9 @@ generalsecrloglikfn <- function (
     #---------------------------------------------------
     ## allow for scaling of detection
     Dtemp <- if (D.modelled) mean(D[,1,sessnum]) else NA
-    Xrealparval <- reparameterize (realparval, detectfn, details,
+    Xrealparval <- secr:::secr_reparameterize (realparval, detectfn, details,
                                    data$mask, data$traps, Dtemp, data$s)
-    Xrealparval0 <- reparameterize (realparval0, detectfn, details,
+    Xrealparval0 <- secr:::secr_reparameterize (realparval0, detectfn, details,
                                     data$mask, data$traps, Dtemp, data$s)
     if (details$debug>2) browser()
 
@@ -207,7 +207,7 @@ generalsecrloglikfn <- function (
     
     #######################################################################
     ## hazard for exclusive detectors or related
-    haztemp <- gethazard (data$m, data$binomNcode, nrow(Xrealparval), gkhk$hk, PIA, data$usge)
+    haztemp <- secr:::secr_gethazard (data$m, data$binomNcode, nrow(Xrealparval), gkhk$hk, PIA, data$usge)
     
     ## model detection histories (prw) conditional on detection (pdot)
     if (data$nc == 0) {
@@ -231,7 +231,7 @@ generalsecrloglikfn <- function (
             as.matrix(data$mask))
         if (all(data$dettype %in% c(3,4))) {
             ## hazard for exclusive detectors or related bug fix 2020-04-24
-            haztemp <- gethazard (data$m, data$binomNcode, nrow(Xrealparval0), gkhk$hk, PIA0, data$usge)
+            haztemp <- secr:::secr_gethazard (data$m, data$binomNcode, nrow(Xrealparval0), gkhk$hk, PIA0, data$usge)
         }
     }
     if (!is.null(details$externalpdot)) {

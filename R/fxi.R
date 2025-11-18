@@ -115,7 +115,7 @@ fxi.secrpoly <- function (object, i = NULL, sessnum = 1, X = NULL, ncores = NULL
     object$details$fastproximity <- FALSE   ## 2020-08-30
     
     ## data for a single session
-    data <- prepareSessionData(object$capthist, object$mask, NULL, 
+    data <- secr:::secr_prepareSessionData(object$capthist, object$mask, NULL, 
            object$design, object$design0, object$detectfn, object$groups, 
            object$fixed, object$hcov, object$details)
     
@@ -197,7 +197,7 @@ fxi.secrpoly <- function (object, i = NULL, sessnum = 1, X = NULL, ncores = NULL
   #---------------------------------------------------
   ## allow for scaling of detection
   Dtemp <- if (D.modelled) mean(D) else NA
-  Xrealparval <- reparameterize (realparval, object$detectfn, object$details,
+  Xrealparval <- secr:::secr_reparameterize (realparval, object$detectfn, object$details,
                                  data$mask, data$traps, Dtemp, data$s)
   PIA <- object$design$PIA[sessnum, ok, 1:data$s, 1:data$K, ,drop=FALSE]
   PIA0 <- object$design0$PIA[sessnum, ok, 1:data$s, 1:data$K, ,drop=FALSE]
@@ -209,7 +209,7 @@ fxi.secrpoly <- function (object, i = NULL, sessnum = 1, X = NULL, ncores = NULL
 
   gkhk <- makegk (data$dettype, object$detectfn, data$traps, data$mask, object$details, sessnum, 
                   NE, D, miscparm, Xrealparval, grain, ncores)
-  haztemp <- gethazard (data$m, data$binomNcode, nrow(realparval), gkhk$hk, PIA, data$usge)
+  haztemp <- secr:::secr_gethazard (data$m, data$binomNcode, nrow(realparval), gkhk$hk, PIA, data$usge)
   
   if (data$dettype[1] %in% c(0,1,2,5,8,13)) {
       prmat <- allhistfxi (data$m, Xrealparval, haztemp, gkhk, pimask, PIA, data$usge,
@@ -230,7 +230,7 @@ fxi.secrpoly <- function (object, i = NULL, sessnum = 1, X = NULL, ncores = NULL
     nX <- nrow(X)
     gkhkX <- makegk (data$dettype, object$detectfn, data$traps, X, object$details, 
         sessnum, NE, D, miscparm, Xrealparval, grain, ncores)
-    haztempX <- gethazard (nX, data$binomNcode, nrow(Xrealparval), gkhkX$hk, PIA, data$usge)
+    haztempX <- secr:::secr_gethazard (nX, data$binomNcode, nrow(Xrealparval), gkhkX$hk, PIA, data$usge)
     if (data$dettype[1] %in% c(0,1,2,5,8,13)) {
         ## point detectors
         prmatX <- allhistfxi (nX, Xrealparval, haztempX, gkhkX, piX, PIA, data$usge,

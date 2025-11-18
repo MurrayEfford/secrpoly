@@ -28,16 +28,10 @@
     'hazard cumulative gamma',
     'hazard variable power')
 
-.localstuff$DFN <- c(as.character(0:13), 
-                     'HHN', 'HHR', 'HEX', 'HAN', 'HCG', 'HVP')
-
+.localstuff$DFN <- c(as.character(0:13), 'HHN', 'HHR', 'HEX', 'HAN', 'HCG', 'HVP')
 .localstuff$learnedresponses <- c('b', 'bk', 'B', 'k', 'Bk') 
 
 #-------------------------------------------------------------------------------
-
-detectionfunctionname <- function (fn) {
-    .localstuff$detectionfunctions[fn+1]
-}
 
 #-------------------------------------------------------------------------------
 

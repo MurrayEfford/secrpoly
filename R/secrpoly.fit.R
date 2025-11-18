@@ -92,7 +92,7 @@ secrpoly.fit <- function (capthist,  model = list(D~1, lambda0~1, sigma~1), mask
         detectfn <- 14
     }
     else {
-        detectfn <- secr::valid.detectfn(detectfn, 14:19)  
+        detectfn <- secr:::secr_valid.detectfn(detectfn, 14:19)  
     }
 
     #################################################
@@ -271,7 +271,7 @@ secrpoly.fit <- function (capthist,  model = list(D~1, lambda0~1, sigma~1), mask
     #################################################
     
     if ('formula' %in% class(model)) model <- list(model)
-    model <- stdform (model)  ## named, no LHS
+    model <- secr:::secr_stdform (model)  ## named, no LHS
     if (CL) {
         model$D <- NULL
         if (details$relativeD) {
@@ -456,7 +456,7 @@ secrpoly.fit <- function (capthist,  model = list(D~1, lambda0~1, sigma~1), mask
         attr(designD, 'dimD') <- attr(temp, 'dimD')
         if (MS && !is.null(details[['Dlambda']]) && details[['Dlambda']]) {
             if (all(sessionDvars))
-                attr(designD, 'Dfn') <- secr::Dfn2
+                attr(designD, 'Dfn') <- secr:::Dfn2
             else {
                 stop ("Dlambda does not allow spatial covariates of density in this version")
             }
@@ -495,7 +495,7 @@ secrpoly.fit <- function (capthist,  model = list(D~1, lambda0~1, sigma~1), mask
     names(parindx) <- names(np)[np>0]
     if (!D.modelled) parindx$D <- NULL
     parindx$noneuc <- NULL
-    data <- prepareSessionData(capthist, mask, NULL, design, 
+    data <- secr:::secr_prepareSessionData(capthist, mask, NULL, design, 
                     design0, detectfn, groups, fixed, hcov, details)
 
     ############################################

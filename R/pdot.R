@@ -12,8 +12,6 @@
 ## esa     
 ## fxTotal (fxTotal.secrpoly uses secrpoly pdot)
 ## make.mask (pdotmin option restricted to point detectors)
-## reparameterize.esa (restricted to point detectors)
-## bias.D  (restricted to point detectors)
 ## pdotContour
 
 
@@ -35,7 +33,7 @@ pdot <- function (X, traps, detectfn = 14, detectpar = list(g0 = 0.2, sigma = 25
 
     truncate <- ifelse(is.null(detectpar$truncate), 1e+10, detectpar$truncate)
 
-    detectpars <- unlist(detectpar[secr::parnames(detectfn)])
+    detectpars <- unlist(detectpar[secr:::secr_parnames(detectfn)])
     if ((detectfn>9) && (detectfn<14))  detectpars <- c(detectpars, detectpar$cutval)
     if (length(detectpars)<3) detectpars <- c(detectpars,0)
     miscparm <- numeric(4);   ## dummy
@@ -58,7 +56,7 @@ pdot <- function (X, traps, detectfn = 14, detectpar = list(g0 = 0.2, sigma = 25
             stop("must specify noccasions when traps does not have usage attribute")
         usge <- matrix(1, ndetector(traps), noccasions)
     }
-    dettype <- secr::detectorcode(traps, noccasions = noccasions)
+    dettype <- secr:::secr_detectorcode(traps, noccasions = noccasions)
     binomN <- getbinomN (binomN, detector(traps))
     markocc <- markocc(traps)
     

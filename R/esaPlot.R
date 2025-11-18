@@ -51,7 +51,7 @@ esaPlot <- function (object, max.buffer = NULL, spacing = NULL, max.mask = NULL,
                 max.mask <- make.mask (object, max.buffer, spacing,,, 'trapbuffer', poly, poly.habitat)
             }
             nmask <- nrow(max.mask)
-            detectfn <- secr::valid.detectfn(detectfn, 14:19)
+            detectfn <- secr:::secr_valid.detectfn(detectfn, 14:19)
             binomN <- getbinomN (binomN, detector(object))   ## must now be traps object
             a <- pdot (max.mask, object, detectfn, detectpar, noccasions, binomN)
             d <- distancetotrap(max.mask, object)

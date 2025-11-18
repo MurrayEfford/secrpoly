@@ -124,9 +124,9 @@ derived.secrpoly <- function (object, sessnum = NULL, groups=NULL, alpha=0.05, s
                 estimate = derivedmean + c(0,NT/A),  ## NT in 'telemetry' below
                 SE.estimate = derivedSE)
             
-            temp <- add.cl(temp, alpha, loginterval)
+            temp <- secr:::secr_add.cl(temp, alpha, loginterval)
             if (temp$estimate[2] > 0) {
-                temp <- add.cl(temp, alpha, loginterval)
+                temp <- secr:::secr_add.cl(temp, alpha, loginterval)
                 temp$CVn <- varcomp1^0.5 / temp$estimate
                 temp$CVa <- varcomp2^0.5 / temp$estimate
                 temp$CVD <- temp$SE.estimate / temp$estimate

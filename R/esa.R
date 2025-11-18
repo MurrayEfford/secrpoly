@@ -35,7 +35,7 @@ esa.secrpoly <- function (object, sessnum = 1, beta = NULL, real = NULL,
     trps   <- traps(capthists)  ## need session-specific traps
     n       <- max(nrow(capthists), 1)
     s       <- ncol(capthists)
-    dettype <- secr::detectorcode(trps, noccasions = s)
+    dettype <- secr:::secr_detectorcode(trps, noccasions = s)
     
     
     constant <- !is.null(noccasions)    ## fix 2011-04-07
@@ -105,7 +105,7 @@ esa.secrpoly <- function (object, sessnum = 1, beta = NULL, real = NULL,
         }
         ## not compatible with sigmak parameterizations
         Dtemp <- NA
-        Xrealparval0 <- reparameterize (realparval0, object$detectfn, object$details,
+        Xrealparval0 <- secr:::secr_reparameterize (realparval0, object$detectfn, object$details,
                                         mask, trps, Dtemp, s)
 
         usge <- usage(trps)
@@ -147,7 +147,7 @@ esa.secrpoly <- function (object, sessnum = 1, beta = NULL, real = NULL,
           pdot <- integralprw1poly (
               detectfn    = object$detectfn,
               realparval0 = Xrealparval0, 
-              haztemp     = gethazard(m, binomNcode, nrow(Xrealparval0), gkhk$hk, PIA0, usge), 
+              haztemp     = secr:::secr_gethazard(m, binomNcode, nrow(Xrealparval0), gkhk$hk, PIA0, usge), 
               hk          = gkhk$hk, 
               H           = gkhk$H, 
               pi.density  = pi.density, 

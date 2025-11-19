@@ -24,16 +24,16 @@ pdotContour(traps, border = NULL, nx = 64, detectfn = 14,
   \item{border}{ width of blank margin around the outermost detectors }
   \item{nx}{ dimension of interpolation grid in x-direction }
   \item{detectfn}{ integer code or character string for shape of
-    detection function 14 = hazard halfnormal etc. -- see \link{detectfn}} 
+    detection function 14 = hazard halfnormal etc. -- see \link[secr]{detectfn}} 
   \item{detectpar}{ list of values for named parameters of detection
   function }
   \item{noccasions}{ number of sampling occasions}
   \item{binomN}{ integer code for discrete distribution (see
-    \code{\link{secr.fit}}) }
+    \code{\link{secrpoly.fit}}) }
   \item{levels}{ vector of levels for p.(X)}
   \item{poly}{ matrix of two columns, the x and y
     coordinates of a bounding polygon (optional) }
-  \item{poly.habitat}{ logical as in \code{\link{make.mask}} }
+  \item{poly.habitat}{ logical as in \code{\link[secr]{make.mask}} }
   \item{plt}{ logical to plot contours }
   \item{add}{ logical to add contour(s) to an existing plot }
   \item{fill}{ vector of colours to fill contours (optional)}
@@ -41,10 +41,10 @@ pdotContour(traps, border = NULL, nx = 64, detectfn = 14,
 }
 \details{
 
-\code{pdotContour} constructs a rectangular mask and applies \code{\link{pdot}} to
+\code{pdotContour} constructs a rectangular mask and applies \code{\link[secr]{pdot}} to
 compute the p.(X) at each mask point.
 
-If \code{traps} has a \link{usage} attribute then \code{noccasions} is
+If \code{traps} has a \link[secr]{usage} attribute then \code{noccasions} is
   set accordingly; otherwise it must be provided.
 
 If \code{traps} is for multiple sessions then detectpar should be a list
@@ -85,7 +85,7 @@ University of Otago, Dunedin, New Zealand
 
 \seealso{
 
-  \code{\link{pdot}}, \code{\link{make.mask}}
+  \code{\link[secr]{pdot}}, \code{\link[secr]{make.mask}}
   
 }
 \examples{

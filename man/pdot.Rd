@@ -25,12 +25,12 @@ pdot(X, traps, detectfn = 14, detectpar = list(g0 = 0.2,
   \item{noccasions}{ number of sampling intervals (occasions) }
   \item{binomN}{ integer code for discrete distribution (see
     \code{\link{secrpoly.fit}}) }
-  \item{userdist}{user-defined distance function or matrix (see \link{userdist})}
+  \item{userdist}{user-defined distance function or matrix (see \link[secr]{userdist})}
   \item{ncores}{integer number of threads}
 }
 \details{
 
-  If \code{traps} has a \link{usage} attribute then \code{noccasions} is
+  If \code{traps} has a \link[secr]{usage} attribute then \code{noccasions} is
   set accordingly; otherwise it must be provided.
   
 The probability computed is \eqn{p.(\mathbf{X}) = 1 - \prod\limits _{k}
@@ -58,7 +58,7 @@ covariates or values of parameters `D' or `noneuc' then \code{X} must
 have a covariates attribute with the required columns.
 
 Setting \code{ncores = NULL} uses the existing value from the environment variable 
-RCPP_PARALLEL_NUM_THREADS (see \code{\link{setNumThreads}}).
+RCPP_PARALLEL_NUM_THREADS (see \code{\link[secr]{setNumThreads}}).
 
 }
 
@@ -69,9 +69,9 @@ A vector of probabilities, one for each row in X.
 }
 
 \seealso{ 
-  \code{\link{make.mask}},
-  \code{\link{Detection functions}}, 
-  \code{\link{pdotContour}}
+  \code{\link[secr]{make.mask}},
+  \code{\link[secr]{Detection functions}}, 
+  \code{\link[secr]{pdotContour}}
 }
 
 \examples{

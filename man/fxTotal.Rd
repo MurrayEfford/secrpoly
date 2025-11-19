@@ -34,11 +34,11 @@
   
 \details{
 
-This function calls \code{\link{fxi.secrpoly}} for each detected animal and
+This function calls \code{\link[secr]{fxi.secrpoly}} for each detected animal and
 overlays the results to obtain a summed probability density surface D.fx
 for the locations of the home-range centres of detected individuals.
 
-A separate calculation using \code{\link{pdot}} provides the expected
+A separate calculation using \code{\link[secr]{pdot}} provides the expected
 spatial distribution of undetected animals, as another density
 surface: crudely, D.nc(X) = D(X) * ( 1 -- pdot(X)).
 
@@ -46,19 +46,19 @@ The pointwise sum of the two surfaces is sometimes used to represent the
 spatial distrbution of the population, but see Notes.
 
 Setting \code{ncores = NULL} uses the existing value from the environment variable 
-RCPP_PARALLEL_NUM_THREADS (see \code{\link{setNumThreads}}).
+RCPP_PARALLEL_NUM_THREADS (see \code{\link[secr]{setNumThreads}}).
 
 }
 
 \value{
 An object of class `Dsurface' (a variety of mask) with a `covariates'
 attribute that is a dataframe with columns --
-\item{D.fx }{sum of \code{\link{fxi}} over all detected individuals}
+\item{D.fx }{sum of \code{\link[secr]{fxi}} over all detected individuals}
 \item{D.nc }{expected density of undetected (`not caught') individuals}
 \item{D.sum }{sum of D.fx and D.nc}
 
 All densities are in animals per hectare (the `scale' argument of
-\code{\link{plot.Dsurface}} allows the units to be varied later).
+\code{\link[secr]{plot.Dsurface}} allows the units to be varied later).
 
 }
 
@@ -83,7 +83,7 @@ a habitat mask where the main or only contribution is from D.nc.
 
 \seealso{
   
-  \code{\link{fxi.secrpoly}}, \code{\link{fxiContour}}, \code{\link{pdot}}
+  \code{\link[secr]{fxi.secrpoly}}, \code{\link[secr]{fxiContour}}, \code{\link[secr]{pdot}}
   
 }
 

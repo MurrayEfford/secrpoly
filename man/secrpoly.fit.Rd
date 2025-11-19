@@ -22,14 +22,14 @@ secrpoly.fit (capthist, model = list(D~1, lambda0~1, sigma~1),
 }
 
 \arguments{
-  \item{capthist}{ \code{\link{capthist}} object including capture data and detector (trap) layout }
-  \item{mask}{ \code{\link{mask}} object or (for a multi-session analysis) a list of \code{mask} objects, one for each session}
+  \item{capthist}{ \code{\link[secr]{capthist}} object including capture data and detector (trap) layout }
+  \item{mask}{ \code{\link[secr]{mask}} object or (for a multi-session analysis) a list of \code{mask} objects, one for each session}
   \item{buffer}{ scalar mask buffer radius if \code{mask} not specified
   (default 100 m)}
   \item{CL}{ logical, if true then the model is fitted by maximizing the conditional likelihood }
   \item{detectfn}{integer code or character string for shape of
   detection function 14 = hazard halfnormal, 15 = hazard hazard rate etc. -- see
-  \link{detectfn}}
+  \link[secr]{detectfn}}
   \item{binomN}{ integer code for distribution of counts (see Details) }
   \item{start}{ vector of initial values for beta parameters, or \code{secr} object from which they may be derived }
   \item{link}{ list with optional components corresponding to `real'
@@ -45,7 +45,7 @@ secrpoly.fit (capthist, model = list(D~1, lambda0~1, sigma~1),
   \item{dframe}{ optional data frame of design data for detection parameters }
   \item{details}{ list of additional settings, mostly model-specific (see Details) }
   \item{method}{ character string giving method for maximizing log likelihood }
-  \item{verify}{ logical, if TRUE the input data are checked with \code{\link{verify}} }
+  \item{verify}{ logical, if TRUE the input data are checked with \code{\link[secr]{verify}} }
   \item{trace}{ logical, if TRUE then output each evaluation of the likelihood, and other messages}
   \item{ncores}{ integer number of threads to use for parallel processing}
   \item{\dots}{ other arguments passed to the maximization function }
@@ -64,12 +64,12 @@ constructed automatically (t, T, b, B, bk, Bk, k, K), group (g), and
 others that appear in the \code{covariates} of the input data.
 
 \code{buffer} and \code{mask} are alternative ways to define the region
-of integration (see \link{mask}). If \code{mask} is not specified then a
+of integration (see \link[secr]{mask}). If \code{mask} is not specified then a
 mask of type "trapbuffer" will be constructed automatically using the
 specified buffer width in metres.
 
 \code{hcov} is used to define a hybrid mixture model, used especially to
-model sex differences (see \code{\link{hcov}}). (Allows some animals to
+model sex differences (see \code{\link[secr]{hcov}}). (Allows some animals to
 be of unknown class).
 
 The length of \code{timecov} should equal the number of sampling
@@ -78,26 +78,26 @@ occasions (\code{ncol(capthist)}). Arguments \code{timecov},
 in one of the model specifications. Default \code{link} is \code{list(D="log",
 g0="logit", sigma="log")}.
 
-If \code{start} is missing then \code{\link{autoini}} is used for D, lambda0
+If \code{start} is missing then \code{\link[secr]{autoini}} is used for D, lambda0
 and sigma, and other beta parameters are set initially to arbitrary
 values, mostly zero. \code{start} may be a previously fitted model. In
 this case, a vector of starting beta values is constructed from the old
 (usually nested) model and additional betas are set to zero. Mapping of
-parameters follows the default in \code{\link{score.test}}, but user
+parameters follows the default in \code{\link[secr]{score.test}}, but user
 intervention is not allowed. 
 
 \code{binomN} determines the distribution that is fitted for the number of detections of an individual at a particular detector, on a particular occasion, when the detectors are of type `polygon' or `transect':
 
 \itemize{
 \item{binomN > 1  --- binomial with size binomN}
-\item{binomN = 1  --- binomial with size determined by \link{usage}}
+\item{binomN = 1  --- binomial with size determined by \link[secr]{usage}}
 \item{binomN = 0  --- Poisson}
 }
 
 The default with these detectors is to fit a Poisson distribution.
 
 \code{details} is used for various specialized settings listed below. These are
-described separately - see \code{\link{details}}.
+described separately - see \code{\link[secr]{details}}.
 \tabular{ll}{
 autoini \tab session to use for starting values (default 1) \cr
 centred \tab centre x-y coordinates\cr
@@ -124,9 +124,10 @@ relativeD \tab optional relative density conditional on \eqn{n} \cr
 savecall \tab optionally suppress saving of call\cr
 }
 
-Setting \code{ncores = NULL} uses the existing value from the environment variable RCPP_PARALLEL_NUM_THREADS (see \code{\link{setNumThreads}}).
+Setting \code{ncores = NULL} uses the existing value from the environment variable RCPP_PARALLEL_NUM_THREADS 
+(see \code{\link[secr]{setNumThreads}}).
 
-A mark-resight model is fitted if the \code{\link{markocc}} attribute of the capthist 
+A mark-resight model is fitted if the \code{\link[secr]{markocc}} attribute of the capthist 
 `traps' object includes sighting occasions. See the vignette 
 \href{https://www.otago.ac.nz/density/pdfs/secr-markresight.pdf}{secr-markresight.pdf} 
 for a full account.
@@ -142,7 +143,7 @@ maximization and compute only the hessian for the current dataset at the
 values in start, and the corresponding variance-covariance matrix of
 beta parameters. The computation uses fdHess from \pkg{nlme}.
 
-If \code{verify} = TRUE then \code{\link{verify}} is called to check
+If \code{verify} = TRUE then \code{\link[secr]{verify}} is called to check
 capthist and mask; analysis is aborted if "errors" are found. Some
 conditions that trigger an "error" are benign (e.g., no detections in
 some sessions of a multi-session study of a sparse population); use
@@ -175,9 +176,9 @@ fitted SECR model.  This has components
   \item{designD }{design matrix for density model; may be NULL}
   \item{designNE }{design matrix for noneuc model; may be NULL}
   \item{design }{reduced design matrices for detection parameters, parameter table and parameter
-    index array for actual animals (see \code{\link{secr.design.MS}})}
+    index array for actual animals (see \code{\link[secr]{secr.design.MS}})}
   \item{design0 }{reduced design matrices for detection parameters, parameter table and parameter
-    index array for `naive' animal (see \code{\link{secr.design.MS}})}
+    index array for `naive' animal (see \code{\link[secr]{secr.design.MS}})}
 
   \item{start }{vector of starting values for beta parameters} 
 
@@ -247,14 +248,14 @@ and recording of the completion time in `fitted' was discontinued.
 the information matrix correctly, causing some or all standard errors to
 be set to NA. This usually indicates a major problem in fitting the
 model, and parameter estimates should not be trusted. See
-\link{Troubleshooting}.
+\link[secr]{Troubleshooting}.
 
 }
 
 \seealso{
 
-  \link{Detection functions},
-  \code{\link{secr.fit}},
+  \link[secr]{Detection functions},
+  \code{\link[secr]{secr.fit}},
   
 }
 

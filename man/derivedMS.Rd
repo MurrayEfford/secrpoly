@@ -38,7 +38,7 @@ Density is a derived parameter when a model is fitted by maximizing the conditio
   \item{beta}{ vector of fitted parameters on transformed (link) scale }
   \item{real}{ vector of `real' parameters } 
   \item{noccasions}{ integer number of sampling occasions (see Details) } 
-  \item{...}{other arguments passed to \code{\link{fdHess} (derived)}}
+  \item{...}{other arguments passed to \code{\link[nlme]{fdHess} (derived)}}
 }
 
 \details{
@@ -81,7 +81,7 @@ sampling occasions; it works only when detection parameters are constant
 across individuals and across time.
 
 Setting \code{ncores = NULL} uses the existing value from the environment variable 
-RCPP_PARALLEL_NUM_THREADS (see \code{\link{setNumThreads}}).
+RCPP_PARALLEL_NUM_THREADS (see \code{\link[secr]{setNumThreads}}).
 
 The effective sampling area `esa' (\eqn{a(\hat{\theta})}{a(theta-hat)})
 reported by \code{derived} is equal to the harmonic mean of the
@@ -110,9 +110,6 @@ capture (animal not detected previously).
 
 The computation of sampling variances is relatively slow and may be
 suppressed with \code{se.esa} and \code{se.D} as desired.
-
-For computing \code{derived} across multiple models in parallel see
-\code{\link{par.derived}}.
 
 The \dots argument may be used to control the step size (.relStep) used by 
 \code{\link{fdHess}} when estimating gradients for SE(D) and SE(esa).
@@ -152,10 +149,10 @@ Huggins, R. M. (1989) On the statistical analysis of capture experiments. \emph{
 
 \seealso{
 
-  \code{\link{predict.secr}},
-  \code{\link{print.secr}},
+  \code{\link[secr]{predict.secr}},
+  \code{\link[secr]{print.secr}},
   \code{\link{secrpoly.fit}},
-  \code{\link{empirical.varD}}
+  \code{\link[secr]{empirical.varD}}
 
 }
 

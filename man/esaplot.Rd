@@ -27,17 +27,17 @@ esaPlot (object, max.buffer = NULL, spacing = NULL, max.mask = NULL,
   \item{object}{\code{traps} object or \code{secrpoly} object output from \code{secrpoly.fit} }
   \item{max.buffer}{ maximum width of buffer in metres }
   \item{spacing}{ distance between mask points }
-  \item{max.mask}{ \code{\link{mask}} object }
+  \item{max.mask}{ \code{\link[secr]{mask}} object }
   \item{detectfn}{ integer code or character string for shape of
-  detection function 0 = halfnormal etc. -- see \link{detectfn}}
+  detection function 0 = halfnormal etc. -- see \link[secr]{detectfn}}
   \item{detectpar}{ list of values for named parameters of detection function }
   \item{noccasions}{ number of sampling occasions}
   \item{binomN}{ integer code for discrete distribution (see
-  \code{\link{secr.fit}}) }  
+  \code{\link[secr]{secr.fit}}) }  
   \item{thin}{ proportion of mask points to retain in plot and output}
   \item{poly}{ matrix of two columns interpreted as the x and y
     coordinates of a bounding polygon (optional) }
-  \item{poly.habitat}{logical as in \code{\link{make.mask}} }
+  \item{poly.habitat}{logical as in \code{\link[secr]{make.mask}} }
   \item{session}{vector of session indices (used if \code{object} spans multiple sessions)}
   \item{plt}{ logical to plot results }
   \item{type}{ character, what to plot }
@@ -46,7 +46,7 @@ esaPlot (object, max.buffer = NULL, spacing = NULL, max.mask = NULL,
   \item{overlay}{ logical; if TRUE then automatically \code{add = TRUE}
   for plots after the first }
   \item{conditional}{logical; if TRUE the reported mean and CV are conditional on detection 
-      (see \code{\link{CVpdot}})}
+      (see \code{\link[secr]{CVpdot}})}
   \item{\dots}{ graphical arguments passed to plot() and lines()}
 }
 
@@ -94,8 +94,8 @@ esaPlot (object, max.buffer = NULL, spacing = NULL, max.mask = NULL,
   \item{density}{ n/esa } 
   \item{pdot}{ \eqn{p.(\mathbf{X})}{p.(X)} }
   \item{pdotmin}{ cumulative minimum  (\eqn{p.(\mathbf{X})}{p.(X)}) }
-  \item{meanpdot}{ expected pdot across mask (see \code{\link{CVpdot}})}
-  \item{CVpdot}{ CV of pdot across mask (see \code{\link{CVpdot}})}
+  \item{meanpdot}{ expected pdot across mask (see \code{\link[secr]{CVpdot}})}
+  \item{CVpdot}{ CV of pdot across mask (see \code{\link[secr]{CVpdot}})}
   
   If \code{plt = TRUE} the dataframe is returned invisibly.
 
@@ -104,7 +104,7 @@ esaPlot (object, max.buffer = NULL, spacing = NULL, max.mask = NULL,
 \note{
 The response of effective sampling area to buffer width is just one
 possible mask diagnostic; it's fast, graphic, and often
-sufficient. \code{\link{mask.check}} performs more intensive checks,
+sufficient. \code{\link[secr]{mask.check}} performs more intensive checks,
 usually for a smaller number of buffer widths.
 
 The old argument 'as.density' was superceded by 'type' in 3.1.7.
@@ -119,9 +119,9 @@ likelihood methods for capture--recapture studies. \emph{Biometrics}
 
 }
 
-\seealso{ \code{\link{mask}}, \code{\link{pdot}}, \code{\link{CVpdot}},
-  \code{\link{make.mask}}, \code{\link{mask.check}},
-  \code{\link{Detection functions}} }
+\seealso{ \code{\link[secr]{mask}}, \code{\link[secr]{pdot}}, \code{\link[secr]{CVpdot}},
+  \code{\link[secr]{make.mask}}, \code{\link[secr]{mask.check}},
+  \code{\link[secr]{Detection functions}} }
 
 \examples{
 

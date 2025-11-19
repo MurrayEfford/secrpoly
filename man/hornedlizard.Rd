@@ -101,7 +101,7 @@ capture--recapture data. \emph{Ecology} \bold{89}, 2281--2289.
 }
 
 \seealso{
-\code{\link{capthist}}, \code{\link{detector}}, \code{\link{reduce.capthist}}
+\code{\link[secr]{capthist}}, \code{\link[secr]{detector}}, \code{\link[secr]{reduce.capthist}}
 }
 
 \examples{

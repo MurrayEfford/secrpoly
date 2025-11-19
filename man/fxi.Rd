@@ -12,8 +12,8 @@
   of range centres across the mask (Borchers and Efford 2008).
   
   This function is a method for objects of class `secrpoly'.
-  `fxi' is a generic exported by \pkg{secr}. See \code{\link{fxiContour}}, 
-  \code{\link{fxiMode}} and \code{\link{fxTotal}} for applications.
+  `fxi' is a generic exported by \pkg{secr}. See \code{\link[secr]{fxiContour}}, 
+  \code{\link[secr]{fxiMode}} and \code{\link[secr]{fxTotal}} for applications.
   
 }
 
@@ -41,7 +41,7 @@
   several points; a dataframe or vector (x then y) will be coerced to a
   matrix.
 
-  See \code{\link{fxTotal}} for a surface summed across individuals.
+  See \code{\link[secr]{fxTotal}} for a surface summed across individuals.
 
   If \code{i} is character it will be matched to row names of
   object$capthist (restricted to the relevant session in the case of a
@@ -52,7 +52,7 @@
   over the habitat mask in \code{object}. (May differ in secr 4.0).
   
   Setting \code{ncores = NULL} uses the existing value from the environment variable 
-  RCPP_PARALLEL_NUM_THREADS (see \code{\link{setNumThreads}}).
+  RCPP_PARALLEL_NUM_THREADS (see \code{\link[secr]{setNumThreads}}).
 
 }
 
@@ -71,8 +71,8 @@ likelihood methods for capture--recapture studies. \emph{Biometrics}
 
 \seealso{
 
-\code{\link{pdotContour}}, \code{\link[graphics]{contour}}, \code{\link{fxiContour}}, 
-  \code{\link{fxiMode}}, \code{\link{fxTotal}}
+\code{\link[secr]{pdotContour}}, \code{\link[graphics]{contour}}, \code{\link[secr]{fxiContour}}, 
+  \code{\link[secr]{fxiMode}}, \code{\link[secr]{fxTotal}}
 
 }
 

@@ -97,9 +97,11 @@ getmaskpar <- function(OK, D, m, sessnum, unmash, nmash) {
     }
 }
 #--------------------------------------------------------------------------------
-makegk <- function(dettype, detectfn, trps, mask, details, sessnum, noneuc, D, miscparm, realparval, grain, ncores) {
+makegk <- function(dettype, detectfn, trps, mask, details, sessnum, noneuc, 
+                   D, miscparm, realparval, grain, ncores) {
     ## precompute gk, hk for polygon and transect detectors
     ## k-1 because we have zero-terminated these vectors
+    ## noneuc not used 2025-11-20
     k <- getk(trps)
     K <- if (length(k)>1) length(k)-1 else k
     cumk <- cumsum(c(0,k))[1:length(k)]

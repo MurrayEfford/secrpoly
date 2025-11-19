@@ -36,14 +36,10 @@ esa.secrpoly <- function (object, sessnum = 1, beta = NULL, real = NULL,
     }
     
     fullbeta <- fullbeta(beta, object$details$fixedbeta)
-    trps   <- traps(capthists)  ## need session-specific traps
-    if (!all(detector(trps) %in% .localstuff$individualdetectors)) 
-        stop ("require individual detector type for esa")
-    n       <- max(nrow(capthists), 1)
-    s       <- ncol(capthists)
-    dettype <- secr:::secr_detectorcode(trps, noccasions = s)
-    
-    
+    trps     <- traps(capthists)  ## need session-specific traps
+    n        <- max(nrow(capthists), 1)
+    s        <- ncol(capthists)
+    dettype  <- secr:::secr_detectorcode(trps, noccasions = s)
     constant <- !is.null(noccasions)    ## fix 2011-04-07
     if (is.null(noccasions)) {
         noccasions <- s
@@ -65,9 +61,8 @@ esa.secrpoly <- function (object, sessnum = 1, beta = NULL, real = NULL,
     #----------------------------------------------------------------------
     nmix    <- getnmix (object$details)
     knownclass <- getknownclass(capthists, nmix, object$hcov)
-    k <- getk(trps)
-    K <- if (length(k)>1) length(k)-1 else k
-    binomN <- object$details$binomN
+    k <- getk(trps)  # number of vertices per detector, zero terminated
+    K <- if (length(k)>1) length(k)-1 else k  # number of detectors
     m      <- length(mask$x)            ## need session-specific mask...
     cellsize <- getcellsize(mask)       ## length or area
     
@@ -83,7 +78,7 @@ esa.secrpoly <- function (object, sessnum = 1, beta = NULL, real = NULL,
     
     # Non-Euclidean distance parameters
     NElist <- secr:::secr_makeNElist(object, object$mask, group = NULL, sessnum)
-    
+  
     #----------------------------------------------------------------------
     if (constant) {
         ## assume constant
@@ -104,7 +99,7 @@ esa.secrpoly <- function (object, sessnum = 1, beta = NULL, real = NULL,
         if (is.null(beta)) {
             if (is.null(real))
                 stop ("requires real parameter values")
-            PIA0 <- array(1, dim=c(1,n,s,k,nmix))
+            PIA0 <- array(1, dim=c(1,n,s,K,nmix))
             realparval0 <- matrix(rep(real, rep(n,length(real))), nrow = n)   ## UNTRANSFORMED
         }
         else {
@@ -129,8 +124,6 @@ esa.secrpoly <- function (object, sessnum = 1, beta = NULL, real = NULL,
                                         mask, trps, Dtemp, s)
 
         usge <- usage(trps)
-        # if (is.null(usge)) {
-        # 2022-01-22 respect ignore usage cf Greg note
         if (is.null(usge) || object$details$ignoreusage) {
                 usge <- matrix(1, nrow = K, ncol = s)
             used <- 1
@@ -143,7 +136,6 @@ esa.secrpoly <- function (object, sessnum = 1, beta = NULL, real = NULL,
             PIA0 <- PIA0 * rep(rep(t(used),rep(n,s*K)),nmix)
 
         miscparm <- numeric(4)
-        miscparm[1] <- object$details$cutval
 
         ## not if first detector type is telemetry
         if (dettype[1] %in% c(13)) {
@@ -160,7 +152,7 @@ esa.secrpoly <- function (object, sessnum = 1, beta = NULL, real = NULL,
           else {
               CH0 <- secr:::secr_nullCH (c(n,s,K), object$design0$individual)
           }
-          binomNcode <- recodebinomN(dettype, binomN, telemcode(trps))
+          binomNcode <- recodebinomN(dettype, object$details$binomN, telemcode(trps))
           pmixn <- getpmix (knownclass, PIA0, Xrealparval0)
           pdot <- integralprw1poly (
               detectfn    = object$detectfn,
@@ -177,7 +169,8 @@ esa.secrpoly <- function (object, sessnum = 1, beta = NULL, real = NULL,
               mask        = mask, 
               pmixn       = pmixn, 
               grain       = grain, 
-              ncores      = ncores)
+              ncores      = ncores,
+              minprob     = object$details$minprob)
           
           out <- pdot * cellsize * sum(D)
         }

@@ -670,17 +670,6 @@ getk <- function(traps) {
 }
 #--------------------------------------------------------------------------------
 
-nullCH <- function (dimCH, individual) {
-    if (is.null(individual)) {
-        individual <- TRUE   ## 2020-05-16 for backward compatibility
-    }
-    if (!individual) {
-        dimCH[1] <- 1
-    }
-    array(0, dim = dimCH)
-}
-#--------------------------------------------------------------------------------
-
 telemcode <- function(object, ...) {
     if (inherits(object, 'traps') && !ms(object))
         switch (telemetrytype(object), none = 0, 

@@ -5,7 +5,7 @@
 ############################################################################################
 
 esa.secrpoly <- function (object, sessnum = 1, beta = NULL, real = NULL, 
-                          noccasions = NULL, ncores = NULL, ...)
+                          noccasions = NULL, ncores = NULL, Dweight = FALSE, ...)
 
 # Return vector of 'a' for given g0, sigma, [z (if hazard fn) ] and session
 # detectfn is integer code for detection function 0 = halfnormal, 1 = hazard, 2 = exponential
@@ -24,15 +24,21 @@ esa.secrpoly <- function (object, sessnum = 1, beta = NULL, real = NULL,
     }
 
     # Remainder applies only to polydetectors
-    if (ms(object$mask))
+    if (ms(object$mask)) {
         mask <- object$mask[[sessnum]]
-    else
+    }
+    else {
         mask <- object$mask
+    }
 
-    if (is.null(beta) & is.null(real))
+    if (is.null(beta) & is.null(real)) {
         beta <- object$fit$par
-    beta <- fullbeta(beta, object$details$fixedbeta)
+    }
+    
+    fullbeta <- fullbeta(beta, object$details$fixedbeta)
     trps   <- traps(capthists)  ## need session-specific traps
+    if (!all(detector(trps) %in% .localstuff$individualdetectors)) 
+        stop ("require individual detector type for esa")
     n       <- max(nrow(capthists), 1)
     s       <- ncol(capthists)
     dettype <- secr:::secr_detectorcode(trps, noccasions = s)
@@ -64,13 +70,27 @@ esa.secrpoly <- function (object, sessnum = 1, beta = NULL, real = NULL,
     binomN <- object$details$binomN
     m      <- length(mask$x)            ## need session-specific mask...
     cellsize <- getcellsize(mask)       ## length or area
+    
+    if (is.null(object$model$D) || !Dweight) {
+        D <- rep(1,m)
+    }
+    else {
+        if (!is.null(beta)) object$fit$par <- beta
+        D <- secr:::secr_predictD(object, mask, group = NULL, session = sessnum, 
+                           parameter = 'D')
+    }
+    pi.density <- matrix(D/sum(D), ncol = 1)       # dim m x 1
+    
+    # Non-Euclidean distance parameters
+    NElist <- secr:::secr_makeNElist(object, object$mask, group = NULL, sessnum)
+    
     #----------------------------------------------------------------------
     if (constant) {
         ## assume constant
         if (is.null(beta))
             realparval0 <- detectpar(object)
         else {
-            realparval0 <- makerealparameters (object$design0, beta,
+            realparval0 <- secr:::secr_makerealparameters (object$design0, fullbeta,
                 object$parindx, object$link, object$fixed)  # naive
             realparval0 <- as.list(realparval0[1,])
             realparval0$cutval <- attr(object$capthist,'cutval')  ## 2016-05-22 may be NULL
@@ -78,7 +98,7 @@ esa.secrpoly <- function (object, sessnum = 1, beta = NULL, real = NULL,
         a <- cellsize * sum(pdot(X = mask, traps = trps, detectfn = object$detectfn,
                              detectpar = realparval0, noccasions = noccasions, 
                              ncores = ncores))
-        return(rep(a,n))
+        out <- rep(a,n)
     }
     else {
         if (is.null(beta)) {
@@ -127,20 +147,18 @@ esa.secrpoly <- function (object, sessnum = 1, beta = NULL, real = NULL,
 
         ## not if first detector type is telemetry
         if (dettype[1] %in% c(13)) {
-            return(NA)
+            out <- NA
         }
         else {
-          NE <- NULL   ## no NE covariates (yet)
-          pi.density <- matrix(1/m, nrow=m, ncol=1)
           ncores <- setNumThreads(ncores)  
           grain <- if (ncores==1) 0 else 1
-          gkhk <- makegk (dettype, object$detectfn, trps, mask, object$details, sessnum, NE, 
+          gkhk <- makegk (dettype, object$detectfn, trps, mask, object$details, sessnum, NElist, 
                           pi.density, miscparm, Xrealparval0, grain, ncores)
           if (any(dettype==0)) {
-              CH0 <- nullCH (c(n,s), object$design0$individual)
+              CH0 <- secr:::secr_nullCH (c(n,s), object$design0$individual)
           }
           else {
-              CH0 <- nullCH (c(n,s,K), object$design0$individual)
+              CH0 <- secr:::secr_nullCH (c(n,s,K), object$design0$individual)
           }
           binomNcode <- recodebinomN(dettype, binomN, telemcode(trps))
           pmixn <- getpmix (knownclass, PIA0, Xrealparval0)
@@ -159,11 +177,11 @@ esa.secrpoly <- function (object, sessnum = 1, beta = NULL, real = NULL,
               mask        = mask, 
               pmixn       = pmixn, 
               grain       = grain, 
-              ncores      = ncores, 
-              minprob     = object$details$minprob)
+              ncores      = ncores)
           
-          pdot * cellsize * m
+          out <- pdot * cellsize * sum(D)
         }
     }
+    out
 }
 ############################################################################################

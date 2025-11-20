@@ -19,7 +19,7 @@ Density is a derived parameter when a model is fitted by maximizing the conditio
     ncores = NULL, bycluster = FALSE, ...)
 
 \method{esa}{secrpoly}(object, sessnum = 1, beta = NULL, real = NULL, noccasions = NULL, 
-    ncores = NULL,...)
+    ncores = NULL, Dweight = FALSE, ...)
 
 }
 
@@ -38,6 +38,8 @@ Density is a derived parameter when a model is fitted by maximizing the conditio
   \item{beta}{ vector of fitted parameters on transformed (link) scale }
   \item{real}{ vector of `real' parameters } 
   \item{noccasions}{ integer number of sampling occasions (see Details) } 
+  \item{Dweight}{logical; if TRUE and a (relative) density model has been fitted 
+  then the effective sampling area uses density weights (not yet implemented)}
   \item{...}{other arguments passed to \code{\link[nlme]{fdHess} (derived)}}
 }
 
@@ -112,7 +114,7 @@ The computation of sampling variances is relatively slow and may be
 suppressed with \code{se.esa} and \code{se.D} as desired.
 
 The \dots argument may be used to control the step size (.relStep) used by 
-\code{\link{fdHess}} when estimating gradients for SE(D) and SE(esa).
+\code{\link[nlme]{fdHess}} when estimating gradients for SE(D) and SE(esa).
 
 }
 

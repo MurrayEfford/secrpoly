@@ -80,7 +80,7 @@ A vector of probabilities, one for each row in X.
   temppoly <- make.poly()
   ## per-session detection probability for a centred individual.
   ## Using default noccasions = 5.
-  pdotpoly (c(0,0), temppoly, detectpar = list(g0 = 0.2, sigma = 25),
+  pdotPoly (c(0,0), temppoly, detectpar = list(g0 = 0.2, sigma = 25),
     noccasions = 5)
 }
 

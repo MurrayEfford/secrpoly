@@ -1,0 +1,38 @@
+---
+title: '**secrpoly** 1.0 - area-search spatially explicit capture--recapture in R'
+author: "Murray Efford"
+date: "`r Sys.Date()`"
+output: 
+  pdf_document: 
+    toc: yes
+    toc_depth: 2
+vignette: > 
+  %\VignetteIndexEntry{Area-search spatially explicit capture--recapture in R}
+  \usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+\vspace{12pt}
+
+This document introduces **secrpoly** 1.0, an R package for spatially explicit capture--recapture analysis (SECR) when data are collected by search areas or transects. 
+
+The functionality of **secrpoly** is a subset of thatprovided previously in **secr**. 
+
+For background on SECR see the SECR book, [Efford (2025)].  
+
+To be completed...
+
+# References
+
+Efford, M. G. (2011) Estimation of population density by spatially explicit capture--recapture analysis of data from area searches. *Ecology* **92**, 2202--2207.
+
+
+\pagebreak
+
+[secr-manual.pdf]: https://www.otago.ac.nz/density/pdfs/secr-manual.pdf
+
+[secr-datainput.pdf]: https://www.otago.ac.nz/density/pdfs/secr-datainput.pdf
+
+[secrgroup]: <https://groups.google.com/forum/#!forum/secrgroup>
+[CRAN]: https://cran.r-project.org/package=secr
+[Efford (2025)]: https://murrayefford.github.io/SECRbook/

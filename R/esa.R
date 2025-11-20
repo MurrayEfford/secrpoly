@@ -61,10 +61,10 @@ esa.secrpoly <- function (object, sessnum = 1, beta = NULL, real = NULL,
     #----------------------------------------------------------------------
     nmix    <- max(1, object$details$nmix)
     knownclass <- secr:::secr_getknownclass(capthists, nmix, object$hcov)
-    k <- getk(trps)  # number of vertices per detector, zero terminated
+    k <- secr:::secr_getk(trps)  # number of vertices per detector, zero terminated
     K <- if (length(k)>1) length(k)-1 else k  # number of detectors
     m      <- length(mask$x)            ## need session-specific mask...
-    cellsize <- getcellsize(mask)       ## length or area
+    cellsize <- secr:::secr_getcellsize(mask)       ## length or area
     
     if (is.null(object$model$D) || !Dweight) {
         D <- rep(1,m)
@@ -153,7 +153,8 @@ esa.secrpoly <- function (object, sessnum = 1, beta = NULL, real = NULL,
           else {
               CH0 <- secr:::secr_nullCH (c(n,s,K), object$design0$individual)
           }
-          binomNcode <- secr:::secr_recodebinomN(dettype, object$details$binomN, telemcode(trps))
+          binomNcode <- secr:::secr_recodebinomN(dettype, object$details$binomN, 
+                                                 secr:::secr_telemcode(trps))
           pmixn <- secr:::secr_getpmix (knownclass, PIA0, Xrealparval0)
           pdot <- integralprw1poly (
               detectfn    = object$detectfn,

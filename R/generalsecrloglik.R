@@ -150,7 +150,7 @@ generalsecrloglikfn <- function (
     }
     else {
       Dsum <- apply(density,2,sum)   ## by group
-      Nm <- density * getcellsize(data$mask)
+      Nm <- density * secr:::secr_getcellsize(data$mask)
       pi.density <- sweep(density, MARGIN = 2, STATS = Dsum, FUN = '/')
     }
     #---------------------------------------------------

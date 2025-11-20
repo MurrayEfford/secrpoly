@@ -102,7 +102,7 @@ makegk <- function(dettype, detectfn, trps, mask, details, sessnum, noneuc,
     ## precompute gk, hk for polygon and transect detectors
     ## k-1 because we have zero-terminated these vectors
     ## noneuc not used 2025-11-20
-    k <- getk(trps)
+    k <- secr:::secr_getk(trps) # number of vertices per detector, zero terminated
     K <- if (length(k)>1) length(k)-1 else k
     cumk <- cumsum(c(0,k))[1:length(k)]
     dimension <- (dettype[1] %in% c(3,6)) + 1   ## 1 = 1D, 2 = 2D

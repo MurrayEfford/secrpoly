@@ -24,7 +24,7 @@ fxTotal.secrpoly <- function (object, sessnum = 1, mask = NULL, ncores = NULL, .
   fxiList <- fxi(object, sessnum = sessnum, X = mask, ncores = ncores)
   fx <- do.call(cbind, fxiList)
   fxt <- apply(fx, 1, sum)
-  fxt <- fxt/getcellsize(mask)
+  fxt <- fxt / secr:::secr_getcellsize(mask)
   D <- predictDsurface(object, mask = mask)
   D <- covariates(D)$D.0
   pd <- pdot(X = mask, traps = traps(CH), detectfn = object$detectfn,
@@ -145,7 +145,8 @@ fxi.secrpoly <- function (object, i = NULL, sessnum = 1, X = NULL, ncores = NULL
     if (!is.null(xy)) {
       ## 2022-02-13 don't want 'no detections on occasion x'
       ch <- suppressWarnings(subset(object$capthist, ok))  
-      xy <- secr:::secr_getxy(data$dettype, selectCHsession(ch, sessnum))
+      xy <- secr:::secr_getxy(data$dettype, 
+                              secr:::secr_selectCHsession(ch, sessnum))
     }
   }
   if (length(dim(data$CH)) == 2) {

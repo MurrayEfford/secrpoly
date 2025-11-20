@@ -164,11 +164,11 @@ derived.secrpoly <- function (object, sessnum = NULL, groups=NULL, alpha=0.05, s
         telem <- telemetered(capthist)
         
         if (telemetrytype(traps(capthist)) %in% c('independent','concurrent'))
-            OK <- !allzero(capthist)
+            OK <- !secr:::secr_allzero(capthist)
         else
             OK <- rep(TRUE, nrow(capthist))  ## use all if 'none','dependent'
         
-        OK <- !allzero(capthist)
+        OK <- !secr:::secr_allzero(capthist)
 
         if (bycluster) {
             tr <- traps(capthist)

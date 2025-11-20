@@ -444,7 +444,7 @@ secrpoly.fit <- function (capthist,  model = list(D~1, lambda0~1, sigma~1), mask
         }
         temp <- D.designdata( mask, model$D, grouplevels, session(capthist), sessioncov)
         if (any(secr:::secr_smooths(model$D))) {
-            smoothsetup$D <- gamsetup(model$D, temp)
+            smoothsetup$D <- secr:::secr_gamsetup(model$D, temp)
         }
         ## otherwise, smoothsetup$D remains NULL
         envD <- attr(model$D, '.Environment')

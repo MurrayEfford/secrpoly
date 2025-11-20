@@ -110,7 +110,7 @@ sf <- fxiContour(FTHL.0, i = 1:3, plt = FALSE, p = c(0.5,0.95),
 ## sf::st_write(sf, 'testsf.shp')
 
 ## plot contours and modes
-plot(st_as_sfc(sf))    # outline only
+plot(sf::st_as_sfc(sf))    # outline only
 points(sf$modex, sf$modey)
 
 ## output as SpatialPolygonsDataFrame

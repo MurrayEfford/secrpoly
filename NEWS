@@ -1,7 +1,8 @@
-Changes in version 1.0.1 (2025-11-20)
+Changes in version 1.0.1 (2025-11-21)
 
 New features or changed behaviour of old functions
     o   none
+    o   pdot and pdotContour renamed to pdotPoly and pdotPolyContour
     
 Bugs fixed
     o   esa.secrpoly() failed with real specified
@@ -9,6 +10,7 @@ Bugs fixed
 Other
     o   removed unused functions, general tidy
     o   added secr_ prefix to functions not exported by secr
+    o   removed utility functions that duplicated secr
 
 Changes in version 1.0.0 (2024-01-29)
 

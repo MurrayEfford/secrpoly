@@ -27,7 +27,7 @@ fxTotal.secrpoly <- function (object, sessnum = 1, mask = NULL, ncores = NULL, .
   fxt <- fxt / secr:::secr_getcellsize(mask)
   D <- predictDsurface(object, mask = mask)
   D <- covariates(D)$D.0
-  pd <- pdot(X = mask, traps = traps(CH), detectfn = object$detectfn,
+  pd <- pdotPoly(X = mask, traps = traps(CH), detectfn = object$detectfn,
              detectpar = detectpar, noccasions = ncol(CH), ncores = ncores)
   nct <- D * (1 - pd)
   covariates(mask) <- data.frame(D.fx = fxt, D.nc = nct, D.sum = fxt + nct)

@@ -38,9 +38,9 @@ This function calls \code{\link{fxi.secrpoly}} for each detected animal and
 overlays the results to obtain a summed probability density surface D.fx
 for the locations of the home-range centres of detected individuals.
 
-A separate calculation using \code{\link[secr]{pdot}} provides the expected
+A separate calculation using \code{\link{pdotPoly}} provides the expected
 spatial distribution of undetected animals, as another density
-surface: crudely, D.nc(X) = D(X) * ( 1 -- pdot(X)).
+surface: crudely, D.nc(X) = D(X) * ( 1 -- pdotPoly(X)).
 
 The pointwise sum of the two surfaces is sometimes used to represent the
 spatial distrbution of the population, but see Notes.
@@ -83,7 +83,7 @@ a habitat mask where the main or only contribution is from D.nc.
 
 \seealso{
   
-  \code{\link{fxi.secrpoly}}, \code{\link[secr]{fxiContour}}, \code{\link[secr]{pdot}}
+  \code{\link{fxi.secrpoly}}, \code{\link[secr]{fxiContour}}, \code{\link{pdotPoly}}
   
 }
 

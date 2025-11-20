@@ -1,21 +1,21 @@
 ###############################################################################
 ## package 'secrpoly'
-## pdot.R
+## pdotpoly.R
 ## return net detection probability in 'traps' for home ranges centred at X
-## 2024-01-29
+## 2024-01-29, 2025-11-21
 ###############################################################################
 
-## pdot is used in --
+## pdotPoly is used in --
 
 ## CVa
 ## CVpdot
 ## esa     
-## fxTotal (fxTotal.secrpoly uses secrpoly pdot)
+## fxTotal (fxTotal.secrpoly uses pdotPoly)
 ## make.mask (pdotmin option restricted to point detectors)
-## pdotContour
+## pdotPolyContour
 
 
-pdot <- function (X, traps, detectfn = 14, detectpar = list(g0 = 0.2, sigma = 25, z = 1),
+pdotPoly <- function (X, traps, detectfn = 14, detectpar = list(g0 = 0.2, sigma = 25, z = 1),
                   noccasions = NULL, binomN = NULL, userdist = NULL, ncores = NULL) {
 
     ## X should be 2-column dataframe, mask, matrix or similar
@@ -68,7 +68,7 @@ pdot <- function (X, traps, detectfn = 14, detectpar = list(g0 = 0.2, sigma = 25
         if (!is.null(userdist))
             stop("userdist incompatible with polygon-like detectors")
         if (!(detectfn %in% 14:20))
-            stop("pdot requires hazard detectfn for polygon-type detectors")
+            stop("pdotPoly requires hazard detectfn for polygon-type detectors")
         k <- table(polyID(traps))   ## also serves transectID
         K <- length(k)              ## number of polygons/transects
         k <-  c(k,0)                ## zero terminate for 
@@ -76,7 +76,7 @@ pdot <- function (X, traps, detectfn = 14, detectpar = list(g0 = 0.2, sigma = 25
         convexpolygon <- TRUE
         dim <- if (any(detector(traps) %in% c('transect', 'transectX'))) 1 else 2
             
-        warning("assuming convex polygons in pdot()")
+        warning("assuming convex polygons in pdotPoly()")
         temp <- hdotpolycpp (
           as.matrix(X),
           as.matrix(traps),
@@ -96,7 +96,7 @@ pdot <- function (X, traps, detectfn = 14, detectpar = list(g0 = 0.2, sigma = 25
 }
 ############################################################################################
 
-pdotContour <- function (traps, border = NULL, nx = 64, detectfn = 14,
+pdotPolyContour <- function (traps, border = NULL, nx = 64, detectfn = 14,
                           detectpar = list(g0 = 0.2, sigma = 25, z = 1),
                           noccasions = NULL, binomN = NULL,
                           levels = seq(0.1, 0.9, 0.1),
@@ -105,7 +105,7 @@ pdotContour <- function (traps, border = NULL, nx = 64, detectfn = 14,
     if (ms(traps)) {
         if (length(noccasions) == 1)
             noccasions <- rep(noccasions,length(traps))
-        output <- mapply(pdotContour, traps, detectpar=detectpar, noccasions=noccasions,
+        output <- mapply(pdotPolyContour, traps, detectpar=detectpar, noccasions=noccasions,
                          MoreArgs = list(border = border, nx = nx,
                          detectfn = detectfn, binomN = binomN,
                          levels = levels, poly = poly, poly.habitat = poly.habitat, plt = plt, add = add, ...))
@@ -121,7 +121,7 @@ pdotContour <- function (traps, border = NULL, nx = 64, detectfn = 14,
         xlevels <- unique(tempmask$x)
         ylevels <- unique(tempmask$y)
         binomN <- secr:::secr_getbinomN (binomN, detector(traps))
-        z <- pdot(tempmask, traps, detectfn, detectpar, noccasions, binomN)
+        z <- pdotPoly(tempmask, traps, detectfn, detectpar, noccasions, binomN)
         if (!is.null(poly)) {
             OK <- pointsInPolygon(tempmask, poly)
             if (poly.habitat)

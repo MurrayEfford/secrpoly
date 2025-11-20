@@ -1,5 +1,5 @@
-\name{pdotContour}
-\alias{pdotContour}
+\name{pdotPolyContour}
+\alias{pdotPolyContour}
 
 \title{
 Contour Detection Probability
@@ -12,7 +12,7 @@ area within a specified distance of detectors.
 }
 \usage{
 
-pdotContour(traps, border = NULL, nx = 64, detectfn = 14,
+pdotPolyContour(traps, border = NULL, nx = 64, detectfn = 14,
     detectpar = list(g0 = 0.2, sigma = 25, z = 1), noccasions = NULL,
     binomN = NULL, levels = seq(0.1, 0.9, 0.1), poly =
     NULL, poly.habitat = TRUE, plt = TRUE, add = FALSE, fill = NULL, ...)
@@ -41,7 +41,7 @@ pdotContour(traps, border = NULL, nx = 64, detectfn = 14,
 }
 \details{
 
-\code{pdotContour} constructs a rectangular mask and applies \code{\link[secr]{pdot}} to
+\code{pdotPolyContour} constructs a rectangular mask and applies \code{\link{pdotPoly}} to
 compute the p.(X) at each mask point.
 
 If \code{traps} has a \link[secr]{usage} attribute then \code{noccasions} is
@@ -85,7 +85,7 @@ University of Otago, Dunedin, New Zealand
 
 \seealso{
 
-  \code{\link[secr]{pdot}}, \code{\link[secr]{make.mask}}
+  \code{\link{pdotPoly}}, \code{\link[secr]{make.mask}}
   
 }
 \examples{
@@ -94,7 +94,7 @@ University of Otago, Dunedin, New Zealand
 
 FTHLtraps <- traps(hornedlizardCH)
 plot(FTHLtraps, border = 100)
-pdotContour(FTHLtraps, detectfn = 'HHN', nx = 128, detectpar =
+pdotPolyContour(FTHLtraps, detectfn = 'HHN', nx = 128, detectpar =
     detectpar(FTHL.0), levels = c(0.1, 0.01, 0.001),
     noccasions = 14, add = TRUE)
     

@@ -1,5 +1,5 @@
-\name{pdot}
-\alias{pdot}
+\name{pdotPoly}
+\alias{pdotPoly}
 
 \title{ Net Detection Probability }
 
@@ -11,7 +11,7 @@ at given coordinates.
 }
 
 \usage{
-pdot(X, traps, detectfn = 14, detectpar = list(g0 = 0.2,
+pdotPoly(X, traps, detectfn = 14, detectpar = list(g0 = 0.2,
     sigma = 25, z = 1), noccasions = NULL, binomN = NULL,
     userdist = NULL, ncores = NULL) 
 
@@ -71,7 +71,7 @@ A vector of probabilities, one for each row in X.
 \seealso{ 
   \code{\link[secr]{make.mask}},
   \code{\link[secr]{Detection functions}}, 
-  \code{\link[secr]{pdotContour}}
+  \code{\link{pdotPolyContour}}
 }
 
 \examples{
@@ -80,7 +80,7 @@ A vector of probabilities, one for each row in X.
   temppoly <- make.poly()
   ## per-session detection probability for a centred individual.
   ## Using default noccasions = 5.
-  pdot (c(0,0), temppoly, detectpar = list(g0 = 0.2, sigma = 25),
+  pdotpoly (c(0,0), temppoly, detectpar = list(g0 = 0.2, sigma = 25),
     noccasions = 5)
 }
 

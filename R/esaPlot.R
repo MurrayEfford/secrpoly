@@ -53,7 +53,7 @@ esaPlot <- function (object, max.buffer = NULL, spacing = NULL, max.mask = NULL,
             nmask <- nrow(max.mask)
             detectfn <- secr:::secr_valid.detectfn(detectfn, 14:19)
             binomN <- secr:::secr_getbinomN (binomN, detector(object))   ## must now be traps object
-            a <- pdot (max.mask, object, detectfn, detectpar, noccasions, binomN)
+            a <- pdotPoly (max.mask, object, detectfn, detectpar, noccasions, binomN)
             d <- distancetotrap(max.mask, object)
             ord <- order(d,a)
             cellsize <-  attr(max.mask, 'spacing')^2/10000

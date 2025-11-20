@@ -90,7 +90,7 @@ esa.secrpoly <- function (object, sessnum = 1, beta = NULL, real = NULL,
             realparval0 <- as.list(realparval0[1,])
             realparval0$cutval <- attr(object$capthist,'cutval')  ## 2016-05-22 may be NULL
         }
-        a <- cellsize * sum(pdot(X = mask, traps = trps, detectfn = object$detectfn,
+        a <- cellsize * sum(pdotPoly(X = mask, traps = trps, detectfn = object$detectfn,
                              detectpar = realparval0, noccasions = noccasions, 
                              ncores = ncores))
         out <- rep(a,n)

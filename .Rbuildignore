@@ -7,6 +7,8 @@ ONEWS
 src\*.o
 revdep
 extraR
+extracpp
+extraman
 README.md
 ^\.github$
 ^sourcecode.R$

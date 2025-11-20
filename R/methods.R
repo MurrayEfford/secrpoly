@@ -186,7 +186,7 @@ transectlength <- function (object)    {
 
 'xy<-' <- function (object, value) {
     if (!is.null(value)) {
-        polyoccasions <- expanddet(object) %in% .localstuff$polydetectors
+        polyoccasions <- secr:::secr_expanddet(object) %in% .localstuff$polydetectors
         ndetections <- sum(abs(object[,polyoccasions,]))
         if (nrow(value) != ndetections)
             stop ("requires one location per detection")

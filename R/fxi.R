@@ -121,10 +121,10 @@ fxi.secrpoly <- function (object, i = NULL, sessnum = 1, X = NULL, ncores = NULL
     
   sessionlevels <- session(object$capthist)
   beta <- coef(object)$beta
-  beta <- fullbeta(beta, object$details$fixedbeta)
+  beta <- secr:::secr_fullbeta(beta, object$details$fixedbeta)
   detparindx <- object$parindx[!(names(object$parindx) %in% c('D', 'noneuc'))]
   detlink <- object$link[!(names(object$link) %in% c('D', 'noneuc'))]
-  realparval  <- makerealparameters (object$design, beta, detparindx,
+  realparval  <- secr:::secr_makerealparameters (object$design, beta, detparindx,
                                      detlink, object$fixed)
   data <- data[[sessnum]]
   reusemask <- is.null(X)
@@ -145,7 +145,7 @@ fxi.secrpoly <- function (object, i = NULL, sessnum = 1, X = NULL, ncores = NULL
     if (!is.null(xy)) {
       ## 2022-02-13 don't want 'no detections on occasion x'
       ch <- suppressWarnings(subset(object$capthist, ok))  
-      xy <- getxy(data$dettype, selectCHsession(ch, sessnum))
+      xy <- secr:::secr_getxy(data$dettype, selectCHsession(ch, sessnum))
     }
   }
   if (length(dim(data$CH)) == 2) {
@@ -201,7 +201,7 @@ fxi.secrpoly <- function (object, i = NULL, sessnum = 1, X = NULL, ncores = NULL
                                  data$mask, data$traps, Dtemp, data$s)
   PIA <- object$design$PIA[sessnum, ok, 1:data$s, 1:data$K, ,drop=FALSE]
   PIA0 <- object$design0$PIA[sessnum, ok, 1:data$s, 1:data$K, ,drop=FALSE]
-  pmix <- getpmix (data$knownclass[ok], PIA, Xrealparval)  ## membership prob by animal
+  pmix <- secr:::secr_getpmix (data$knownclass[ok], PIA, Xrealparval)  ## membership prob by animal
 
   ## unmodelled beta parameters, if needed
   miscparm <- getmiscparm(object$details$miscparm, object$detectfn, object$beta, 

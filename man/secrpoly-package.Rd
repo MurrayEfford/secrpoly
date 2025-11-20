@@ -8,8 +8,11 @@
 
 \description{
 
-  Functions to estimate the density and size of a spatially
-  distributed animal population sampled by searching polygons or transects.
+Functions to estimate the density and size of a spatially distributed 
+animal population sampled by searching polygons or transects.
+  
+The package contains a subset of the functionality in \pkg{secr} that may 
+in future be removed from \pkg{secr}.
 
 }
 
@@ -19,12 +22,9 @@
 Package: \tab secrpoly\cr
 Type: \tab Package\cr
 Version: \tab 1.0.1\cr
-Date: \tab 2025-11-20\cr
+Date: \tab 2025-11-21\cr
 License: \tab GNU General Public License Version 2 or later\cr
 }
-
-This contains a subset of the functionality in \pkg{secr}. 
-In future that may be removed from \pkg{secr}.
 
 }
 
@@ -39,6 +39,10 @@ likelihood methods for capture--recapture studies. \emph{Biometrics}
 Efford, M. G. (2011) Estimation of population density by spatially
 explicit capture--recapture with area searches. \emph{Ecology}
 \bold{92}, 2202--2207.
+
+Efford, M. G. (2025) The SECR book. A handbook of spatially explicit 
+capture--recapture methods. Version 1.0.1. Zenodo \url{https://doi.org/10.5281/zenodo.15109938}.
+Online at \url{https://murrayefford.github.io/SECRbook/}. 
 
 }
 

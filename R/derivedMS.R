@@ -187,7 +187,7 @@ derived.secrpoly <- function (object, sessnum = NULL, groups=NULL, alpha=0.05, s
             out <- lapply(1:ncluster, getcluster)
         }
         else {    
-            grp <- group.factor(capthist, groups)
+            grp <- secr:::secr_group.factor(capthist, groups)
             NT <- 0
             grp <- grp[OK]
             ind <- (1:nrow(capthist))[OK]

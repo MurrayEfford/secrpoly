@@ -63,7 +63,7 @@ getD <- function (designD, beta, mask, parindx, link, fixed,
             else {
                 D[,,] <- designD %*% beta  # linear predictor
             }
-            D[,,] <- untransform (D, link[[parameter]])
+            D[,,] <- secr:::untransform (D, link[[parameter]])
         }
         # silently truncate D at zero
         # allow non-positive noneuc

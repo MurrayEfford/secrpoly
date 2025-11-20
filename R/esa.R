@@ -35,7 +35,7 @@ esa.secrpoly <- function (object, sessnum = 1, beta = NULL, real = NULL,
         beta <- object$fit$par
     }
     
-    fullbeta <- fullbeta(beta, object$details$fixedbeta)
+    fullbeta <- secr:::secr_fullbeta(beta, object$details$fixedbeta)
     trps     <- traps(capthists)  ## need session-specific traps
     n        <- max(nrow(capthists), 1)
     s        <- ncol(capthists)
@@ -59,8 +59,8 @@ esa.secrpoly <- function (object, sessnum = 1, beta = NULL, real = NULL,
         #object$capthist <- subset(object$capthist, occasions = (markocc>0))
     }
     #----------------------------------------------------------------------
-    nmix    <- getnmix (object$details)
-    knownclass <- getknownclass(capthists, nmix, object$hcov)
+    nmix    <- max(1, object$details$nmix)
+    knownclass <- secr:::secr_getknownclass(capthists, nmix, object$hcov)
     k <- getk(trps)  # number of vertices per detector, zero terminated
     K <- if (length(k)>1) length(k)-1 else k  # number of detectors
     m      <- length(mask$x)            ## need session-specific mask...
@@ -111,10 +111,11 @@ esa.secrpoly <- function (object, sessnum = 1, beta = NULL, real = NULL,
                 ## should be constant over sessions
                 PIA0 <- object$design0$PIA[sessnum,,1:s,1:K,,drop = FALSE]
                 ## fill array with PI appropriate to grouping of i-th animal
-                PIA0 <- PIA0[1,group.factor(capthists, object$groups),,,,drop = FALSE]
+                gf <- secr:::secr_group.factor(capthists, object$groups)
+                PIA0 <- PIA0[1,gf,,,,drop = FALSE]
             }
 
-            realparval0 <- makerealparameters (object$design0, beta,
+            realparval0 <- secr:::secr_makerealparameters (object$design0, beta,
                 object$parindx, object$link, object$fixed)  # naive
 
         }
@@ -152,8 +153,8 @@ esa.secrpoly <- function (object, sessnum = 1, beta = NULL, real = NULL,
           else {
               CH0 <- secr:::secr_nullCH (c(n,s,K), object$design0$individual)
           }
-          binomNcode <- recodebinomN(dettype, object$details$binomN, telemcode(trps))
-          pmixn <- getpmix (knownclass, PIA0, Xrealparval0)
+          binomNcode <- secr:::secr_recodebinomN(dettype, object$details$binomN, telemcode(trps))
+          pmixn <- secr:::secr_getpmix (knownclass, PIA0, Xrealparval0)
           pdot <- integralprw1poly (
               detectfn    = object$detectfn,
               realparval0 = Xrealparval0, 

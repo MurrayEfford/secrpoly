@@ -25,7 +25,7 @@ pdot <- function (X, traps, detectfn = 14, detectpar = list(g0 = 0.2, sigma = 25
     grain <- if (ncores==1) 0 else 1
 
     if (is.character(detectfn))
-        detectfn <- detectionfunctionnumber(detectfn)
+        detectfn <- secr:::secr_detectionfunctionnumber(detectfn)
     if ((detectfn > 9) && (detectfn<14) && is.null(detectpar$cutval))
         stop ("requires 'cutval' for detectfn 10:13")
     if (ms(traps))
@@ -54,10 +54,10 @@ pdot <- function (X, traps, detectfn = 14, detectpar = list(g0 = 0.2, sigma = 25
     else {
         if (is.null(noccasions))
             stop("must specify noccasions when traps does not have usage attribute")
-        usge <- matrix(1, ndetector(traps), noccasions)
+        usge <- matrix(1, secr:::secr_ndetector(traps), noccasions)
     }
     dettype <- secr:::secr_detectorcode(traps, noccasions = noccasions)
-    binomN <- getbinomN (binomN, detector(traps))
+    binomN <- secr:::secr_getbinomN (binomN, detector(traps))
     markocc <- markocc(traps)
     
     if (is.null(markocc)) markocc <- rep(1,noccasions)
@@ -116,11 +116,11 @@ pdotContour <- function (traps, border = NULL, nx = 64, detectfn = 14,
     }
     else {
         if (is.null(border))
-            border <- 5 * spatialscale(detectpar, detectfn)
+            border <- 5 * secr:::secr_spatialscale(detectpar, detectfn)
         tempmask <- make.mask (traps, border, nx = nx, type = 'traprect')
         xlevels <- unique(tempmask$x)
         ylevels <- unique(tempmask$y)
-        binomN <- getbinomN (binomN, detector(traps))
+        binomN <- secr:::secr_getbinomN (binomN, detector(traps))
         z <- pdot(tempmask, traps, detectfn, detectpar, noccasions, binomN)
         if (!is.null(poly)) {
             OK <- pointsInPolygon(tempmask, poly)

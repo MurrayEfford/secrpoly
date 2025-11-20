@@ -184,7 +184,7 @@ generalsecrloglikfn <- function (
     ## given mask, model, group matching rule (first, sum, own)
     
     #####################################################################
-    pmixn <- getpmix (data$knownclass, PIA, Xrealparval)  ## membership prob by animal
+    pmixn <- secr:::secr_getpmix (data$knownclass, PIA, Xrealparval)  ## membership prob by animal
     
     ## precompute gk, hk for polygon and transect detectors
     dimension <- (data$dettype[1] %in% c(3,6)) + 1   ## 1 = 1D, 2 = 2D
@@ -280,7 +280,7 @@ generalsecrloglikfn <- function (
           comp[3,g] <- if (is.na(meanpdot) || (meanpdot <= 0)) NA 
               else switch (data$n.distrib+1,
                                dpois(nonzero, N * meanpdot, log = TRUE),
-                               lnbinomial (nonzero, N, meanpdot),
+                               secr:::secr_lnbinomial (nonzero, N, meanpdot),
                                NA)
       }
       #----------------------------------------------------------------------
@@ -313,13 +313,13 @@ generalsecrloglikfn <- function (
   nsession <- length(sessionlevels)
   #--------------------------------------------------------------------
   # Fixed beta
-  beta <- fullbeta(beta, details$fixedbeta)
+  beta <- secr:::secr_fullbeta(beta, details$fixedbeta)
   #--------------------------------------------------------------------
   # Detection parameters
   detparindx <- parindx[!(names(parindx) %in% c('D', 'noneuc'))]
   detlink <- link[!(names(link) %in% c('D', 'noneuc'))]
-  realparval  <- makerealparameters (design, beta, detparindx, detlink, fixed)
-  realparval0 <- makerealparameters (design0, beta, detparindx, detlink, fixed)
+  realparval  <- secr:::secr_makerealparameters (design, beta, detparindx, detlink, fixed)
+  realparval0 <- secr:::secr_makerealparameters (design0, beta, detparindx, detlink, fixed)
   #--------------------------------------------------------------------
   sessmask <- lapply(data, '[[', 'mask')
   grplevels <- unique(unlist(lapply(data, function(x) levels(x$grp))))

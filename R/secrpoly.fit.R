@@ -279,7 +279,7 @@ secrpoly.fit <- function (capthist,  model = list(D~1, lambda0~1, sigma~1), mask
             warning ("relativeD is ignored when CL = TRUE", call. = FALSE)
         }
     }
-    details$param <- new.param(details, model, CL)
+    details$param <- secr:::secr_new.param(details, model, CL)
 
     allvars <- unlist(lapply(model, all.vars))
     learnedresponse <- any(.localstuff$learnedresponses %in% allvars) ## || !is.null(dframe)
@@ -330,7 +330,7 @@ secrpoly.fit <- function (capthist,  model = list(D~1, lambda0~1, sigma~1), mask
     # finite mixtures 
     #################################################
     
-    nmix <- get.nmix(model, capthist, hcov)
+    nmix <- secr:::secr_get.nmix(model, capthist, hcov)
     if (nmix > 3)
         stop ("number of latent classes exceeds 3")
     if ((nmix>1) & !is.null(hcov) & !is.null(groups))
@@ -361,7 +361,7 @@ secrpoly.fit <- function (capthist,  model = list(D~1, lambda0~1, sigma~1), mask
     ## parameter names
     #################################################
     
-    pnames <- valid.pnames (details, CL, detectfn, FALSE, FALSE, nmix)
+    pnames <- secrpoly_valid.pnames (details, CL, detectfn, FALSE, FALSE, nmix)
     
     #################################################
     ## test for irrelevant parameters in user's model
@@ -382,7 +382,7 @@ secrpoly.fit <- function (capthist,  model = list(D~1, lambda0~1, sigma~1), mask
     
     pnames <- pnames[!(pnames %in% fnames)]   ## drop fixed real parameters
     model <- defaultmodel[pnames]             ## select real parameters
-    valid.model(model, CL, detectfn, hcov, details$userdist, names(sessioncov))
+    secr:::secr_valid.model(model, CL, detectfn, hcov, details$userdist, names(sessioncov))
     vars <-  unlist(lapply(model, all.vars))
     
     #################################################
@@ -432,7 +432,7 @@ secrpoly.fit <- function (capthist,  model = list(D~1, lambda0~1, sigma~1), mask
         nDensityParameters <- integer(0)
     }
     else {
-        grouplevels  <- group.levels(capthist,groups)
+        grouplevels  <- secr:::secr_group.levels(capthist,groups)
         if (!is.null(details$userDfn)) stop ("userDfn is not an option")
         
         memo ('Preparing density design matrix', details$trace)
@@ -443,7 +443,7 @@ secrpoly.fit <- function (capthist,  model = list(D~1, lambda0~1, sigma~1), mask
                       details$param)
         }
         temp <- D.designdata( mask, model$D, grouplevels, session(capthist), sessioncov)
-        if (any(smooths(model$D))) {
+        if (any(secr:::secr_smooths(model$D))) {
             smoothsetup$D <- gamsetup(model$D, temp)
         }
         ## otherwise, smoothsetup$D remains NULL

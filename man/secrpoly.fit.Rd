@@ -54,7 +54,8 @@ secrpoly.fit (capthist, model = list(D~1, lambda0~1, sigma~1),
 \details{
 
 \code{secrpoly.fit} fits a SECR model by maximizing the likelihood. The
-likelihood depends on the detector type ("polygon" etc.) of the \code{traps} attribute of \code{capthist} (Borchers and Efford 2008, Efford 2011). 
+likelihood depends on the detector type ("polygon" etc.) of the \code{traps} 
+attribute of \code{capthist} (Borchers and Efford 2008, Efford 2011). 
 
 The default \code{model} is null (\code{model = list(D~1, lambda0~1,
 sigma~1)} for \code{detectfn = 'HHN'} and \code{CL = FALSE}), meaning
@@ -86,7 +87,9 @@ this case, a vector of starting beta values is constructed from the old
 parameters follows the default in \code{\link[secr]{score.test}}, but user
 intervention is not allowed. 
 
-\code{binomN} determines the distribution that is fitted for the number of detections of an individual at a particular detector, on a particular occasion, when the detectors are of type `polygon' or `transect':
+\code{binomN} determines the distribution that is fitted for the number of 
+detections of an individual at a particular detector, on a particular occasion, 
+when the detectors are of type `polygon' or `transect':
 
 \itemize{
 \item{binomN > 1  --- binomial with size binomN}
@@ -94,7 +97,7 @@ intervention is not allowed.
 \item{binomN = 0  --- Poisson}
 }
 
-The default with these detectors is to fit a Poisson distribution.
+The default with `polygon' or `transect' detectors is to fit a Poisson distribution.
 
 \code{details} is used for various specialized settings listed below. These are
 described separately - see \code{\link[secr]{details}}.
@@ -241,10 +244,7 @@ km^2, multiply by 100.
 (effective sampling area) and `D' (density) for models fitted by
 maximizing the conditional likelihood (CL = TRUE).
 
-Components `version' and `starttime' were introduced in version 1.2.7,
-and recording of the completion time in `fitted' was discontinued.
-
- The Newton-Raphson algorithm is fast, but it sometimes fails to compute
+The Newton-Raphson algorithm is fast, but it sometimes fails to compute
 the information matrix correctly, causing some or all standard errors to
 be set to NA. This usually indicates a major problem in fitting the
 model, and parameter estimates should not be trusted. See

@@ -106,9 +106,9 @@ fxiContour(FTHL.0, i = 1:5, add = TRUE, p = c(0.5,0.95), drawlabels
 sf <- fxiContour(FTHL.0, i = 1:3, plt = FALSE, p = c(0.5,0.95),
     nx = 256, output = 'sf', fitmode = TRUE)
 
-## save as ESRI shapefile testsf.shp etc.
-library(sf)
-st_write(sf, 'testsf.shp')
+## optionally save as ESRI shapefile testsf.shp etc.
+## sf::st_write(sf, 'testsf.shp')
+
 ## plot contours and modes
 plot(st_as_sfc(sf))    # outline only
 points(sf$modex, sf$modey)

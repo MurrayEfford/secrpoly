@@ -77,11 +77,10 @@ A vector of probabilities, one for each row in X.
 \examples{
 
 \donttest{
-
-  temptrap <- make.grid()
-  ## per-session detection probability for an individual centred
-  ## at a corner trap. By default, noccasions = 5.
-  pdot (c(0,0), temptrap, detectpar = list(g0 = 0.2, sigma = 25),
+  temppoly <- make.poly()
+  ## per-session detection probability for a centred individual.
+  ## Using default noccasions = 5.
+  pdot (c(0,0), temppoly, detectpar = list(g0 = 0.2, sigma = 25),
     noccasions = 5)
 }
 

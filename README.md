@@ -2,20 +2,15 @@
 
 Area Search Spatially Explicit Capture-Recapture
 
-This is an experimental R package. Initially it comprises a subset of code 
+This was an experimental R package. Initially it comprised a subset of code 
 from 'secr' related to polygon, polygonX, transect, and transectX detector types. 
 
-It may be installed (compilation of C++ code is required) using
-```
-devtools::install_github("MurrayEfford/secrpoly")
-```
+Development of 'secrpoly' has been paused because a simpler way was found to 
+reduce the installation time and size of 'secr'. The package 'secrfunc' wraps 
+C++ code for numerical integration from the package 'RcppNumerical'. From 
+version 5.4.0, 'secr' imports 'secrfunc'.
 
-Alternatively, the development version may be installed with
-```
-install.packages("secrpoly", repos = "https://MurrayEfford.r-universe.dev")
-```
-
-Please report bugs as Issues on this GitHub page. 
+It is likely that the repo 'secrpoly' will be deleted permanently early in 2026.
 
 See [www.otago.ac.nz/density](https://www.otago.ac.nz/density/) and 
 [The SECR Book](https://murrayefford.github.io/SECRbook/) for general background.
